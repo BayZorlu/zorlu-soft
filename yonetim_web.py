@@ -7,7 +7,7 @@ from streamlit_option_menu import option_menu
 from io import BytesIO
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import os # Logo kontrolü için
+import os
 
 # --- HATA ÖNLEYİCİ ---
 try:
@@ -24,32 +24,37 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- LOGO AYARLARI (BURAYA DİKKAT) ---
-# Eğer GitHub'a 'logo.png' yüklediysen onu kullanır.
-# Yüklemediysen bu internet linkindeki geçici logoyu kullanır.
+# --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
-LOGO_URL_YEDEK = "https://cdn-icons-png.flaticon.com/512/9203/9203741.png" # Geçici Logo
+LOGO_URL_YEDEK = "https://cdn-icons-png.flaticon.com/512/9203/9203741.png"
 
 def logo_getir():
-    """Logo varsa dosya yolunu, yoksa URL'i döndürür"""
-    if os.path.exists(LOGO_DOSYA):
-        return LOGO_DOSYA
+    if os.path.exists(LOGO_DOSYA): return LOGO_DOSYA
     return LOGO_URL_YEDEK
 
-# --- CSS TASARIM ---
+# --- CSS: NOKTA ATIŞI GİZLEME (STEALTH MODE) ---
 st.markdown("""
 <style>
-    /* GEREKSİZLERİ GİZLE */
-    #MainMenu {visibility: hidden;} footer {visibility: hidden;} .stDeployButton {display:none;}
+    /* 1. SAĞ ÜSTTEKİ GEREKSİZLERİ YOK ET */
+    [data-testid="stToolbar"] {visibility: hidden !important;} /* Araç çubuğunu gizle */
+    [data-testid="stHeaderActionElements"] {display: none !important;} /* Share, GitHub vb. kapsayıcıyı yok et */
+    .stDeployButton {display:none;} /* Deploy butonunu sil */
+    
+    /* 2. DİĞER GİZLİLİK AYARLARI */
+    #MainMenu {visibility: hidden;} 
+    footer {visibility: hidden;} 
+    
+    /* 3. HEADER AYARI (Menü butonu kalsın diye header'ı gizlemiyoruz, sadece rengini şeffaf yapıyoruz) */
+    header[data-testid="stHeader"] {
+        background-color: transparent;
+        z-index: 1; /* İçerik kaydırma sorunu olmasın */
+    }
+
+    /* Genel Arkaplan */
     .stApp { background-color: #f5f7fa; }
     
-    /* LOGIN KUTUSU */
-    .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 50px auto; text-align: center; }
-    
-    /* LOGO STİLİ */
-    .logo-img { width: 120px; margin-bottom: 20px; }
-
-    /* ROZETLER VE KARTLAR */
+    /* --- BURADAN AŞAĞISI STANDART TASARIM --- */
+    .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 80px auto; text-align: center; }
     .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-right: 5px; }
     .badge-vip { background: #e3f2fd; color: #1565c0; }
     .badge-risk { background: #ffebee; color: #c62828; }
@@ -104,7 +109,7 @@ def kullanici_dogrula(kadi, sifre):
                 return user 
         return None
     except Exception as e:
-        st.error(f"Veritabanı hatası: {e}")
+        st.error(f"Kullanıcı veritabanı hatası: {e}")
         return None
 
 def demo_veri():
@@ -131,7 +136,7 @@ def tr_duzelt(text):
     translation = str.maketrans(source, target)
     return text.translate(translation)
 
-# --- PDF MAKBUZ (LOGOLU) ---
+# --- PDF MAKBUZ (LOGOLU & HATASIZ) ---
 def pdf_olustur(daire_no, isim, tutar):
     if not LIB_OK: return None
     pdf = FPDF()
@@ -139,12 +144,9 @@ def pdf_olustur(daire_no, isim, tutar):
     pdf.set_line_width(1)
     pdf.rect(5, 5, 200, 287)
     
-    # --- LOGO EKLEME ---
-    # Eğer logo dosyası varsa ekle, yoksa geç
+    # LOGO
     if os.path.exists(LOGO_DOSYA):
-        # x=10 (sol), y=8 (üst), w=30 (genişlik)
         pdf.image(LOGO_DOSYA, 10, 8, 30)
-        # Başlığı biraz sağa kaydır logo üstüne gelmesin
         pdf.set_xy(40, 20)
     else:
         pdf.set_xy(10, 20)
@@ -153,10 +155,9 @@ def pdf_olustur(daire_no, isim, tutar):
     isim = tr_duzelt(isim)
     
     pdf.set_font("Arial", 'B', 24)
-    # Cell yerine MultiCell veya sadece X ayarı ile başlığı ortala
     pdf.cell(0, 10, txt=site_adi, ln=True, align='C')
     
-    pdf.set_y(40) # Logodan sonra aşağı in
+    pdf.set_y(40)
     pdf.set_font("Arial", size=10)
     pdf.cell(0, 5, txt="Yonetim Ofisi: A Blok Zemin Kat | Tel: 0555 000 00 00", ln=True, align='C')
     pdf.ln(10)
@@ -201,17 +202,11 @@ if "giris" not in st.session_state: st.session_state["giris"] = False; st.sessio
 if not st.session_state["giris"]:
     c1, c2, c3 = st.columns([1,1,1])
     with c2:
-        # LOGOLU GİRİŞ EKRANI
+        # LOGOLU GİRİŞ
         aktif_logo = logo_getir()
-        if aktif_logo.startswith("http"): # URL ise
-            st.markdown(f"""
-            <div class='login-box'>
-                <img src="{aktif_logo}" class="logo-img">
-                <h2>{data['site_adi']}</h2>
-                <p>Kurumsal Giriş</p>
-            </div>
-            """, unsafe_allow_html=True)
-        else: # Dosya ise (Streamlit image ile göster)
+        if aktif_logo.startswith("http"):
+            st.markdown(f"<div class='login-box'><img src='{aktif_logo}' width='120'><h2>{data['site_adi']}</h2><p>Kurumsal Giriş</p></div>", unsafe_allow_html=True)
+        else:
             st.markdown(f"<div class='login-box'>", unsafe_allow_html=True)
             st.image(aktif_logo, width=120)
             st.markdown(f"<h2>{data['site_adi']}</h2><p>Kurumsal Giriş</p></div>", unsafe_allow_html=True)
@@ -228,7 +223,7 @@ if not st.session_state["giris"]:
                 st.success("Giriş Başarılı!")
                 st.rerun()
             else:
-                st.error("Hatalı Kullanıcı Adı veya Şifre! Yönetimle iletişime geçin.")
+                st.error("Hatalı Kullanıcı Adı veya Şifre!")
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
@@ -239,10 +234,8 @@ def cikis(): st.session_state["giris"] = False; st.rerun()
 if st.session_state["rol"] == "admin":
     with st.sidebar:
         # LOGOLU SIDEBAR
-        if os.path.exists(LOGO_DOSYA):
-            st.image(LOGO_DOSYA, width=150)
-        else:
-            st.image(LOGO_URL_YEDEK, width=100)
+        if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, width=150)
+        else: st.image(LOGO_URL_YEDEK, width=100)
             
         st.title("Yönetici")
         menu = option_menu(None, ["Genel Bakış", "Giderler", "Hesaplar", "Harita", "Otopark", "Anketler", "Rezervasyon", "Market", "Hukuk/İcra", "Kanban", "WhatsApp", "Otomasyon", "Bulut Arşiv", "Raporlar"], 
@@ -379,11 +372,9 @@ elif st.session_state["rol"] == "sakin":
     no = st.session_state["user"]
     info = data["daireler"][no]
     with st.sidebar:
-        # LOGOLU SIDEBAR (SAKİN İÇİN DE)
-        if os.path.exists(LOGO_DOSYA):
-            st.image(LOGO_DOSYA, width=150)
-        else:
-            st.image(LOGO_URL_YEDEK, width=100)
+        # LOGOLU SIDEBAR
+        if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, width=150)
+        else: st.image(LOGO_URL_YEDEK, width=100)
             
         st.title(f"Daire {no}"); menu = option_menu(None, ["Durum", "Ödeme", "Talep"], icons=["person", "card", "envelope"])
         if st.button("Çıkış"): cikis()
