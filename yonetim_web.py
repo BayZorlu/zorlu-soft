@@ -32,28 +32,34 @@ def logo_getir():
     if os.path.exists(LOGO_DOSYA): return LOGO_DOSYA
     return LOGO_URL_YEDEK
 
-# --- CSS: NOKTA ATIŞI GİZLEME (STEALTH MODE) ---
+# --- CSS: AKILLI GİZLEME (SMART STEALTH) ---
 st.markdown("""
 <style>
     /* 1. SAĞ ÜSTTEKİ GEREKSİZLERİ YOK ET */
-    [data-testid="stToolbar"] {visibility: hidden !important;} /* Araç çubuğunu gizle */
-    [data-testid="stHeaderActionElements"] {display: none !important;} /* Share, GitHub vb. kapsayıcıyı yok et */
-    .stDeployButton {display:none;} /* Deploy butonunu sil */
+    /* Header'ın sağ tarafındaki buton grubunu gizle (Share, Star, GitHub vs) */
+    [data-testid="stHeaderActionElements"] {display: none !important;}
+    .stDeployButton {display:none !important;}
     
-    /* 2. DİĞER GİZLİLİK AYARLARI */
-    #MainMenu {visibility: hidden;} 
-    footer {visibility: hidden;} 
-    
-    /* 3. HEADER AYARI (Menü butonu kalsın diye header'ı gizlemiyoruz, sadece rengini şeffaf yapıyoruz) */
+    /* 2. HEADER AYARI */
+    /* Header'ı şeffaf yap ama GİZLEME (Yoksa sol menü butonu da gider) */
     header[data-testid="stHeader"] {
         background-color: transparent;
-        z-index: 1; /* İçerik kaydırma sorunu olmasın */
+        z-index: 999;
+    }
+    
+    /* 3. MENÜ BUTONUNU KORU (KRİTİK) */
+    /* Sidebar açma/kapama okuna ve hamburger menüye dokunma! */
+    [data-testid="collapsedControl"] {
+        display: block !important;
+        visibility: visible !important;
     }
 
-    /* Genel Arkaplan */
+    /* 4. GENEL GÖRÜNÜM */
+    #MainMenu {visibility: hidden;} 
+    footer {visibility: hidden;} 
     .stApp { background-color: #f5f7fa; }
     
-    /* --- BURADAN AŞAĞISI STANDART TASARIM --- */
+    /* --- TASARIM --- */
     .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 80px auto; text-align: center; }
     .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-right: 5px; }
     .badge-vip { background: #e3f2fd; color: #1565c0; }
@@ -128,7 +134,7 @@ def demo_veri():
 if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
 data = st.session_state["data"]
 
-# --- PDF İÇİN TÜRKÇE KARAKTER DÜZELTİCİ ---
+# --- PDF DÜZELTİCİ ---
 def tr_duzelt(text):
     text = str(text)
     source = "şŞıİğĞüÜöÖçÇ"
@@ -136,7 +142,7 @@ def tr_duzelt(text):
     translation = str.maketrans(source, target)
     return text.translate(translation)
 
-# --- PDF MAKBUZ (LOGOLU & HATASIZ) ---
+# --- PDF MAKBUZ ---
 def pdf_olustur(daire_no, isim, tutar):
     if not LIB_OK: return None
     pdf = FPDF()
@@ -144,7 +150,6 @@ def pdf_olustur(daire_no, isim, tutar):
     pdf.set_line_width(1)
     pdf.rect(5, 5, 200, 287)
     
-    # LOGO
     if os.path.exists(LOGO_DOSYA):
         pdf.image(LOGO_DOSYA, 10, 8, 30)
         pdf.set_xy(40, 20)
@@ -202,7 +207,6 @@ if "giris" not in st.session_state: st.session_state["giris"] = False; st.sessio
 if not st.session_state["giris"]:
     c1, c2, c3 = st.columns([1,1,1])
     with c2:
-        # LOGOLU GİRİŞ
         aktif_logo = logo_getir()
         if aktif_logo.startswith("http"):
             st.markdown(f"<div class='login-box'><img src='{aktif_logo}' width='120'><h2>{data['site_adi']}</h2><p>Kurumsal Giriş</p></div>", unsafe_allow_html=True)
@@ -233,7 +237,6 @@ def cikis(): st.session_state["giris"] = False; st.rerun()
 # ==============================================================================
 if st.session_state["rol"] == "admin":
     with st.sidebar:
-        # LOGOLU SIDEBAR
         if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, width=150)
         else: st.image(LOGO_URL_YEDEK, width=100)
             
