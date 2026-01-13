@@ -26,7 +26,7 @@ st.set_page_config(
 # --- LOGO AYARLARI (Sadece PDF için) ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: KORUPARK ÖZEL TASARIM ---
+# --- CSS: TASARIM ---
 st.markdown("""
 <style>
     /* 1. GEREKSİZLERİ GİZLE */
@@ -35,7 +35,7 @@ st.markdown("""
     footer {visibility: hidden;} 
     #MainMenu {visibility: hidden;} 
 
-    /* 2. GİRİŞ EKRANI ARKA PLANI (RESiM) */
+    /* 2. GİRİŞ EKRANI ARKA PLANI */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop");
         background-size: cover;
@@ -71,7 +71,7 @@ st.markdown("""
         padding-left: 20px;
     }
 
-    /* 4. GİRİŞ KUTUSU (BEYAZ VE ORTADA) */
+    /* 4. GİRİŞ KUTUSU */
     .login-container {
         background: rgba(255, 255, 255, 0.95);
         padding: 50px;
@@ -81,7 +81,6 @@ st.markdown("""
         margin-top: 80px;
     }
     
-    /* Giriş Kutusu içindeki input alanlarını düzenle */
     .stTextInput input {
         border-radius: 8px !important;
         padding: 15px !important;
@@ -146,7 +145,7 @@ def demo_veri():
 if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
 data = st.session_state["data"]
 
-# --- PDF (BURADA LOGO KULLANILIYOR) ---
+# --- PDF ---
 def tr_duzelt(text):
     text = str(text)
     source = "şŞıİğĞüÜöÖçÇ"
@@ -161,7 +160,6 @@ def pdf_olustur(daire_no, isim, tutar):
     pdf.set_line_width(1)
     pdf.rect(5, 5, 200, 287)
     
-    # SADECE BURADA LOGO VAR
     if os.path.exists(LOGO_DOSYA):
         pdf.image(LOGO_DOSYA, 10, 8, 30); pdf.set_xy(40, 20)
     else: pdf.set_xy(10, 20)
@@ -182,27 +180,15 @@ def pdf_olustur(daire_no, isim, tutar):
 if "giris" not in st.session_state: st.session_state["giris"] = False
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ EKRANI (KORUPARK ÖZEL) ---
+# --- GİRİŞ EKRANI ---
 if not st.session_state["giris"]:
-    # Ortalamak için kolon yapısı
     c1, c2, c3 = st.columns([1, 2, 1])
-    
     with c2:
-        # Beyaz kutuyu başlat
         st.markdown("""<div class="login-container">""", unsafe_allow_html=True)
-        
-        # --- ESKİ İKONLAR VE YAZILAR SİLİNDİ ---
-        
-        # --- YENİ ANA BAŞLIK ---
         st.markdown("<h1 style='color:#1e293b; font-weight:900; font-size:36px; margin-bottom:40px; letter-spacing:-1px;'>KORUPARK SİTE YÖNETİMİ</h1>", unsafe_allow_html=True)
-        
-        # Giriş Formu
         u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı adınızı giriniz")
         p = st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz")
-        
         st.markdown("<br>", unsafe_allow_html=True)
-        
-        # Giriş Butonu
         if st.button("GİRİŞ YAP", type="primary", use_container_width=True):
             user_data = kullanici_dogrula(u, p)
             if user_data:
@@ -212,36 +198,22 @@ if not st.session_state["giris"]:
                 st.rerun()
             else:
                 st.error("Hatalı Giriş Bilgileri")
-        
-        # Kutuyu kapat
         st.markdown("""</div>""", unsafe_allow_html=True)
-        
-        # Alt Bilgi
         st.markdown("<p style='text-align:center; color:white; margin-top:20px; text-shadow: 1px 1px 4px black; font-weight:bold;'>© 2026 KoruPark Yönetim Sistemleri</p>", unsafe_allow_html=True)
-
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# ANA YAPI (GİRİŞ BAŞARILI)
+# ANA YAPI
 # ==============================================================================
 
-# Giriş yapıldıktan sonra arka planı normale (beyaz/gri) döndür
-st.markdown("""
-<style>
-[data-testid="stAppViewContainer"] {
-    background-image: none !important;
-    background-color: #f8f9fa !important;
-}
-</style>
-""", unsafe_allow_html=True)
+st.markdown("""<style>[data-testid="stAppViewContainer"] {background-image: none !important; background-color: #f8f9fa !important;}</style>""", unsafe_allow_html=True)
 
-# SOL MENÜ (SADELEŞTİRİLMİŞ)
+# SOL MENÜ (ÜSTÜ BOŞ, ALTTA VERSİYON)
 with st.sidebar:
-    # Logoyu menüden de kaldırdık, sadece şık bir yazı.
-    st.markdown("<h2 style='text-align:center; color:white; font-weight:800; letter-spacing:1px;'>KORUPARK</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center; color:#94a3b8; font-size:12px; margin-bottom:30px;'>Yönetim Paneli</p>", unsafe_allow_html=True)
+    # Üstte boşluk bırakalım ki butonlar tavana yapışmasın
+    st.markdown("<br>", unsafe_allow_html=True)
     
     if st.session_state["rol"] == "admin":
         menu_items = [
@@ -266,6 +238,10 @@ with st.sidebar:
                 st.rerun()
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
+    
+    # EN ALTA VERSİYON BİLGİSİ
+    st.markdown("---")
+    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.3); font-size:11px;'>Zorlu Soft v51.0</div>", unsafe_allow_html=True)
 
 # SAĞ İÇERİK
 menu = st.session_state["active_menu"]
