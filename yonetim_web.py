@@ -26,38 +26,22 @@ st.set_page_config(
 # --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: HEADER GİZLEME VE TASARIM ---
+# --- CSS: KURUMSAL TASARIM (REFERANS RESME GÖRE) ---
 st.markdown("""
 <style>
-    /* 1. SAĞ ÜST KÖŞEYİ KOMPLE TEMİZLE (SHARE, GITHUB, MENU) */
-    [data-testid="stHeaderActionElements"] {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-    }
-    
-    /* Deploy butonunu yok et */
-    .stDeployButton {
+    /* 1. GEREKSİZLERİ GİZLE */
+    .stDeployButton, [data-testid="stHeaderActionElements"], footer, #MainMenu {
         display: none !important;
     }
     
-    /* Tepedeki renkli çizgiyi (Decoration) yok et */
-    [data-testid="stDecoration"] {
-        display: none !important;
-    }
-    
-    /* Header alanını görünmez ve tıklanmaz yap (Boşluk kalmasın) */
+    /* Header'ı yok et */
     header[data-testid="stHeader"] {
         background: transparent !important;
-        visibility: hidden !important;
         height: 0px !important;
+        visibility: hidden !important;
     }
-    
-    /* Footer ve Hamburger Menüyü Gizle */
-    footer {visibility: hidden;} 
-    #MainMenu {visibility: hidden;} 
 
-    /* 2. ARKA PLAN (ŞEHİR MANZARASI) */
+    /* 2. ARKA PLAN (SADECE GİRİŞ EKRANI İÇİN RESİM) */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop");
         background-size: cover;
@@ -67,76 +51,78 @@ st.markdown("""
     
     .block-container {
         background-color: transparent !important;
-        padding-top: 20px !important; /* Üst boşluğu azalttık çünkü header gitti */
+        padding-top: 20px !important;
     }
 
-    /* 3. ORTA SÜTUNU BEYAZ KUTUYA ÇEVİR */
-    div[data-testid="column"]:nth-of-type(2) > div > div {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-        border: 1px solid rgba(255,255,255,0.5);
-    }
-
-    /* 4. GİRİŞ BAŞLIĞI */
-    .login-header {
-        font-family: 'Helvetica', sans-serif;
-        color: #1e293b;
-        font-weight: 900;
-        font-size: 32px;
-        text-align: center;
-        margin-bottom: 30px;
-        letter-spacing: -0.5px;
-        text-transform: uppercase;
-    }
-
-    /* 5. INPUT ALANLARI */
-    .stTextInput input {
-        border-radius: 10px !important;
-        padding: 12px 15px !important;
-        border: 1px solid #cbd5e1 !important;
-        background-color: #f8fafc !important;
-        color: #334155 !important;
-    }
-    .stTextInput input:focus {
-        border-color: #ef4444 !important;
-        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
-    }
-
-    /* 6. BUTON */
-    .stButton button {
-        width: 100%;
-        border-radius: 10px !important;
-        font-weight: bold !important;
-        background-color: #ef4444 !important;
-        border: none !important;
-        color: white !important;
-        padding: 12px !important;
-        margin-top: 10px;
-    }
-    .stButton button:hover {
-        background-color: #dc2626 !important;
-    }
-
-    /* 7. SOL MENÜ */
+    /* 3. SOL MENÜ (KURUMSAL PETROL MAVİSİ) */
     section[data-testid="stSidebar"] {
-        background-color: #1e293b !important;
-        border-right: 1px solid #0f172a;
+        background-color: #263238 !important; /* Referans Resimdeki Renk */
+        border-right: 1px solid #1c262c;
     }
-    [data-testid="stSidebar"] * { color: #f8fafc !important; }
+    
+    /* Menü içindeki yazı renkleri */
+    [data-testid="stSidebar"] * { 
+        color: #eceff1 !important; /* Kırık Beyaz */
+        font-family: 'Segoe UI', sans-serif;
+    }
+    
     [data-testid="stSidebarCollapseButton"] { display: none !important; }
 
-    /* Menü Butonları */
+    /* 4. MENÜ BUTONLARI (REFERANS TARZI) */
     [data-testid="stSidebar"] .stButton button {
-        background-color: transparent !important;
-        border: 1px solid rgba(255,255,255,0.05) !important;
-        color: #cbd5e1 !important;
+        width: 100%;
+        background-color: transparent !important; /* Şeffaf Zemin */
+        border: none !important; /* Çerçeve Yok */
+        color: #cfd8dc !important; /* Soluk Gri Yazı */
         text-align: left;
+        padding: 10px 15px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 0 !important; /* Köşeli/Hafif yuvarlak */
+        margin: 0 !important;
+        transition: all 0.2s ease;
     }
+    
+    /* Hover (Üzerine Gelince) - Sol Çizgi Efekti */
     [data-testid="stSidebar"] .stButton button:hover {
-        background-color: #ef4444 !important;
+        background-color: #37474f !important; /* Biraz daha açık ton */
         color: white !important;
+        border-left: 4px solid #29b6f6 !important; /* Sol Mavi Çizgi */
+        padding-left: 11px !important; /* Çizgi kadar içeri it */
+    }
+    
+    /* Aktif Buton (Focus) */
+    [data-testid="stSidebar"] .stButton button:focus {
+        background-color: #37474f !important;
+        color: white !important;
+        border-left: 4px solid #ef4444 !important; /* Kırmızı Çizgi */
+    }
+
+    /* 5. GİRİŞ KUTUSU */
+    .login-container {
+        background: rgba(255, 255, 255, 0.96);
+        padding: 40px;
+        border-radius: 4px; /* Daha keskin köşeler */
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        text-align: center;
+        margin-top: 60px;
+        border-top: 5px solid #263238; /* Üstte kurumsal çizgi */
+    }
+    
+    /* 6. SAĞ TARAF KARTLARI */
+    .metric-card {
+        background: white;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border-left: 4px solid #263238;
+        color: #333;
+    }
+
+    /* Ayırıcı Çizgi (HR) */
+    .sidebar-divider {
+        margin: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
 </style>
@@ -211,11 +197,9 @@ def pdf_olustur(daire_no, isim, tutar):
     pdf.add_page()
     pdf.set_line_width(1)
     pdf.rect(5, 5, 200, 287)
-    
     if os.path.exists(LOGO_DOSYA):
         pdf.image(LOGO_DOSYA, 10, 8, 30); pdf.set_xy(40, 20)
     else: pdf.set_xy(10, 20)
-
     site_adi = tr_duzelt(data['site_adi'].upper())
     isim = tr_duzelt(isim)
     pdf.set_font("Arial", 'B', 24); pdf.cell(0, 10, txt=site_adi, ln=True, align='C')
@@ -234,21 +218,15 @@ if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Gen
 
 # --- GİRİŞ EKRANI ---
 if not st.session_state["giris"]:
-    # Sayfayı 3'e böl
     c1, c2, c3 = st.columns([1, 1.5, 1])
-    
     with c2:
         st.markdown("<br><br>", unsafe_allow_html=True)
-        
-        # BAŞLIK
-        st.markdown('<div class="login-header">KORUPARK SİTE YÖNETİMİ</div>', unsafe_allow_html=True)
-        
-        # GİRİŞ FORMU
+        # KUTU İÇİ
+        st.markdown("""<div class="login-container">""", unsafe_allow_html=True)
+        st.markdown("<h2 style='color:#263238; font-weight:800; margin-bottom:30px;'>KORUPARK SİTE YÖNETİMİ</h2>", unsafe_allow_html=True)
         u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı adınızı giriniz")
         p = st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz")
-        
         st.markdown("<br>", unsafe_allow_html=True)
-        
         if st.button("GİRİŞ YAP", type="primary", use_container_width=True):
             user_data = kullanici_dogrula(u, p)
             if user_data:
@@ -256,12 +234,10 @@ if not st.session_state["giris"]:
                 st.session_state["rol"] = str(user_data["rol"])
                 st.session_state["user"] = str(user_data["daire_no"])
                 st.rerun()
-            else:
-                st.error("Hatalı Giriş Bilgileri")
-        
-        # ALT BİLGİ
-        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight:500;'>Zorlu Soft | © 2026 | v56.0</p>", unsafe_allow_html=True)
-
+            else: st.error("Hatalı Giriş Bilgileri")
+        st.markdown("""</div>""", unsafe_allow_html=True)
+        # İMZA
+        st.markdown("<p style='text-align:center; color:#cfd8dc; margin-top:30px; font-size:13px;'>Zorlu Soft | © 2026 | v57.0</p>", unsafe_allow_html=True)
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
@@ -270,74 +246,70 @@ def cikis(): st.session_state["giris"] = False; st.rerun()
 # ANA YAPI (GİRİŞ SONRASI)
 # ==============================================================================
 
-# Giriş yapıldıktan sonra arka planı normale döndür
-st.markdown("""
-<style>
-[data-testid="stAppViewContainer"] {
-    background-image: none !important;
-    background-color: #f8f9fa !important;
-}
-/* Giriş ekranındaki özel kutu stilini kaldır */
-div[data-testid="column"]:nth-of-type(2) > div > div {
-    background: transparent;
-    padding: 0;
-    box-shadow: none;
-    border: none;
-}
-</style>
-""", unsafe_allow_html=True)
+# Arka planı temizle (Giriş resmini kaldır)
+st.markdown("""<style>[data-testid="stAppViewContainer"] {background-image: none !important; background-color: #f1f5f9 !important;}</style>""", unsafe_allow_html=True)
 
-# SOL MENÜ
+# --- SOL MENÜ (KURUMSAL YAPI) ---
 with st.sidebar:
-    st.markdown("""
-    <div style="text-align: center; padding-top: 10px; padding-bottom: 20px;">
-        <h2 style="color: white; margin:0; font-size: 26px; font-weight: 800;">KORUPARK</h2>
-        <p style="color: #cbd5e1; margin:0; font-size: 14px; font-weight: 500;">SİTE YÖNETİMİ</p>
+    # 1. BAŞLIK / PROFİL KISMI (Referans Resimdeki Gibi)
+    st.markdown(f"""
+    <div style="padding: 10px 0 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
+        <h3 style="color:white; margin:0; font-size:20px; font-weight:bold;">KORUPARK</h3>
+        <p style="color:#b0bec5; margin:0; font-size:13px;">Sistem Yöneticisi</p>
+        <p style="color:#29b6f6; margin:5px 0 0 0; font-size:11px;">[ Yetkili Kullanıcı ]</p>
     </div>
     """, unsafe_allow_html=True)
     
     if st.session_state["rol"] == "admin":
-        menu_items = [
-            ("Genel Bakış", "🚀"), ("Giderler", "💸"), ("Hesaplar", "👥"), 
-            ("Harita", "🏘️"), ("Otopark", "🚗"), ("Anketler", "📊"),
-            ("Rezervasyon", "📅"), ("Market", "🛒"), ("Hukuk/İcra", "⚖️"),
-            ("Kanban", "📋"), ("WhatsApp", "💬"), ("Otomasyon", "🤖"),
-            ("Bulut Arşiv", "☁️"), ("Raporlar", "📄")
-        ]
-        for label, icon in menu_items:
-            if st.button(f"{icon}  {label}", key=f"nav_{label}"):
-                st.session_state["active_menu"] = label
-                st.rerun()
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("🚪 Çıkış", key="exit"): cikis()
+        # GRUP 1: GENEL
+        if st.button("🏠 Genel Bakış", key="nav_genel"): st.session_state["active_menu"] = "Genel Bakış"; st.rerun()
+        if st.button("📅 Rezervasyon", key="nav_rez"): st.session_state["active_menu"] = "Rezervasyon"; st.rerun()
+        if st.button("📋 Kanban Pano", key="nav_kanban"): st.session_state["active_menu"] = "Kanban"; st.rerun()
+        
+        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True) # Çizgi
+        
+        # GRUP 2: FİNANS & YÖNETİM
+        if st.button("💸 Giderler", key="nav_gider"): st.session_state["active_menu"] = "Giderler"; st.rerun()
+        if st.button("👥 Hesaplar", key="nav_hesap"): st.session_state["active_menu"] = "Hesaplar"; st.rerun()
+        if st.button("🏘️ Harita", key="nav_harita"): st.session_state["active_menu"] = "Harita"; st.rerun()
+        if st.button("🚗 Otopark", key="nav_oto"): st.session_state["active_menu"] = "Otopark"; st.rerun()
+        if st.button("🛒 Market", key="nav_market"): st.session_state["active_menu"] = "Market"; st.rerun()
+        
+        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True) # Çizgi
+        
+        # GRUP 3: SİSTEM
+        if st.button("📊 Anketler", key="nav_anket"): st.session_state["active_menu"] = "Anketler"; st.rerun()
+        if st.button("⚖️ Hukuk/İcra", key="nav_hukuk"): st.session_state["active_menu"] = "Hukuk/İcra"; st.rerun()
+        if st.button("💬 WhatsApp", key="nav_wa"): st.session_state["active_menu"] = "WhatsApp"; st.rerun()
+        if st.button("📄 Raporlar", key="nav_rapor"): st.session_state["active_menu"] = "Raporlar"; st.rerun()
+        if st.button("☁️ Bulut Arşiv", key="nav_bulut"): st.session_state["active_menu"] = "Bulut Arşiv"; st.rerun()
+        
+        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True) # Çizgi
+        if st.button("🚪 Çıkış Yap", key="exit"): cikis()
 
     elif st.session_state["rol"] == "sakin":
-        menu_items = [("Durum", "👤"), ("Ödeme", "💳"), ("Talep", "📨")]
-        for label, icon in menu_items:
-            if st.button(f"{icon}  {label}", key=f"nav_{label}"):
-                st.session_state["active_menu"] = label
-                st.rerun()
-        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("👤 Durum", key="nav_durum"): st.session_state["active_menu"] = "Durum"; st.rerun()
+        if st.button("💳 Ödeme Geçmişi", key="nav_odeme"): st.session_state["active_menu"] = "Ödeme"; st.rerun()
+        if st.button("📨 Talep Oluştur", key="nav_talep"): st.session_state["active_menu"] = "Talep"; st.rerun()
+        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
     
-    # SOL MENÜ ALTI - İMZA
-    st.markdown("---")
-    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.5); font-size:12px;'>Zorlu Soft | © 2026 | v56.0</div>", unsafe_allow_html=True)
+    # EN ALT KISIM
+    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.2); font-size:11px; margin-top:20px;'>Zorlu Soft v57.0</div>", unsafe_allow_html=True)
 
-# SAĞ İÇERİK
+# --- SAĞ İÇERİK ---
 menu = st.session_state["active_menu"]
 
 if st.session_state["rol"] == "admin":
     if menu == "Genel Bakış":
         st.title("🚀 Kokpit")
         c1, c2, c3, c4 = st.columns(4)
-        c1.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Kasa</h3><h1 style='color:#1e293b'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
-        c2.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Gider</h3><h1 style='color:#ef4444'>{sum(g['tutar'] for g in data['giderler']):,.0f} ₺</h1></div>", unsafe_allow_html=True)
-        c3.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Otopark</h3><h1 style='color:#1e293b'>{len([d for d in data['daireler'].values() if d['plaka']!='-'])}</h1></div>", unsafe_allow_html=True)
-        c4.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Sipariş</h3><h1 style='color:#1e293b'>{len(data['market_siparisleri'])}</h1></div>", unsafe_allow_html=True)
+        c1.markdown(f"<div class='metric-card'><h3>Kasa</h3><h1 style='color:#263238'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
+        c2.markdown(f"<div class='metric-card'><h3>Gider</h3><h1 style='color:#ef4444'>{sum(g['tutar'] for g in data['giderler']):,.0f} ₺</h1></div>", unsafe_allow_html=True)
+        c3.markdown(f"<div class='metric-card'><h3>Otopark</h3><h1 style='color:#263238'>{len([d for d in data['daireler'].values() if d['plaka']!='-'])}</h1></div>", unsafe_allow_html=True)
+        c4.markdown(f"<div class='metric-card'><h3>Sipariş</h3><h1 style='color:#263238'>{len(data['market_siparisleri'])}</h1></div>", unsafe_allow_html=True)
         
         st.markdown("<br>", unsafe_allow_html=True)
-        
         cl, cr = st.columns([2, 1])
         with cl:
             st.subheader("Mali Durum")
@@ -346,11 +318,10 @@ if st.session_state["rol"] == "admin":
                 "Durum": ["Kasa", "Alacaklar", "Giderler"],
                 "Tutar": [data['kasa_nakit'], toplam_alacak, sum(g['tutar'] for g in data['giderler'])]
             })
-            fig = px.pie(df_pie, values='Tutar', names='Durum', hole=0.7, color_discrete_sequence=["#10b981", "#f59e0b", "#ef4444"])
+            fig = px.pie(df_pie, values='Tutar', names='Durum', hole=0.7, color_discrete_sequence=["#26a69a", "#ffa726", "#ef5350"])
             st.plotly_chart(fig, use_container_width=True)
-        
         with cr:
-            st.subheader("Yönetim")
+            st.subheader("Hızlı İşlemler")
             if st.button("💾 VERİLERİ ZORLA KAYDET", type="primary", use_container_width=True): 
                 kaydet(data); st.success("Yedeklendi")
             st.info("Her işlemde otomatik yedek alınır.")
@@ -375,10 +346,9 @@ if st.session_state["rol"] == "admin":
                 if src.lower() in v["sahip"].lower() or src == k: 
                     filtre = k
                     break
-                    
         secilen = filtre if filtre else st.selectbox("Daire Seç", list(data["daireler"].keys()))
         info = data["daireler"][secilen]
-        st.markdown(f"<div style='background:white; padding:20px; border-radius:10px; border:1px solid #ddd'><h2>{info['sahip']}</h2><h1 style='color:#ef4444;'>{info['borc']} ₺</h1></div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='metric-card'><h2>{info['sahip']}</h2><h1 style='color:#ef4444;'>{info['borc']} ₺</h1></div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
         c1, c2 = st.columns([2,1])
         with c1:
@@ -397,8 +367,8 @@ if st.session_state["rol"] == "admin":
         cols = st.columns(4)
         for i, (no, info) in enumerate(sorted(data["daireler"].items())):
             with cols[i % 4]:
-                color = "#ef4444" if info["borc"] > 0 else "#10b981" 
-                st.markdown(f"<div style='background:white; padding:20px; border-radius:10px; border-top:5px solid {color}; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:10px;'><b>Daire {no}</b><br>{info['sahip']}<br><b>{info['borc']} ₺</b></div>", unsafe_allow_html=True)
+                color = "#ef4444" if info["borc"] > 0 else "#26a69a" 
+                st.markdown(f"<div class='metric-card' style='border-top:5px solid {color}; border-left:none;'><b>Daire {no}</b><br>{info['sahip']}<br><b>{info['borc']} ₺</b></div>", unsafe_allow_html=True)
     
     elif menu == "Otopark": st.title("🚗 Otopark"); st.dataframe(pd.DataFrame([{"Plaka":v["plaka"], "Sahip":v["sahip"]} for v in data["daireler"].values() if v["plaka"]!="-"]), use_container_width=True)
     elif menu == "Anketler":
