@@ -17,17 +17,16 @@ except: LIB_OK = False
 
 # --- SAYFA AYARLARI ---
 st.set_page_config(
-    page_title="Zorlu Soft | SUITE", 
+    page_title="KoruPark Yönetim", 
     layout="wide", 
     page_icon="🏢",
     initial_sidebar_state="expanded" 
 )
 
-# --- LOGO AYARLARI ---
-# Logo dosyasını sadece PDF için tutuyoruz, ekranda göstermeyeceğiz.
+# --- LOGO AYARLARI (Sadece PDF için) ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: MINIMALIST TASARIM ---
+# --- CSS: KORUPARK ÖZEL TASARIM ---
 st.markdown("""
 <style>
     /* 1. GEREKSİZLERİ GİZLE */
@@ -36,7 +35,7 @@ st.markdown("""
     footer {visibility: hidden;} 
     #MainMenu {visibility: hidden;} 
 
-    /* 2. GİRİŞ EKRANI ARKA PLANI */
+    /* 2. GİRİŞ EKRANI ARKA PLANI (RESiM) */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop");
         background-size: cover;
@@ -72,31 +71,21 @@ st.markdown("""
         padding-left: 20px;
     }
 
-    /* 4. GİRİŞ KUTUSU */
+    /* 4. GİRİŞ KUTUSU (BEYAZ VE ORTADA) */
     .login-container {
-        background: rgba(255, 255, 255, 0.90);
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 50px;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         text-align: center;
-        margin-top: 60px;
+        margin-top: 80px;
     }
     
-    .login-header {
-        font-size: 36px;
-        font-weight: 800;
-        color: #1e293b;
-        margin-bottom: 5px;
-        letter-spacing: -1px;
-    }
-    
-    .login-sub {
-        font-size: 14px;
-        color: #64748b;
-        margin-bottom: 30px;
-        font-weight: 500;
+    /* Giriş Kutusu içindeki input alanlarını düzenle */
+    .stTextInput input {
+        border-radius: 8px !important;
+        padding: 15px !important;
+        border: 1px solid #e2e8f0 !important;
     }
 
 </style>
@@ -143,7 +132,7 @@ def kullanici_dogrula(kadi, sifre):
 
 def demo_veri():
     return {
-        "site_adi": "Zorlu Cloud",
+        "site_adi": "KoruPark",
         "kasa_nakit": 85000.0, "kasa_banka": 250000.0,
         "arizalar": [{"id": 1, "konu": "Garaj Kapısı", "durum": "Bekliyor", "tarih": "2026-01-13"}],
         "anketler": [{"id": 1, "soru": "Güvenlik artsın mı?", "secenekler": {"Evet": 10, "Hayır": 2}, "durum": "Aktif"}],
@@ -193,26 +182,27 @@ def pdf_olustur(daire_no, isim, tutar):
 if "giris" not in st.session_state: st.session_state["giris"] = False
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ EKRANI (LOGO YOK - SADE) ---
+# --- GİRİŞ EKRANI (KORUPARK ÖZEL) ---
 if not st.session_state["giris"]:
+    # Ortalamak için kolon yapısı
     c1, c2, c3 = st.columns([1, 2, 1])
     
     with c2:
+        # Beyaz kutuyu başlat
         st.markdown("""<div class="login-container">""", unsafe_allow_html=True)
         
-        # LOGO YERİNE SADE İKON
-        st.markdown("<div style='font-size:60px;'>🏢</div>", unsafe_allow_html=True)
-            
-        st.markdown(f"""
-            <div class="login-header">{data['site_adi']}</div>
-            <div class="login-sub">Yönetim Paneli</div>
-        """, unsafe_allow_html=True)
+        # --- ESKİ İKONLAR VE YAZILAR SİLİNDİ ---
         
+        # --- YENİ ANA BAŞLIK ---
+        st.markdown("<h1 style='color:#1e293b; font-weight:900; font-size:36px; margin-bottom:40px; letter-spacing:-1px;'>KORUPARK SİTE YÖNETİMİ</h1>", unsafe_allow_html=True)
+        
+        # Giriş Formu
         u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı adınızı giriniz")
         p = st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz")
         
         st.markdown("<br>", unsafe_allow_html=True)
         
+        # Giriş Butonu
         if st.button("GİRİŞ YAP", type="primary", use_container_width=True):
             user_data = kullanici_dogrula(u, p)
             if user_data:
@@ -221,20 +211,23 @@ if not st.session_state["giris"]:
                 st.session_state["user"] = str(user_data["daire_no"])
                 st.rerun()
             else:
-                st.error("Hatalı Giriş")
+                st.error("Hatalı Giriş Bilgileri")
         
+        # Kutuyu kapat
         st.markdown("""</div>""", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:white; margin-top:20px; text-shadow: 1px 1px 2px black;'>© 2026 Zorlu Soft</p>", unsafe_allow_html=True)
+        
+        # Alt Bilgi
+        st.markdown("<p style='text-align:center; color:white; margin-top:20px; text-shadow: 1px 1px 4px black; font-weight:bold;'>© 2026 KoruPark Yönetim Sistemleri</p>", unsafe_allow_html=True)
 
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# ANA YAPI
+# ANA YAPI (GİRİŞ BAŞARILI)
 # ==============================================================================
 
-# Giriş yapıldıktan sonra arka planı beyaz yap
+# Giriş yapıldıktan sonra arka planı normale (beyaz/gri) döndür
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
@@ -244,10 +237,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# SOL MENÜ (LOGO YOK - SADE YAZI)
+# SOL MENÜ (SADELEŞTİRİLMİŞ)
 with st.sidebar:
-    st.markdown("<h1 style='text-align:center; color:white;'>🏢 ZORLU</h1>", unsafe_allow_html=True)
-    st.markdown("<div style='text-align:center; color:#94a3b8; font-size:12px; margin-bottom:20px;'>Yönetim Sistemi v49</div>", unsafe_allow_html=True)
+    # Logoyu menüden de kaldırdık, sadece şık bir yazı.
+    st.markdown("<h2 style='text-align:center; color:white; font-weight:800; letter-spacing:1px;'>KORUPARK</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; color:#94a3b8; font-size:12px; margin-bottom:30px;'>Yönetim Paneli</p>", unsafe_allow_html=True)
     
     if st.session_state["rol"] == "admin":
         menu_items = [
