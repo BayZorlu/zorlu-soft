@@ -7,6 +7,7 @@ from streamlit_option_menu import option_menu
 from io import BytesIO
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import os # Logo kontrolü için
 
 # --- HATA ÖNLEYİCİ ---
 try:
@@ -15,7 +16,7 @@ try:
     LIB_OK = True
 except: LIB_OK = False
 
-# --- SAYFA AYARLARI (MENÜ AÇIK GELİR) ---
+# --- SAYFA AYARLARI ---
 st.set_page_config(
     page_title="Zorlu Soft | PRO", 
     layout="wide", 
@@ -23,26 +24,36 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# --- LOGO AYARLARI (BURAYA DİKKAT) ---
+# Eğer GitHub'a 'logo.png' yüklediysen onu kullanır.
+# Yüklemediysen bu internet linkindeki geçici logoyu kullanır.
+LOGO_DOSYA = "logo.png" 
+LOGO_URL_YEDEK = "https://cdn-icons-png.flaticon.com/512/9203/9203741.png" # Geçici Logo
+
+def logo_getir():
+    """Logo varsa dosya yolunu, yoksa URL'i döndürür"""
+    if os.path.exists(LOGO_DOSYA):
+        return LOGO_DOSYA
+    return LOGO_URL_YEDEK
+
 # --- CSS TASARIM ---
 st.markdown("""
 <style>
     /* GEREKSİZLERİ GİZLE */
-    #MainMenu {visibility: hidden;} 
-    footer {visibility: hidden;} 
-    .stDeployButton {display:none;}
-    
+    #MainMenu {visibility: hidden;} footer {visibility: hidden;} .stDeployButton {display:none;}
     .stApp { background-color: #f5f7fa; }
     
     /* LOGIN KUTUSU */
-    .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 100px auto; text-align: center; }
+    .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 50px auto; text-align: center; }
+    
+    /* LOGO STİLİ */
+    .logo-img { width: 120px; margin-bottom: 20px; }
 
     /* ROZETLER VE KARTLAR */
     .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-right: 5px; }
     .badge-vip { background: #e3f2fd; color: #1565c0; }
     .badge-risk { background: #ffebee; color: #c62828; }
     .badge-legal { background: #212121; color: #fff; border: 1px solid red; }
-    .badge-new { background: #e8f5e9; color: #2e7d32; }
-    
     .galaxy-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; border:1px solid white;}
     .kanban-card { background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 8px; border-left: 5px solid #3498db; }
     .market-card { background: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; cursor:pointer;}
@@ -93,7 +104,7 @@ def kullanici_dogrula(kadi, sifre):
                 return user 
         return None
     except Exception as e:
-        st.error(f"Kullanıcı veritabanı hatası: {e}")
+        st.error(f"Veritabanı hatası: {e}")
         return None
 
 def demo_veri():
@@ -112,16 +123,15 @@ def demo_veri():
 if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
 data = st.session_state["data"]
 
-# --- TÜRKÇE KARAKTER DÜZELTİCİ (PDF İÇİN ÇEVİRMEN) ---
+# --- PDF İÇİN TÜRKÇE KARAKTER DÜZELTİCİ ---
 def tr_duzelt(text):
-    """PDF için Türkçe karakterleri İngilizceye çevirir"""
     text = str(text)
     source = "şŞıİğĞüÜöÖçÇ"
     target = "sSiIgGuUoOcC"
     translation = str.maketrans(source, target)
     return text.translate(translation)
 
-# --- PDF MAKBUZ (HATASIZ) ---
+# --- PDF MAKBUZ (LOGOLU) ---
 def pdf_olustur(daire_no, isim, tutar):
     if not LIB_OK: return None
     pdf = FPDF()
@@ -129,14 +139,26 @@ def pdf_olustur(daire_no, isim, tutar):
     pdf.set_line_width(1)
     pdf.rect(5, 5, 200, 287)
     
-    # Tüm metinleri tr_duzelt fonksiyonundan geçiriyoruz
+    # --- LOGO EKLEME ---
+    # Eğer logo dosyası varsa ekle, yoksa geç
+    if os.path.exists(LOGO_DOSYA):
+        # x=10 (sol), y=8 (üst), w=30 (genişlik)
+        pdf.image(LOGO_DOSYA, 10, 8, 30)
+        # Başlığı biraz sağa kaydır logo üstüne gelmesin
+        pdf.set_xy(40, 20)
+    else:
+        pdf.set_xy(10, 20)
+
     site_adi = tr_duzelt(data['site_adi'].upper())
     isim = tr_duzelt(isim)
     
     pdf.set_font("Arial", 'B', 24)
-    pdf.cell(190, 20, txt=site_adi, ln=True, align='C')
+    # Cell yerine MultiCell veya sadece X ayarı ile başlığı ortala
+    pdf.cell(0, 10, txt=site_adi, ln=True, align='C')
+    
+    pdf.set_y(40) # Logodan sonra aşağı in
     pdf.set_font("Arial", size=10)
-    pdf.cell(190, 5, txt="Yonetim Ofisi: A Blok Zemin Kat | Tel: 0555 000 00 00", ln=True, align='C')
+    pdf.cell(0, 5, txt="Yonetim Ofisi: A Blok Zemin Kat | Tel: 0555 000 00 00", ln=True, align='C')
     pdf.ln(10)
     
     pdf.set_fill_color(200, 220, 255)
@@ -171,7 +193,7 @@ def pdf_olustur(daire_no, isim, tutar):
     pdf.set_font("Arial", size=8)
     pdf.cell(0, 10, txt="Bu makbuz Zorlu Soft Guvenli Yonetim Sistemi tarafindan elektronik ortamda olusturulmustur.", align='C')
     
-    return pdf.output(dest='S').encode('latin-1') # Artık hata vermeyecek çünkü tr_duzelt yaptık
+    return pdf.output(dest='S').encode('latin-1')
 
 # --- LOGIN ---
 if "giris" not in st.session_state: st.session_state["giris"] = False; st.session_state["rol"] = ""
@@ -179,7 +201,21 @@ if "giris" not in st.session_state: st.session_state["giris"] = False; st.sessio
 if not st.session_state["giris"]:
     c1, c2, c3 = st.columns([1,1,1])
     with c2:
-        st.markdown(f"<div class='login-box'><h2>{data['site_adi']}</h2><p>Güvenli Giriş Paneli</p></div>", unsafe_allow_html=True)
+        # LOGOLU GİRİŞ EKRANI
+        aktif_logo = logo_getir()
+        if aktif_logo.startswith("http"): # URL ise
+            st.markdown(f"""
+            <div class='login-box'>
+                <img src="{aktif_logo}" class="logo-img">
+                <h2>{data['site_adi']}</h2>
+                <p>Kurumsal Giriş</p>
+            </div>
+            """, unsafe_allow_html=True)
+        else: # Dosya ise (Streamlit image ile göster)
+            st.markdown(f"<div class='login-box'>", unsafe_allow_html=True)
+            st.image(aktif_logo, width=120)
+            st.markdown(f"<h2>{data['site_adi']}</h2><p>Kurumsal Giriş</p></div>", unsafe_allow_html=True)
+
         u = st.text_input("Kullanıcı Adı")
         p = st.text_input("Şifre", type="password")
         
@@ -202,6 +238,12 @@ def cikis(): st.session_state["giris"] = False; st.rerun()
 # ==============================================================================
 if st.session_state["rol"] == "admin":
     with st.sidebar:
+        # LOGOLU SIDEBAR
+        if os.path.exists(LOGO_DOSYA):
+            st.image(LOGO_DOSYA, width=150)
+        else:
+            st.image(LOGO_URL_YEDEK, width=100)
+            
         st.title("Yönetici")
         menu = option_menu(None, ["Genel Bakış", "Giderler", "Hesaplar", "Harita", "Otopark", "Anketler", "Rezervasyon", "Market", "Hukuk/İcra", "Kanban", "WhatsApp", "Otomasyon", "Bulut Arşiv", "Raporlar"], 
             icons=["speedometer2", "wallet2", "person-badge", "grid", "car-front", "bar-chart", "calendar-check", "cart4", "hammer", "kanban", "whatsapp", "robot", "cloud", "file-text"], 
@@ -337,6 +379,12 @@ elif st.session_state["rol"] == "sakin":
     no = st.session_state["user"]
     info = data["daireler"][no]
     with st.sidebar:
+        # LOGOLU SIDEBAR (SAKİN İÇİN DE)
+        if os.path.exists(LOGO_DOSYA):
+            st.image(LOGO_DOSYA, width=150)
+        else:
+            st.image(LOGO_URL_YEDEK, width=100)
+            
         st.title(f"Daire {no}"); menu = option_menu(None, ["Durum", "Ödeme", "Talep"], icons=["person", "card", "envelope"])
         if st.button("Çıkış"): cikis()
     
