@@ -237,8 +237,8 @@ if not st.session_state["giris"]:
             else:
                 st.error("Hatalı Giriş Bilgileri")
         
-        # ALT BİLGİ - İSTENEN FORMAT
-        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight:500;'>Zorlu Soft | © 2026 | v53.0</p>", unsafe_allow_html=True)
+        # GİRİŞ EKRANI ALTI - İMZA
+        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight:500;'>Zorlu Soft | © 2026 | v54.0</p>", unsafe_allow_html=True)
 
     st.stop()
 
@@ -293,8 +293,9 @@ with st.sidebar:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
     
+    # SOL MENÜ ALTI - İMZA (Burada yazı beyaz ve daha silik olur)
     st.markdown("---")
-    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.3); font-size:11px;'>v53.0</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.5); font-size:12px;'>Zorlu Soft | © 2026 | v54.0</div>", unsafe_allow_html=True)
 
 # SAĞ İÇERİK
 menu = st.session_state["active_menu"]
