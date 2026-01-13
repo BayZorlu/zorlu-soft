@@ -18,34 +18,22 @@ except: LIB_OK = False
 # --- SAYFA AYARLARI ---
 st.set_page_config(page_title="Zorlu Soft | PRO", layout="wide", page_icon="🏢")
 
-# --- CSS: HAYALET MODU (HER ŞEYİ GİZLEME) ---
+# --- CSS TASARIM ---
 st.markdown("""
 <style>
-    /* 1. STREAMLIT İMZALARINI YOK ET */
-    #MainMenu {visibility: hidden;} 
-    header {visibility: hidden;} 
-    footer {visibility: hidden;} 
-    
-    /* Sağ üstteki ve sağ alttaki butonları zorla gizle */
-    [data-testid="stToolbar"] {visibility: hidden !important;} 
-    [data-testid="stDecoration"] {display: none;}
-    .stDeployButton {display:none;}
-    
-    /* Sayfa Rengi ve Düzeni */
+    /* GİZLİLİK (HAYALET MOD) */
+    #MainMenu {visibility: hidden;} header {visibility: hidden;} footer {visibility: hidden;}
+    [data-testid="stToolbar"] {visibility: hidden !important;} [data-testid="stDecoration"] {display: none;}
     .stApp { background-color: #f5f7fa; margin-top: -80px; }
-    
-    /* --- BURADAN AŞAĞISI NORMAL TASARIM --- */
     
     /* LOGIN KUTUSU */
     .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 100px auto; text-align: center; }
 
-    /* ROZETLER */
+    /* ROZETLER VE KARTLAR */
     .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-right: 5px; }
     .badge-vip { background: #e3f2fd; color: #1565c0; }
     .badge-risk { background: #ffebee; color: #c62828; }
     .badge-legal { background: #212121; color: #fff; border: 1px solid red; }
-    
-    /* KARTLAR */
     .galaxy-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; border:1px solid white;}
     .kanban-card { background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 8px; border-left: 5px solid #3498db; }
     .market-card { background: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; cursor:pointer;}
@@ -58,7 +46,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- VERİTABANI BAĞLANTISI ---
-SHEET_NAME = "ZorluDB"
+SHEET_DB = "ZorluDB"
+SHEET_USERS = "Kullanicilar" # YENİ ŞİFRE SAYFASI
 
 def baglanti_kur():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -70,7 +59,7 @@ def baglanti_kur():
 def verileri_yukle():
     try:
         client = baglanti_kur()
-        sheet = client.open(SHEET_NAME).sheet1
+        sheet = client.open(SHEET_DB).sheet1
         raw_data = sheet.cell(1, 1).value
         if raw_data: return json.loads(raw_data)
         else: return demo_veri()
@@ -79,10 +68,27 @@ def verileri_yukle():
 def kaydet(veri):
     try:
         client = baglanti_kur()
-        sheet = client.open(SHEET_NAME).sheet1
+        sheet = client.open(SHEET_DB).sheet1
         json_data = json.dumps(veri, ensure_ascii=False)
         sheet.update_cell(1, 1, json_data)
     except Exception as e: st.error(f"Kayıt Hatası: {e}")
+
+# --- YENİ: GÜVENLİ KULLANICI DOĞRULAMA ---
+def kullanici_dogrula(kadi, sifre):
+    """Google Sheets 'Kullanicilar' sayfasından kontrol eder."""
+    try:
+        client = baglanti_kur()
+        sheet = client.open(SHEET_DB).worksheet(SHEET_USERS)
+        records = sheet.get_all_records() # Tüm kullanıcıları çek
+        
+        for user in records:
+            # Excel'deki veriler bazen sayı, bazen string gelebilir, hepsini string yapıp karşılaştır
+            if str(user['kullanici_adi']) == str(kadi) and str(user['sifre']) == str(sifre):
+                return user # Eşleşen kullanıcıyı döndür (rol ve daire no dahil)
+        return None
+    except Exception as e:
+        st.error(f"Kullanıcı veritabanı hatası: {e}")
+        return None
 
 def demo_veri():
     return {
@@ -100,18 +106,93 @@ def demo_veri():
 if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
 data = st.session_state["data"]
 
+# --- YENİ: PROFESYONEL PDF MAKBUZ ---
+def pdf_olustur(daire_no, isim, tutar):
+    if not LIB_OK: return None
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Çerçeve
+    pdf.set_line_width(1)
+    pdf.rect(5, 5, 200, 287)
+    
+    # Başlık Alanı
+    pdf.set_font("Arial", 'B', 24)
+    pdf.cell(190, 20, txt=data['site_adi'].upper(), ln=True, align='C')
+    
+    pdf.set_font("Arial", size=10)
+    pdf.cell(190, 5, txt="Yonetim Ofisi: A Blok Zemin Kat | Tel: 0555 000 00 00", ln=True, align='C')
+    pdf.ln(10)
+    
+    # Makbuz Başlığı
+    pdf.set_fill_color(200, 220, 255)
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(190, 15, txt="TAHSILAT MAKBUZU", ln=True, align='C', fill=True)
+    pdf.ln(10)
+    
+    # Detaylar
+    pdf.set_font("Arial", size=14)
+    
+    # Tablo Benzeri Yapı
+    pdf.cell(50, 12, txt="Tarih", border=1)
+    pdf.cell(140, 12, txt=f"{str(datetime.date.today())}", border=1, ln=True)
+    
+    pdf.cell(50, 12, txt="Daire No", border=1)
+    pdf.cell(140, 12, txt=f"{str(daire_no)}", border=1, ln=True)
+    
+    pdf.cell(50, 12, txt="Sayin", border=1)
+    pdf.cell(140, 12, txt=f"{isim}", border=1, ln=True)
+    
+    pdf.cell(50, 12, txt="Aciklama", border=1)
+    pdf.cell(140, 12, txt="Aidat / Demirbas / Diger Tahsilat", border=1, ln=True)
+    
+    pdf.ln(5)
+    
+    # Tutar Alanı (Büyük)
+    pdf.set_font("Arial", 'B', 30)
+    pdf.set_text_color(220, 50, 50) # Kırmızı
+    pdf.cell(190, 25, txt=f"{tutar:,.2f} TL", ln=True, align='C', border=1)
+    pdf.set_text_color(0, 0, 0) # Siyah
+    
+    pdf.ln(20)
+    
+    # İmza Alanları
+    y = pdf.get_y()
+    pdf.set_font("Arial", 'I', 10)
+    pdf.cell(90, 5, txt="Odemeyi Yapan", align='C', ln=0)
+    pdf.cell(90, 5, txt="Tahsil Eden (Yonetim)", align='C', ln=1)
+    
+    pdf.ln(20)
+    pdf.cell(90, 5, txt="( Imza )", align='C', ln=0)
+    pdf.cell(90, 5, txt="ZORLU SOFT YAZILIM", align='C', ln=1)
+    
+    # Alt Not
+    pdf.set_y(260)
+    pdf.set_font("Arial", size=8)
+    pdf.cell(0, 10, txt="Bu makbuz Zorlu Soft Guvenli Yonetim Sistemi tarafindan elektronik ortamda olusturulmustur.", align='C')
+    
+    return pdf.output(dest='S').encode('latin-1')
+
 # --- LOGIN ---
 if "giris" not in st.session_state: st.session_state["giris"] = False; st.session_state["rol"] = ""
 
 if not st.session_state["giris"]:
     c1, c2, c3 = st.columns([1,1,1])
     with c2:
-        st.markdown(f"<div class='login-box'><h2>{data['site_adi']}</h2><p>Giriş Paneli</p></div>", unsafe_allow_html=True)
-        u = st.text_input("Kullanıcı"); p = st.text_input("Şifre", type="password")
+        st.markdown(f"<div class='login-box'><h2>{data['site_adi']}</h2><p>Güvenli Giriş Paneli</p></div>", unsafe_allow_html=True)
+        u = st.text_input("Kullanıcı Adı")
+        p = st.text_input("Şifre", type="password")
+        
         if st.button("GİRİŞ", type="primary", use_container_width=True):
-            if u == "admin" and p == "1234": st.session_state["giris"]=True; st.session_state["rol"]="admin"; st.rerun()
-            elif u in data["daireler"] and p == "1234": st.session_state["giris"]=True; st.session_state["rol"]="sakin"; st.session_state["user"]=u; st.rerun()
-            else: st.error("Hatalı!")
+            user_data = kullanici_dogrula(u, p) # ARTIK EXCEL'DEN SORGULUYOR
+            if user_data:
+                st.session_state["giris"] = True
+                st.session_state["rol"] = str(user_data["rol"])
+                st.session_state["user"] = str(user_data["daire_no"])
+                st.success("Giriş Başarılı!")
+                st.rerun()
+            else:
+                st.error("Hatalı Kullanıcı Adı veya Şifre! Lütfen Yönetimle İletişime Geçin.")
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
@@ -134,8 +215,6 @@ if st.session_state["rol"] == "admin":
             for k,v in data["daireler"].items():
                 if src.lower() in v["sahip"].lower() or src == k: filtre = k; break
 
-    # --- MENÜ İÇERİKLERİ ---
-    
     if menu == "Genel Bakış" and not filtre:
         st.title("🚀 Kokpit")
         c1, c2, c3, c4 = st.columns(4)
@@ -174,7 +253,14 @@ if st.session_state["rol"] == "admin":
             else: st.info("İşlem yok")
         with c2:
             t = st.number_input("Tahsilat"); 
-            if st.button("Ödeme Al"): info["borc"]-=t; data["kasa_nakit"]+=t; info["gecmis"].append(f"{datetime.date.today()} | Ödeme: {t}"); kaydet(data); st.success("Tamam"); st.rerun()
+            col_a, col_b = st.columns(2)
+            if col_a.button("Ödeme Al"): 
+                info["borc"]-=t; data["kasa_nakit"]+=t; info["gecmis"].append(f"{datetime.date.today()} | Ödeme: {t}"); kaydet(data); st.success("Tamam"); st.rerun()
+            
+            # PDF BUTONU (YENİ)
+            pdf_data = pdf_olustur(secilen, info["sahip"], t if t > 0 else info["borc"])
+            if pdf_data:
+                col_b.download_button(label="📄 Makbuz İndir", data=pdf_data, file_name=f"makbuz_{secilen}.pdf", mime="application/pdf")
 
     elif menu == "Harita":
         st.title("🏘️ Bloklar")
