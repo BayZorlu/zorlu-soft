@@ -15,26 +15,22 @@ try:
     LIB_OK = True
 except: LIB_OK = False
 
-# --- SAYFA AYARLARI (MENÜYÜ ZORLA AÇMA EKLENDİ) ---
+# --- SAYFA AYARLARI (MENÜ AÇIK GELİR) ---
 st.set_page_config(
     page_title="Zorlu Soft | PRO", 
     layout="wide", 
     page_icon="🏢",
-    initial_sidebar_state="expanded"  # <--- BURASI MENÜYÜ OTOMATİK AÇAR
+    initial_sidebar_state="expanded"
 )
 
-# --- CSS TASARIM (DÜZELTİLDİ: MENÜ BUTONU ARTIK GÖRÜNÜR) ---
+# --- CSS TASARIM ---
 st.markdown("""
 <style>
-    /* 1. GEREKSİZLERİ GİZLE AMA MENÜYÜ BOZMA */
+    /* GEREKSİZLERİ GİZLE */
     #MainMenu {visibility: hidden;} 
     footer {visibility: hidden;} 
-    .stDeployButton {display:none;} /* Sadece Deploy butonunu gizle */
+    .stDeployButton {display:none;}
     
-    /* Header'ı gizleme! Yoksa menü butonu kaybolur. */
-    /* header {visibility: hidden;}  <-- BU SATIR SİLİNDİ */
-
-    /* Sayfa Rengi */
     .stApp { background-color: #f5f7fa; }
     
     /* LOGIN KUTUSU */
@@ -45,6 +41,8 @@ st.markdown("""
     .badge-vip { background: #e3f2fd; color: #1565c0; }
     .badge-risk { background: #ffebee; color: #c62828; }
     .badge-legal { background: #212121; color: #fff; border: 1px solid red; }
+    .badge-new { background: #e8f5e9; color: #2e7d32; }
+    
     .galaxy-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; border:1px solid white;}
     .kanban-card { background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 8px; border-left: 5px solid #3498db; }
     .market-card { background: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; cursor:pointer;}
@@ -114,22 +112,38 @@ def demo_veri():
 if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
 data = st.session_state["data"]
 
-# --- PDF MAKBUZ ---
+# --- TÜRKÇE KARAKTER DÜZELTİCİ (PDF İÇİN ÇEVİRMEN) ---
+def tr_duzelt(text):
+    """PDF için Türkçe karakterleri İngilizceye çevirir"""
+    text = str(text)
+    source = "şŞıİğĞüÜöÖçÇ"
+    target = "sSiIgGuUoOcC"
+    translation = str.maketrans(source, target)
+    return text.translate(translation)
+
+# --- PDF MAKBUZ (HATASIZ) ---
 def pdf_olustur(daire_no, isim, tutar):
     if not LIB_OK: return None
     pdf = FPDF()
     pdf.add_page()
     pdf.set_line_width(1)
     pdf.rect(5, 5, 200, 287)
+    
+    # Tüm metinleri tr_duzelt fonksiyonundan geçiriyoruz
+    site_adi = tr_duzelt(data['site_adi'].upper())
+    isim = tr_duzelt(isim)
+    
     pdf.set_font("Arial", 'B', 24)
-    pdf.cell(190, 20, txt=data['site_adi'].upper(), ln=True, align='C')
+    pdf.cell(190, 20, txt=site_adi, ln=True, align='C')
     pdf.set_font("Arial", size=10)
     pdf.cell(190, 5, txt="Yonetim Ofisi: A Blok Zemin Kat | Tel: 0555 000 00 00", ln=True, align='C')
     pdf.ln(10)
+    
     pdf.set_fill_color(200, 220, 255)
     pdf.set_font("Arial", 'B', 16)
     pdf.cell(190, 15, txt="TAHSILAT MAKBUZU", ln=True, align='C', fill=True)
     pdf.ln(10)
+    
     pdf.set_font("Arial", size=14)
     pdf.cell(50, 12, txt="Tarih", border=1)
     pdf.cell(140, 12, txt=f"{str(datetime.date.today())}", border=1, ln=True)
@@ -140,11 +154,13 @@ def pdf_olustur(daire_no, isim, tutar):
     pdf.cell(50, 12, txt="Aciklama", border=1)
     pdf.cell(140, 12, txt="Aidat / Demirbas / Diger Tahsilat", border=1, ln=True)
     pdf.ln(5)
+    
     pdf.set_font("Arial", 'B', 30)
     pdf.set_text_color(220, 50, 50) 
     pdf.cell(190, 25, txt=f"{tutar:,.2f} TL", ln=True, align='C', border=1)
     pdf.set_text_color(0, 0, 0) 
     pdf.ln(20)
+    
     pdf.set_font("Arial", 'I', 10)
     pdf.cell(90, 5, txt="Odemeyi Yapan", align='C', ln=0)
     pdf.cell(90, 5, txt="Tahsil Eden (Yonetim)", align='C', ln=1)
@@ -154,7 +170,8 @@ def pdf_olustur(daire_no, isim, tutar):
     pdf.set_y(260)
     pdf.set_font("Arial", size=8)
     pdf.cell(0, 10, txt="Bu makbuz Zorlu Soft Guvenli Yonetim Sistemi tarafindan elektronik ortamda olusturulmustur.", align='C')
-    return pdf.output(dest='S').encode('latin-1')
+    
+    return pdf.output(dest='S').encode('latin-1') # Artık hata vermeyecek çünkü tr_duzelt yaptık
 
 # --- LOGIN ---
 if "giris" not in st.session_state: st.session_state["giris"] = False; st.session_state["rol"] = ""
