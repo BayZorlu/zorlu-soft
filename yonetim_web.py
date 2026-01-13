@@ -31,7 +31,7 @@ def logo_getir():
     if os.path.exists(LOGO_DOSYA): return LOGO_DOSYA
     return LOGO_URL_YEDEK
 
-# --- CSS: ULTIMATE UI (GRAFİK SORUNU DÜZELTİLDİ) ---
+# --- CSS: TASARIM GÜNCELLEMESİ (SINIR ÇİZGİSİ EKLENDİ) ---
 st.markdown("""
 <style>
     /* 1. STANDART ARAYÜZÜ TEMİZLE */
@@ -45,9 +45,14 @@ st.markdown("""
     /* 2. GENEL ARKA PLAN */
     .stApp { background-color: #f5f7fa; margin-top: -50px; }
     
-    /* 3. SOL MENÜ (SABİT) */
+    /* 3. SOL MENÜ (GÜNCELLENDİ: KENARLIK VE GÖLGE) */
     div[data-testid="column"]:nth-of-type(1) {
-        background-color: #2c3e50;
+        background-color: #2c3e50; /* Koyu Lacivert */
+        
+        /* İŞTE BURASI YENİ: SAĞ TARAFA KIRMIZI ÇİZGİ VE GÖLGE */
+        border-right: 4px solid #e74c3c; /* Zorlu Kırmızısı Çizgi */
+        box-shadow: 10px 0 30px rgba(0,0,0,0.3); /* Derinlik Gölgesi */
+        
         padding-top: 20px;
         text-align: center;
         height: 100vh;
@@ -57,12 +62,11 @@ st.markdown("""
         width: 100px !important;
         z-index: 999;
         overflow-y: auto;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     }
     
-    /* 4. SAĞ İÇERİK (DÜZELTME: width:calc kaldırıldı, margin ile çözüldü) */
+    /* 4. SAĞ İÇERİK */
     div[data-testid="column"]:nth-of-type(2) {
-        margin-left: 110px !important; /* Sol menüden kaç */
+        margin-left: 110px !important; 
         padding-right: 20px;
     }
 
@@ -72,16 +76,18 @@ st.markdown("""
         height: 60px !important;
         border-radius: 15px !important;
         border: none !important;
-        background-color: rgba(255,255,255,0.05) !important;
+        background-color: rgba(255,255,255,0.08) !important;
         color: white !important;
         font-size: 26px !important;
         margin: 0 auto 15px auto !important;
         display: block !important;
         transition: 0.2s;
+        border: 1px solid rgba(255,255,255,0.1) !important; /* Hafif çerçeve */
     }
     div[data-testid="column"]:nth-of-type(1) .stButton button:hover {
         background-color: #e74c3c !important;
         transform: scale(1.1);
+        box-shadow: 0 0 10px #e74c3c; /* Parlama efekti */
     }
     
     /* DİĞER STİLLER */
@@ -210,7 +216,7 @@ def cikis(): st.session_state["giris"] = False; st.rerun()
 # HİBRİT YAPISI (MENÜ + İÇERİK)
 # ==============================================================================
 
-# Sol: 1 birim, Sağ: 20 birim (Sağ taraf geniş olsun)
+# Sol: 1 birim, Sağ: 20 birim
 col_nav, col_main = st.columns([1, 20]) 
 
 # --- SOL MENÜ ---
@@ -252,7 +258,6 @@ with col_main:
     if st.session_state["rol"] == "admin":
         if menu == "Genel Bakış":
             st.title("🚀 Kokpit")
-            # 4 Kart
             c1, c2, c3, c4 = st.columns(4)
             c1.metric("Kasa", f"{data['kasa_nakit']:,.0f} ₺")
             c2.metric("Gider", f"{sum(g['tutar'] for g in data['giderler']):,.0f} ₺")
@@ -261,7 +266,6 @@ with col_main:
             
             st.markdown("<br>", unsafe_allow_html=True)
             
-            # Grafik ve Tablo
             cl, cr = st.columns([2, 1])
             with cl:
                 st.subheader("Finansal Durum")
