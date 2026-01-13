@@ -20,7 +20,7 @@ st.set_page_config(
     page_title="Zorlu Soft | SUITE", 
     layout="wide", 
     page_icon="🏢",
-    initial_sidebar_state="expanded" # MENÜYÜ ZORLA AÇIK TUTACAĞIZ
+    initial_sidebar_state="expanded"
 )
 
 # --- LOGO AYARLARI ---
@@ -31,7 +31,7 @@ def logo_getir():
     if os.path.exists(LOGO_DOSYA): return LOGO_DOSYA
     return LOGO_URL_YEDEK
 
-# --- CSS: DARK MATTER TASARIMI (NATIVE SIDEBAR HACK) ---
+# --- CSS: DARK MATTER TASARIMI ---
 st.markdown("""
 <style>
     /* 1. GEREKSİZLERİ GİZLE */
@@ -40,19 +40,16 @@ st.markdown("""
     header {visibility: hidden;} 
     .stDeployButton {display:none;}
     
-    /* 2. MAIN UYGULAMA ARKA PLANI (SAĞ TARAF) */
-    .stApp {
-        background-color: #f8f9fa; /* Hafif Gri/Beyaz */
-    }
+    /* 2. ARKA PLAN */
+    .stApp { background-color: #f8f9fa; }
 
-    /* 3. SOL MENÜ (NATIVE SIDEBAR) - İŞTE BURASI */
+    /* 3. SOL MENÜ (NATIVE SIDEBAR) */
     section[data-testid="stSidebar"] {
-        background-color: #1e293b !important; /* KOYU LACİVERT */
-        width: 300px !important; /* Genişlik */
+        background-color: #1e293b !important;
+        width: 300px !important;
         border-right: 1px solid #0f172a;
     }
     
-    /* Menü içindeki tüm yazıları beyaz yap */
     section[data-testid="stSidebar"] h1, 
     section[data-testid="stSidebar"] h2, 
     section[data-testid="stSidebar"] h3, 
@@ -62,16 +59,13 @@ st.markdown("""
         color: #e2e8f0 !important;
     }
 
-    /* Menü Kapatma Düğmesini Gizle (Sabit Kalsın) */
-    [data-testid="stSidebarCollapseButton"] {
-        display: none !important;
-    }
+    [data-testid="stSidebarCollapseButton"] { display: none !important; }
 
-    /* 4. MENÜ BUTONLARI (MODERN VE SOLA YASLI) */
+    /* 4. MENÜ BUTONLARI */
     section[data-testid="stSidebar"] .stButton button {
         width: 100% !important;
-        background-color: transparent !important; /* Şeffaf */
-        color: #94a3b8 !important; /* Soluk Gri */
+        background-color: transparent !important;
+        color: #94a3b8 !important;
         border: none !important;
         text-align: left !important;
         padding-left: 20px !important;
@@ -82,22 +76,20 @@ st.markdown("""
         border-radius: 8px !important;
     }
 
-    /* Hover (Üzerine Gelince) */
     section[data-testid="stSidebar"] .stButton button:hover {
-        background-color: #334155 !important; /* Biraz daha açık lacivert */
+        background-color: #334155 !important;
         color: white !important;
-        padding-left: 25px !important; /* Kayma efekti */
+        padding-left: 25px !important;
         transition: all 0.2s;
     }
 
-    /* Aktif/Focus (Tıklanınca) */
     section[data-testid="stSidebar"] .stButton button:focus {
-        background-color: #ef4444 !important; /* ZORLU KIRMIZISI */
+        background-color: #ef4444 !important;
         color: white !important;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    /* 5. METRIC KARTLARI (SAĞ TARAF) */
+    /* 5. METRIC KARTLARI */
     .metric-card {
         background-color: white;
         padding: 20px;
@@ -223,17 +215,15 @@ if not st.session_state["giris"]:
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# ANA YAPI (ARTIK SIDEBAR KULLANIYORUZ - AMA ÖZEL TASARIMLI)
+# ANA YAPI
 # ==============================================================================
 
-# 1. SOL MENÜ (Native Sidebar ama Hacklenmiş)
 with st.sidebar:
     if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, width=150)
     else: st.markdown("<h1>🏢</h1>", unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Yönetici Menüsü
     if st.session_state["rol"] == "admin":
         menu_items = [
             ("Genel Bakış", "🚀"), ("Giderler", "💸"), ("Hesaplar", "👥"), 
@@ -243,15 +233,12 @@ with st.sidebar:
             ("Bulut Arşiv", "☁️"), ("Raporlar", "📄")
         ]
         for label, icon in menu_items:
-            # Butonlar artık sidebar içinde
             if st.button(f"{icon}  {label}", key=f"nav_{label}"):
                 st.session_state["active_menu"] = label
                 st.rerun()
-        
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit"): cikis()
 
-    # Sakin Menüsü
     elif st.session_state["rol"] == "sakin":
         menu_items = [("Durum", "👤"), ("Ödeme", "💳"), ("Talep", "📨")]
         for label, icon in menu_items:
@@ -261,7 +248,7 @@ with st.sidebar:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
 
-# 2. SAĞ İÇERİK (STANDART ALAN)
+# --- SAĞ İÇERİK ---
 menu = st.session_state["active_menu"]
 
 if st.session_state["rol"] == "admin":
@@ -308,15 +295,18 @@ if st.session_state["rol"] == "admin":
         src = st.text_input("🔍 Daire Ara")
         filtre = None
         if src:
-                for k,v in data["daireler"].items():
-                if src.lower() in v["sahip"].lower() or src == k: filtre = k; break
+            for k,v in data["daireler"].items():
+                if src.lower() in v["sahip"].lower() or src == k: 
+                    filtre = k
+                    break
+                    
         secilen = filtre if filtre else st.selectbox("Daire Seç", list(data["daireler"].keys()))
         info = data["daireler"][secilen]
         st.markdown(f"<div style='background:white; padding:20px; border-radius:10px; border:1px solid #ddd'><h2>{info['sahip']}</h2><h1 style='color:#ef4444;'>{info['borc']} ₺</h1></div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
         c1, c2 = st.columns([2,1])
         with c1:
-                if info["gecmis"]:
+            if info["gecmis"]:
                 temiz = [x.split("|") if "|" in x else ["-", x] for x in reversed(info["gecmis"])]
                 st.dataframe(pd.DataFrame(temiz, columns=["Tarih", "İşlem"]), use_container_width=True)
         with c2:
@@ -331,7 +321,7 @@ if st.session_state["rol"] == "admin":
         cols = st.columns(4)
         for i, (no, info) in enumerate(sorted(data["daireler"].items())):
             with cols[i % 4]:
-                color = "#ef4444" if info["borc"] > 0 else "#10b981" # Kırmızı / Yeşil
+                color = "#ef4444" if info["borc"] > 0 else "#10b981" 
                 st.markdown(f"<div style='background:white; padding:20px; border-radius:10px; border-top:5px solid {color}; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:10px;'><b>Daire {no}</b><br>{info['sahip']}<br><b>{info['borc']} ₺</b></div>", unsafe_allow_html=True)
     
     elif menu == "Otopark": st.title("🚗 Otopark"); st.dataframe(pd.DataFrame([{"Plaka":v["plaka"], "Sahip":v["sahip"]} for v in data["daireler"].values() if v["plaka"]!="-"]), use_container_width=True)
