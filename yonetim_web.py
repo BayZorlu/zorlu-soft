@@ -26,29 +26,26 @@ st.set_page_config(
 # --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: KURUMSAL TASARIM (REFERANS RESME GÖRE) ---
+# --- CSS: KURUMSAL TASARIM + BEYAZ İKONLAR ---
 st.markdown("""
 <style>
     /* 1. GEREKSİZLERİ GİZLE */
     .stDeployButton, [data-testid="stHeaderActionElements"], footer, #MainMenu {
         display: none !important;
     }
-    
-    /* Header'ı yok et */
     header[data-testid="stHeader"] {
         background: transparent !important;
         height: 0px !important;
         visibility: hidden !important;
     }
 
-    /* 2. ARKA PLAN (SADECE GİRİŞ EKRANI İÇİN RESİM) */
+    /* 2. ARKA PLAN (SADECE GİRİŞ EKRANI İÇİN) */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
     }
-    
     .block-container {
         background-color: transparent !important;
         padding-top: 20px !important;
@@ -56,57 +53,63 @@ st.markdown("""
 
     /* 3. SOL MENÜ (KURUMSAL PETROL MAVİSİ) */
     section[data-testid="stSidebar"] {
-        background-color: #263238 !important; /* Referans Resimdeki Renk */
+        background-color: #263238 !important;
         border-right: 1px solid #1c262c;
     }
-    
-    /* Menü içindeki yazı renkleri */
     [data-testid="stSidebar"] * { 
-        color: #eceff1 !important; /* Kırık Beyaz */
+        color: #eceff1 !important;
         font-family: 'Segoe UI', sans-serif;
     }
-    
     [data-testid="stSidebarCollapseButton"] { display: none !important; }
 
-    /* 4. MENÜ BUTONLARI (REFERANS TARZI) */
+    /* 4. MENÜ BUTONLARI VE BEYAZ İKON HİLESİ */
     [data-testid="stSidebar"] .stButton button {
         width: 100%;
-        background-color: transparent !important; /* Şeffaf Zemin */
-        border: none !important; /* Çerçeve Yok */
-        color: #cfd8dc !important; /* Soluk Gri Yazı */
+        background-color: transparent !important;
+        border: none !important;
+        color: #cfd8dc !important; /* Yazı Rengi (Açık Gri) */
         text-align: left;
         padding: 10px 15px;
         font-size: 14px;
         font-weight: 500;
-        border-radius: 0 !important; /* Köşeli/Hafif yuvarlak */
+        border-radius: 0 !important;
         margin: 0 !important;
         transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
     }
     
-    /* Hover (Üzerine Gelince) - Sol Çizgi Efekti */
+    /* --- İŞTE SİHİRLİ KOD: EMOJİLERİ BEYAZ YAP --- */
+    /* Butonun içindeki metin/ikon kısmına filtre uygula */
+    [data-testid="stSidebar"] .stButton button span,
+    [data-testid="stSidebar"] .stButton button p,
+    [data-testid="stSidebar"] .stButton button div {
+        /* Önce renkleri yok et (grayscale), sonra parlaklığı fulle (brightness) = BEYAZ İKON */
+        filter: grayscale(100%) brightness(500%) !important;
+    }
+
+    /* Hover (Üzerine Gelince) */
     [data-testid="stSidebar"] .stButton button:hover {
-        background-color: #37474f !important; /* Biraz daha açık ton */
-        color: white !important;
-        border-left: 4px solid #29b6f6 !important; /* Sol Mavi Çizgi */
-        padding-left: 11px !important; /* Çizgi kadar içeri it */
-    }
-    
-    /* Aktif Buton (Focus) */
-    [data-testid="stSidebar"] .stButton button:focus {
         background-color: #37474f !important;
         color: white !important;
-        border-left: 4px solid #ef4444 !important; /* Kırmızı Çizgi */
+        border-left: 4px solid #29b6f6 !important; /* Mavi Çizgi */
+        padding-left: 11px !important;
+    }
+    
+    /* Hover durumunda ikonlar daha da parlasın */
+    [data-testid="stSidebar"] .stButton button:hover span {
+        filter: grayscale(100%) brightness(1000%) !important;
     }
 
     /* 5. GİRİŞ KUTUSU */
     .login-container {
         background: rgba(255, 255, 255, 0.96);
         padding: 40px;
-        border-radius: 4px; /* Daha keskin köşeler */
+        border-radius: 4px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         text-align: center;
         margin-top: 60px;
-        border-top: 5px solid #263238; /* Üstte kurumsal çizgi */
+        border-top: 5px solid #263238;
     }
     
     /* 6. SAĞ TARAF KARTLARI */
@@ -118,13 +121,10 @@ st.markdown("""
         border-left: 4px solid #263238;
         color: #333;
     }
-
-    /* Ayırıcı Çizgi (HR) */
     .sidebar-divider {
         margin: 10px 0;
         border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -221,7 +221,6 @@ if not st.session_state["giris"]:
     c1, c2, c3 = st.columns([1, 1.5, 1])
     with c2:
         st.markdown("<br><br>", unsafe_allow_html=True)
-        # KUTU İÇİ
         st.markdown("""<div class="login-container">""", unsafe_allow_html=True)
         st.markdown("<h2 style='color:#263238; font-weight:800; margin-bottom:30px;'>KORUPARK SİTE YÖNETİMİ</h2>", unsafe_allow_html=True)
         u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı adınızı giriniz")
@@ -236,8 +235,7 @@ if not st.session_state["giris"]:
                 st.rerun()
             else: st.error("Hatalı Giriş Bilgileri")
         st.markdown("""</div>""", unsafe_allow_html=True)
-        # İMZA
-        st.markdown("<p style='text-align:center; color:#cfd8dc; margin-top:30px; font-size:13px;'>Zorlu Soft | © 2026 | v57.0</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#cfd8dc; margin-top:30px; font-size:13px;'>Zorlu Soft | © 2026 | v58.0</p>", unsafe_allow_html=True)
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
@@ -246,45 +244,35 @@ def cikis(): st.session_state["giris"] = False; st.rerun()
 # ANA YAPI (GİRİŞ SONRASI)
 # ==============================================================================
 
-# Arka planı temizle (Giriş resmini kaldır)
+# Arka planı temizle
 st.markdown("""<style>[data-testid="stAppViewContainer"] {background-image: none !important; background-color: #f1f5f9 !important;}</style>""", unsafe_allow_html=True)
 
-# --- SOL MENÜ (KURUMSAL YAPI) ---
+# --- SOL MENÜ ---
 with st.sidebar:
-    # 1. BAŞLIK / PROFİL KISMI (Referans Resimdeki Gibi)
     st.markdown(f"""
     <div style="padding: 10px 0 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
         <h3 style="color:white; margin:0; font-size:20px; font-weight:bold;">KORUPARK</h3>
         <p style="color:#b0bec5; margin:0; font-size:13px;">Sistem Yöneticisi</p>
-        <p style="color:#29b6f6; margin:5px 0 0 0; font-size:11px;">[ Yetkili Kullanıcı ]</p>
     </div>
     """, unsafe_allow_html=True)
     
     if st.session_state["rol"] == "admin":
-        # GRUP 1: GENEL
         if st.button("🏠 Genel Bakış", key="nav_genel"): st.session_state["active_menu"] = "Genel Bakış"; st.rerun()
         if st.button("📅 Rezervasyon", key="nav_rez"): st.session_state["active_menu"] = "Rezervasyon"; st.rerun()
         if st.button("📋 Kanban Pano", key="nav_kanban"): st.session_state["active_menu"] = "Kanban"; st.rerun()
-        
-        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True) # Çizgi
-        
-        # GRUP 2: FİNANS & YÖNETİM
+        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
         if st.button("💸 Giderler", key="nav_gider"): st.session_state["active_menu"] = "Giderler"; st.rerun()
         if st.button("👥 Hesaplar", key="nav_hesap"): st.session_state["active_menu"] = "Hesaplar"; st.rerun()
         if st.button("🏘️ Harita", key="nav_harita"): st.session_state["active_menu"] = "Harita"; st.rerun()
         if st.button("🚗 Otopark", key="nav_oto"): st.session_state["active_menu"] = "Otopark"; st.rerun()
         if st.button("🛒 Market", key="nav_market"): st.session_state["active_menu"] = "Market"; st.rerun()
-        
-        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True) # Çizgi
-        
-        # GRUP 3: SİSTEM
+        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
         if st.button("📊 Anketler", key="nav_anket"): st.session_state["active_menu"] = "Anketler"; st.rerun()
         if st.button("⚖️ Hukuk/İcra", key="nav_hukuk"): st.session_state["active_menu"] = "Hukuk/İcra"; st.rerun()
         if st.button("💬 WhatsApp", key="nav_wa"): st.session_state["active_menu"] = "WhatsApp"; st.rerun()
         if st.button("📄 Raporlar", key="nav_rapor"): st.session_state["active_menu"] = "Raporlar"; st.rerun()
         if st.button("☁️ Bulut Arşiv", key="nav_bulut"): st.session_state["active_menu"] = "Bulut Arşiv"; st.rerun()
-        
-        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True) # Çizgi
+        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
         if st.button("🚪 Çıkış Yap", key="exit"): cikis()
 
     elif st.session_state["rol"] == "sakin":
@@ -294,8 +282,7 @@ with st.sidebar:
         st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
     
-    # EN ALT KISIM
-    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.2); font-size:11px; margin-top:20px;'>Zorlu Soft v57.0</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.2); font-size:11px; margin-top:20px;'>Zorlu Soft v58.0</div>", unsafe_allow_html=True)
 
 # --- SAĞ İÇERİK ---
 menu = st.session_state["active_menu"]
