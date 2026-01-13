@@ -18,13 +18,23 @@ except: LIB_OK = False
 # --- SAYFA AYARLARI ---
 st.set_page_config(page_title="Zorlu Soft | PRO", layout="wide", page_icon="🏢")
 
-# --- CSS TASARIM ---
+# --- CSS: HAYALET MODU (HER ŞEYİ GİZLEME) ---
 st.markdown("""
 <style>
-    /* GİZLİLİK */
-    #MainMenu {visibility: hidden;} header {visibility: hidden;} footer {visibility: hidden;}
-    [data-testid="stToolbar"] {visibility: hidden !important;} [data-testid="stDecoration"] {display: none;}
-    .stApp { background-color: #f5f7fa; margin-top: -60px; }
+    /* 1. STREAMLIT İMZALARINI YOK ET */
+    #MainMenu {visibility: hidden;} 
+    header {visibility: hidden;} 
+    footer {visibility: hidden;} 
+    
+    /* Sağ üstteki ve sağ alttaki butonları zorla gizle */
+    [data-testid="stToolbar"] {visibility: hidden !important;} 
+    [data-testid="stDecoration"] {display: none;}
+    .stDeployButton {display:none;}
+    
+    /* Sayfa Rengi ve Düzeni */
+    .stApp { background-color: #f5f7fa; margin-top: -80px; }
+    
+    /* --- BURADAN AŞAĞISI NORMAL TASARIM --- */
     
     /* LOGIN KUTUSU */
     .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 100px auto; text-align: center; }
@@ -124,7 +134,7 @@ if st.session_state["rol"] == "admin":
             for k,v in data["daireler"].items():
                 if src.lower() in v["sahip"].lower() or src == k: filtre = k; break
 
-    # --- MENÜ İÇERİKLERİ (ARTIK RAW KOD YOK, SADECE GÖRSEL VAR) ---
+    # --- MENÜ İÇERİKLERİ ---
     
     if menu == "Genel Bakış" and not filtre:
         st.title("🚀 Kokpit")
