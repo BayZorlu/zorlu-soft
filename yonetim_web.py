@@ -212,7 +212,6 @@ if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Gen
 
 # --- GİRİŞ EKRANI ---
 if not st.session_state["giris"]:
-    # Sayfayı 3'e böl
     c1, c2, c3 = st.columns([1, 1.5, 1])
     
     with c2:
@@ -237,8 +236,8 @@ if not st.session_state["giris"]:
             else:
                 st.error("Hatalı Giriş Bilgileri")
         
-        # GİRİŞ EKRANI ALTI - İMZA
-        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight:500;'>Zorlu Soft | © 2026 | v54.0</p>", unsafe_allow_html=True)
+        # ALT BİLGİ
+        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight:500;'>Zorlu Soft | © 2026 | v55.0</p>", unsafe_allow_html=True)
 
     st.stop()
 
@@ -267,7 +266,13 @@ div[data-testid="column"]:nth-of-type(2) > div > div {
 
 # SOL MENÜ
 with st.sidebar:
-    st.markdown("<br>", unsafe_allow_html=True)
+    # MENÜ BAŞLIĞI (YENİ EKLENDİ)
+    st.markdown("""
+    <div style="text-align: center; padding-top: 10px; padding-bottom: 20px;">
+        <h2 style="color: white; margin:0; font-size: 26px; font-weight: 800;">KORUPARK</h2>
+        <p style="color: #cbd5e1; margin:0; font-size: 14px; font-weight: 500;">SİTE YÖNETİMİ</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     if st.session_state["rol"] == "admin":
         menu_items = [
@@ -293,9 +298,9 @@ with st.sidebar:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
     
-    # SOL MENÜ ALTI - İMZA (Burada yazı beyaz ve daha silik olur)
+    # SOL MENÜ ALTI - İMZA
     st.markdown("---")
-    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.5); font-size:12px;'>Zorlu Soft | © 2026 | v54.0</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.5); font-size:12px;'>Zorlu Soft | © 2026 | v55.0</div>", unsafe_allow_html=True)
 
 # SAĞ İÇERİK
 menu = st.session_state["active_menu"]
