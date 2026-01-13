@@ -23,15 +23,37 @@ st.set_page_config(
     initial_sidebar_state="expanded" 
 )
 
-# --- LOGO AYARLARI (Sadece PDF için) ---
+# --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: TASARIM ---
+# --- CSS: HEADER GİZLEME VE TASARIM ---
 st.markdown("""
 <style>
-    /* 1. GEREKSİZLERİ GİZLE */
-    .stDeployButton {display:none;}
-    [data-testid="stHeaderActionElements"] {display: none !important;}
+    /* 1. SAĞ ÜST KÖŞEYİ KOMPLE TEMİZLE (SHARE, GITHUB, MENU) */
+    [data-testid="stHeaderActionElements"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    /* Deploy butonunu yok et */
+    .stDeployButton {
+        display: none !important;
+    }
+    
+    /* Tepedeki renkli çizgiyi (Decoration) yok et */
+    [data-testid="stDecoration"] {
+        display: none !important;
+    }
+    
+    /* Header alanını görünmez ve tıklanmaz yap (Boşluk kalmasın) */
+    header[data-testid="stHeader"] {
+        background: transparent !important;
+        visibility: hidden !important;
+        height: 0px !important;
+    }
+    
+    /* Footer ve Hamburger Menüyü Gizle */
     footer {visibility: hidden;} 
     #MainMenu {visibility: hidden;} 
 
@@ -45,7 +67,7 @@ st.markdown("""
     
     .block-container {
         background-color: transparent !important;
-        padding-top: 50px !important;
+        padding-top: 20px !important; /* Üst boşluğu azalttık çünkü header gitti */
     }
 
     /* 3. ORTA SÜTUNU BEYAZ KUTUYA ÇEVİR */
@@ -212,6 +234,7 @@ if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Gen
 
 # --- GİRİŞ EKRANI ---
 if not st.session_state["giris"]:
+    # Sayfayı 3'e böl
     c1, c2, c3 = st.columns([1, 1.5, 1])
     
     with c2:
@@ -237,7 +260,7 @@ if not st.session_state["giris"]:
                 st.error("Hatalı Giriş Bilgileri")
         
         # ALT BİLGİ
-        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight:500;'>Zorlu Soft | © 2026 | v55.0</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight:500;'>Zorlu Soft | © 2026 | v56.0</p>", unsafe_allow_html=True)
 
     st.stop()
 
@@ -266,7 +289,6 @@ div[data-testid="column"]:nth-of-type(2) > div > div {
 
 # SOL MENÜ
 with st.sidebar:
-    # MENÜ BAŞLIĞI (YENİ EKLENDİ)
     st.markdown("""
     <div style="text-align: center; padding-top: 10px; padding-bottom: 20px;">
         <h2 style="color: white; margin:0; font-size: 26px; font-weight: 800;">KORUPARK</h2>
@@ -300,7 +322,7 @@ with st.sidebar:
     
     # SOL MENÜ ALTI - İMZA
     st.markdown("---")
-    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.5); font-size:12px;'>Zorlu Soft | © 2026 | v55.0</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.5); font-size:12px;'>Zorlu Soft | © 2026 | v56.0</div>", unsafe_allow_html=True)
 
 # SAĞ İÇERİK
 menu = st.session_state["active_menu"]
