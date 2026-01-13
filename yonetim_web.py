@@ -47,7 +47,7 @@ st.markdown("""
 
 # --- VERİTABANI BAĞLANTISI ---
 SHEET_DB = "ZorluDB"
-SHEET_USERS = "Kullanicilar" # YENİ ŞİFRE SAYFASI
+SHEET_USERS = "Kullanicilar" 
 
 def baglanti_kur():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -73,18 +73,15 @@ def kaydet(veri):
         sheet.update_cell(1, 1, json_data)
     except Exception as e: st.error(f"Kayıt Hatası: {e}")
 
-# --- YENİ: GÜVENLİ KULLANICI DOĞRULAMA ---
+# --- KULLANICI DOĞRULAMA (ŞİFRELER EXCEL'DEN) ---
 def kullanici_dogrula(kadi, sifre):
-    """Google Sheets 'Kullanicilar' sayfasından kontrol eder."""
     try:
         client = baglanti_kur()
         sheet = client.open(SHEET_DB).worksheet(SHEET_USERS)
-        records = sheet.get_all_records() # Tüm kullanıcıları çek
-        
+        records = sheet.get_all_records()
         for user in records:
-            # Excel'deki veriler bazen sayı, bazen string gelebilir, hepsini string yapıp karşılaştır
             if str(user['kullanici_adi']) == str(kadi) and str(user['sifre']) == str(sifre):
-                return user # Eşleşen kullanıcıyı döndür (rol ve daire no dahil)
+                return user 
         return None
     except Exception as e:
         st.error(f"Kullanıcı veritabanı hatası: {e}")
@@ -106,71 +103,47 @@ def demo_veri():
 if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
 data = st.session_state["data"]
 
-# --- YENİ: PROFESYONEL PDF MAKBUZ ---
+# --- PDF MAKBUZ ---
 def pdf_olustur(daire_no, isim, tutar):
     if not LIB_OK: return None
     pdf = FPDF()
     pdf.add_page()
-    
-    # Çerçeve
     pdf.set_line_width(1)
     pdf.rect(5, 5, 200, 287)
-    
-    # Başlık Alanı
     pdf.set_font("Arial", 'B', 24)
     pdf.cell(190, 20, txt=data['site_adi'].upper(), ln=True, align='C')
-    
     pdf.set_font("Arial", size=10)
     pdf.cell(190, 5, txt="Yonetim Ofisi: A Blok Zemin Kat | Tel: 0555 000 00 00", ln=True, align='C')
     pdf.ln(10)
-    
-    # Makbuz Başlığı
     pdf.set_fill_color(200, 220, 255)
     pdf.set_font("Arial", 'B', 16)
     pdf.cell(190, 15, txt="TAHSILAT MAKBUZU", ln=True, align='C', fill=True)
     pdf.ln(10)
-    
-    # Detaylar
     pdf.set_font("Arial", size=14)
-    
-    # Tablo Benzeri Yapı
     pdf.cell(50, 12, txt="Tarih", border=1)
     pdf.cell(140, 12, txt=f"{str(datetime.date.today())}", border=1, ln=True)
-    
     pdf.cell(50, 12, txt="Daire No", border=1)
     pdf.cell(140, 12, txt=f"{str(daire_no)}", border=1, ln=True)
-    
     pdf.cell(50, 12, txt="Sayin", border=1)
     pdf.cell(140, 12, txt=f"{isim}", border=1, ln=True)
-    
     pdf.cell(50, 12, txt="Aciklama", border=1)
     pdf.cell(140, 12, txt="Aidat / Demirbas / Diger Tahsilat", border=1, ln=True)
-    
     pdf.ln(5)
-    
-    # Tutar Alanı (Büyük)
     pdf.set_font("Arial", 'B', 30)
-    pdf.set_text_color(220, 50, 50) # Kırmızı
+    pdf.set_text_color(220, 50, 50) 
     pdf.cell(190, 25, txt=f"{tutar:,.2f} TL", ln=True, align='C', border=1)
-    pdf.set_text_color(0, 0, 0) # Siyah
-    
+    pdf.set_text_color(0, 0, 0) 
     pdf.ln(20)
-    
-    # İmza Alanları
     y = pdf.get_y()
     pdf.set_font("Arial", 'I', 10)
     pdf.cell(90, 5, txt="Odemeyi Yapan", align='C', ln=0)
     pdf.cell(90, 5, txt="Tahsil Eden (Yonetim)", align='C', ln=1)
-    
     pdf.ln(20)
     pdf.cell(90, 5, txt="( Imza )", align='C', ln=0)
     pdf.cell(90, 5, txt="ZORLU SOFT YAZILIM", align='C', ln=1)
-    
-    # Alt Not
     pdf.set_y(260)
     pdf.set_font("Arial", size=8)
     pdf.cell(0, 10, txt="Bu makbuz Zorlu Soft Guvenli Yonetim Sistemi tarafindan elektronik ortamda olusturulmustur.", align='C')
-    
     return pdf.output(dest='S').encode('latin-1')
 
 # --- LOGIN ---
@@ -184,7 +157,7 @@ if not st.session_state["giris"]:
         p = st.text_input("Şifre", type="password")
         
         if st.button("GİRİŞ", type="primary", use_container_width=True):
-            user_data = kullanici_dogrula(u, p) # ARTIK EXCEL'DEN SORGULUYOR
+            user_data = kullanici_dogrula(u, p)
             if user_data:
                 st.session_state["giris"] = True
                 st.session_state["rol"] = str(user_data["rol"])
@@ -192,7 +165,7 @@ if not st.session_state["giris"]:
                 st.success("Giriş Başarılı!")
                 st.rerun()
             else:
-                st.error("Hatalı Kullanıcı Adı veya Şifre! Lütfen Yönetimle İletişime Geçin.")
+                st.error("Hatalı Kullanıcı Adı veya Şifre! Yönetimle iletişime geçin.")
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
@@ -249,18 +222,26 @@ if st.session_state["rol"] == "admin":
         st.markdown(f"<div class='profile-header'><h2>{info['sahip']}</h2><h1 style='color:red; margin-left:auto'>{info['borc']} ₺</h1></div>", unsafe_allow_html=True)
         c1, c2 = st.columns([2,1])
         with c1: 
-            if info["gecmis"]: st.dataframe(pd.DataFrame([x.split("|") for x in reversed(info["gecmis"])], columns=["Tarih", "İşlem"]), use_container_width=True)
+            # --- HATA DÜZELTME KISMI ---
+            if info["gecmis"]: 
+                # Eski verilerde "|" yoksa hata vermemesi için kontrol ekledik
+                temiz_veri = []
+                for x in reversed(info["gecmis"]):
+                    if "|" in x: temiz_veri.append(x.split("|"))
+                    else: temiz_veri.append(["-", x]) # Tarih yoksa çizgi koy
+                
+                st.dataframe(pd.DataFrame(temiz_veri, columns=["Tarih", "İşlem"]), use_container_width=True)
             else: st.info("İşlem yok")
+            # ---------------------------
         with c2:
             t = st.number_input("Tahsilat"); 
             col_a, col_b = st.columns(2)
             if col_a.button("Ödeme Al"): 
                 info["borc"]-=t; data["kasa_nakit"]+=t; info["gecmis"].append(f"{datetime.date.today()} | Ödeme: {t}"); kaydet(data); st.success("Tamam"); st.rerun()
             
-            # PDF BUTONU (YENİ)
             pdf_data = pdf_olustur(secilen, info["sahip"], t if t > 0 else info["borc"])
             if pdf_data:
-                col_b.download_button(label="📄 Makbuz İndir", data=pdf_data, file_name=f"makbuz_{secilen}.pdf", mime="application/pdf")
+                col_b.download_button(label="📄 Makbuz", data=pdf_data, file_name=f"makbuz_{secilen}.pdf", mime="application/pdf")
 
     elif menu == "Harita":
         st.title("🏘️ Bloklar")
@@ -339,7 +320,14 @@ elif st.session_state["rol"] == "sakin":
     if menu == "Durum":
         st.metric("Borcunuz", info["borc"])
         if info["borc"] > 0: st.error("Lütfen Ödeyiniz")
-    elif menu == "Ödeme": st.table(pd.DataFrame([x.split("|") for x in reversed(info["gecmis"])], columns=["Tarih","İşlem"]))
+    elif menu == "Ödeme": 
+        # SAKİN İÇİN DE HATA DÜZELTME EKLENDİ
+        if info["gecmis"]:
+            temiz_veri = []
+            for x in reversed(info["gecmis"]):
+                if "|" in x: temiz_veri.append(x.split("|"))
+                else: temiz_veri.append(["-", x])
+            st.table(pd.DataFrame(temiz_veri, columns=["Tarih","İşlem"]))
     elif menu == "Talep": 
         if st.button("Su İste (100 TL)"): 
             data["market_siparisleri"].append({"urun":"Su","daire":no}); info["borc"]+=100; kaydet(data); st.success("İstendi")
