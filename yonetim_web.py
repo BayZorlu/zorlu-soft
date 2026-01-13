@@ -15,16 +15,27 @@ try:
     LIB_OK = True
 except: LIB_OK = False
 
-# --- SAYFA AYARLARI ---
-st.set_page_config(page_title="Zorlu Soft | PRO", layout="wide", page_icon="🏢")
+# --- SAYFA AYARLARI (MENÜYÜ ZORLA AÇMA EKLENDİ) ---
+st.set_page_config(
+    page_title="Zorlu Soft | PRO", 
+    layout="wide", 
+    page_icon="🏢",
+    initial_sidebar_state="expanded"  # <--- BURASI MENÜYÜ OTOMATİK AÇAR
+)
 
-# --- CSS TASARIM ---
+# --- CSS TASARIM (DÜZELTİLDİ: MENÜ BUTONU ARTIK GÖRÜNÜR) ---
 st.markdown("""
 <style>
-    /* GİZLİLİK (HAYALET MOD) */
-    #MainMenu {visibility: hidden;} header {visibility: hidden;} footer {visibility: hidden;}
-    [data-testid="stToolbar"] {visibility: hidden !important;} [data-testid="stDecoration"] {display: none;}
-    .stApp { background-color: #f5f7fa; margin-top: -80px; }
+    /* 1. GEREKSİZLERİ GİZLE AMA MENÜYÜ BOZMA */
+    #MainMenu {visibility: hidden;} 
+    footer {visibility: hidden;} 
+    .stDeployButton {display:none;} /* Sadece Deploy butonunu gizle */
+    
+    /* Header'ı gizleme! Yoksa menü butonu kaybolur. */
+    /* header {visibility: hidden;}  <-- BU SATIR SİLİNDİ */
+
+    /* Sayfa Rengi */
+    .stApp { background-color: #f5f7fa; }
     
     /* LOGIN KUTUSU */
     .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 100px auto; text-align: center; }
@@ -73,7 +84,7 @@ def kaydet(veri):
         sheet.update_cell(1, 1, json_data)
     except Exception as e: st.error(f"Kayıt Hatası: {e}")
 
-# --- KULLANICI DOĞRULAMA (ŞİFRELER EXCEL'DEN) ---
+# --- KULLANICI DOĞRULAMA ---
 def kullanici_dogrula(kadi, sifre):
     try:
         client = baglanti_kur()
@@ -134,7 +145,6 @@ def pdf_olustur(daire_no, isim, tutar):
     pdf.cell(190, 25, txt=f"{tutar:,.2f} TL", ln=True, align='C', border=1)
     pdf.set_text_color(0, 0, 0) 
     pdf.ln(20)
-    y = pdf.get_y()
     pdf.set_font("Arial", 'I', 10)
     pdf.cell(90, 5, txt="Odemeyi Yapan", align='C', ln=0)
     pdf.cell(90, 5, txt="Tahsil Eden (Yonetim)", align='C', ln=1)
@@ -222,17 +232,13 @@ if st.session_state["rol"] == "admin":
         st.markdown(f"<div class='profile-header'><h2>{info['sahip']}</h2><h1 style='color:red; margin-left:auto'>{info['borc']} ₺</h1></div>", unsafe_allow_html=True)
         c1, c2 = st.columns([2,1])
         with c1: 
-            # --- HATA DÜZELTME KISMI ---
             if info["gecmis"]: 
-                # Eski verilerde "|" yoksa hata vermemesi için kontrol ekledik
                 temiz_veri = []
                 for x in reversed(info["gecmis"]):
                     if "|" in x: temiz_veri.append(x.split("|"))
-                    else: temiz_veri.append(["-", x]) # Tarih yoksa çizgi koy
-                
+                    else: temiz_veri.append(["-", x])
                 st.dataframe(pd.DataFrame(temiz_veri, columns=["Tarih", "İşlem"]), use_container_width=True)
             else: st.info("İşlem yok")
-            # ---------------------------
         with c2:
             t = st.number_input("Tahsilat"); 
             col_a, col_b = st.columns(2)
@@ -321,7 +327,6 @@ elif st.session_state["rol"] == "sakin":
         st.metric("Borcunuz", info["borc"])
         if info["borc"] > 0: st.error("Lütfen Ödeyiniz")
     elif menu == "Ödeme": 
-        # SAKİN İÇİN DE HATA DÜZELTME EKLENDİ
         if info["gecmis"]:
             temiz_veri = []
             for x in reversed(info["gecmis"]):
