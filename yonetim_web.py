@@ -17,7 +17,7 @@ except: LIB_OK = False
 
 # --- SAYFA AYARLARI ---
 st.set_page_config(
-    page_title="Zorlu Soft | ELITE", 
+    page_title="Zorlu Soft | PRO", 
     layout="wide", 
     page_icon="🏢",
     initial_sidebar_state="collapsed" 
@@ -31,10 +31,10 @@ def logo_getir():
     if os.path.exists(LOGO_DOSYA): return LOGO_DOSYA
     return LOGO_URL_YEDEK
 
-# --- CSS: ELITE UI (HAYALET BUTONLAR & MODERN MENÜ) ---
+# --- CSS: HIGH CONTRAST UI (AYRIŞTIRILMIŞ MENÜ) ---
 st.markdown("""
 <style>
-    /* 1. STANDART ARAYÜZÜ TEMİZLE */
+    /* 1. STANDARTLARI GİZLE */
     [data-testid="stSidebar"] {display: none;}
     [data-testid="collapsedControl"] {display: none;}
     #MainMenu {visibility: hidden;} 
@@ -42,65 +42,66 @@ st.markdown("""
     [data-testid="stHeader"] {display: none;}
     .stDeployButton {display:none;}
     
-    /* 2. GENEL ARKA PLAN */
-    .stApp { background-color: #f8f9fa; margin-top: -50px; }
+    /* 2. GENEL ARKA PLAN (Açık Gri - İçerik Öne Çıksın) */
+    .stApp { background-color: #ecf0f1; margin-top: -50px; }
     
-    /* 3. SOL MENÜ (Koyu & Bütünleşik) */
+    /* 3. SOL MENÜ (İşte Burası Değişti) */
     div[data-testid="column"]:nth-of-type(1) {
-        background-color: #1e272e; /* Çok Koyu Lacivert/Siyah */
+        /* GEÇİŞLİ ARKA PLAN (GRADIENT) - Derinlik Katar */
+        background: linear-gradient(180deg, #2c3e50 0%, #000000 100%);
+        
+        /* KESKİN SINIR ÇİZGİSİ (AYRAÇ) */
+        border-right: 5px solid #ff3f34; /* Zorlu Kırmızısı */
+        
+        /* GÖLGE (Üstte dursun) */
+        box-shadow: 10px 0 25px rgba(0,0,0,0.5);
+        
         padding-top: 30px;
         text-align: center;
         height: 120vh;
         position: fixed;
         left: 0;
         top: 0;
-        width: 90px !important;
+        width: 100px !important;
         z-index: 9999;
         display: block;
-        box-shadow: 4px 0 15px rgba(0,0,0,0.2); /* Sağ tarafa gölge */
     }
     
-    /* 4. SAĞ İÇERİK (Grafiklerin Sığması İçin) */
+    /* 4. SAĞ İÇERİK */
     div[data-testid="column"]:nth-of-type(2) {
-        margin-left: 110px !important; /* Menüden kaç */
-        width: calc(100% - 120px) !important;
-        padding-top: 10px;
-        display: block;
+        margin-left: 120px !important; /* Menüden uzaklaş */
+        width: calc(100% - 130px) !important;
+        padding-top: 20px;
     }
 
-    /* 5. HAYALET BUTONLAR (GHOST BUTTONS) - İŞTE SİHİR BURADA */
+    /* 5. MENÜ BUTONLARI (Hayalet Stil Devam) */
     div[data-testid="column"]:nth-of-type(1) .stButton button {
         width: 55px !important;
         height: 55px !important;
-        border-radius: 15px !important;
-        border: none !important;
-        background-color: transparent !important; /* ARKASI ŞEFFAF */
-        color: #a4b0be !important; /* Pasif ikon rengi (Gri) */
+        border-radius: 12px !important;
+        border: 1px solid rgba(255,255,255,0.1) !important; /* İnce çerçeve */
+        background-color: rgba(255,255,255,0.05) !important; /* Çok hafif beyazlık */
+        color: #dfe6e9 !important; /* Açık gri ikon */
         font-size: 24px !important;
         margin: 0 auto 15px auto !important;
         display: block !important;
         transition: all 0.3s ease;
-        box-shadow: none !important; /* Gölge yok */
     }
     
-    /* 6. HOVER EFEKTİ (Üzerine Gelince) */
+    /* Hover Efekti */
     div[data-testid="column"]:nth-of-type(1) .stButton button:hover {
-        background-color: #ff3f34 !important; /* Zorlu Kırmızısı */
+        background-color: #ff3f34 !important;
+        border-color: #ff3f34 !important;
         color: white !important;
-        transform: translateY(-2px); /* Hafif yukarı kalkar */
-        box-shadow: 0 5px 15px rgba(255, 63, 52, 0.4) !important; /* Kırmızı ışık saçar */
-        border-radius: 12px !important;
+        transform: scale(1.15); /* Biraz daha büyüsün */
+        box-shadow: 0 0 15px rgba(255, 63, 52, 0.6); /* Parlama */
     }
 
-    /* 7. AKTİF BUTON (Seçili Olan) - Kırmızı kalması için */
+    /* Aktif Buton */
     div[data-testid="column"]:nth-of-type(1) .stButton button:focus {
         background-color: #ff3f34 !important;
+        border-color: #ff3f34 !important;
         color: white !important;
-    }
-
-    /* 8. SAĞDAKİ NORMAL BUTONLAR BOZULMASIN */
-    div[data-testid="column"]:nth-of-type(2) button {
-        /* Sağ taraftaki butonlar normal kalsın */
     }
 
     /* DİĞER STİLLER */
@@ -205,13 +206,7 @@ if not st.session_state["giris"]:
     c1, c2, c3 = st.columns([1,1,1])
     with c2:
         aktif_logo = logo_getir()
-        if aktif_logo.startswith("http"):
-            st.markdown(f"<div class='login-box'><img src='{aktif_logo}' width='120'><h2>{data['site_adi']}</h2><p>Elite Giriş</p></div>", unsafe_allow_html=True)
-        else:
-            st.markdown(f"<div class='login-box'>", unsafe_allow_html=True)
-            st.image(aktif_logo, width=120)
-            st.markdown(f"<h2>{data['site_adi']}</h2><p>Elite Giriş</p></div>", unsafe_allow_html=True)
-
+        st.markdown(f"<div class='login-box'><img src='{aktif_logo}' width='100'><h2>{data['site_adi']}</h2><p>Giriş v40</p></div>", unsafe_allow_html=True)
         u = st.text_input("Kullanıcı Adı"); p = st.text_input("Şifre", type="password")
         if st.button("GİRİŞ", type="primary", use_container_width=True):
             user_data = kullanici_dogrula(u, p)
@@ -226,19 +221,17 @@ if not st.session_state["giris"]:
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# HİBRİT YAPISI (MENÜ + İÇERİK)
+# ANA YAPI
 # ==============================================================================
 
-# Sol: 1 birim, Sağ: 20 birim
 col_nav, col_main = st.columns([1, 20]) 
 
-# --- SOL MENÜ (ELITE STYLE) ---
+# --- SOL MENÜ ---
 with col_nav:
-    # Logo alanı (Küçük ve şık)
     if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, use_container_width=True)
-    else: st.markdown("<h1 style='text-align:center; color:white;'>Z</h1>", unsafe_allow_html=True)
+    else: st.markdown("🏢")
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("---")
     
     if st.session_state["rol"] == "admin":
         menu_items = [
@@ -249,7 +242,6 @@ with col_nav:
             ("Bulut Arşiv", "☁️"), ("Raporlar", "📄")
         ]
         for label, icon in menu_items:
-            # help=label sayesinde üzerine gelince ipucu çıkar
             if st.button(icon, key=f"nav_{label}", help=label):
                 st.session_state["active_menu"] = label
                 st.rerun()
@@ -273,7 +265,6 @@ with col_main:
     if st.session_state["rol"] == "admin":
         if menu == "Genel Bakış":
             st.title("🚀 Kokpit")
-            # 4 Kart
             c1, c2, c3, c4 = st.columns(4)
             c1.metric("Kasa", f"{data['kasa_nakit']:,.0f} ₺")
             c2.metric("Gider", f"{sum(g['tutar'] for g in data['giderler']):,.0f} ₺")
@@ -282,7 +273,6 @@ with col_main:
             
             st.markdown("<br>", unsafe_allow_html=True)
             
-            # Grafik ve Tablo
             cl, cr = st.columns([2, 1])
             with cl:
                 st.subheader("Finansal Durum")
