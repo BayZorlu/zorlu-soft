@@ -31,10 +31,10 @@ def logo_getir():
     if os.path.exists(LOGO_DOSYA): return LOGO_DOSYA
     return LOGO_URL_YEDEK
 
-# --- CSS: DISCORD UI (DÜZELTİLMİŞ VERSİYON) ---
+# --- CSS: ULTIMATE UI (GRAFİK SORUNU DÜZELTİLDİ) ---
 st.markdown("""
 <style>
-    /* 1. STANDART MENÜLERİ YOK ET */
+    /* 1. STANDART ARAYÜZÜ TEMİZLE */
     [data-testid="stSidebar"] {display: none;}
     [data-testid="collapsedControl"] {display: none;}
     #MainMenu {visibility: hidden;} 
@@ -42,58 +42,48 @@ st.markdown("""
     [data-testid="stHeader"] {display: none;}
     .stDeployButton {display:none;}
     
-    /* 2. GENEL SAYFA RENGİ */
+    /* 2. GENEL ARKA PLAN */
     .stApp { background-color: #f5f7fa; margin-top: -50px; }
     
-    /* 3. SOL İKON BAR (DÜZELTİLDİ: ARTIK SAĞI BOZMUYOR) */
-    /* Sol kolonu (Navigasyon) sabitle */
+    /* 3. SOL MENÜ (SABİT) */
     div[data-testid="column"]:nth-of-type(1) {
-        background-color: #2c3e50; /* Koyu Lacivert */
-        border-right: 1px solid #ddd;
+        background-color: #2c3e50;
         padding-top: 20px;
         text-align: center;
-        height: 120vh; /* Ekran boyunca uzasın */
+        height: 100vh;
         position: fixed;
         left: 0;
         top: 0;
-        width: 90px !important; /* SABİT GENİŞLİK */
-        z-index: 9999;
-        overflow-y: auto; /* Çok buton olursa kaydır */
-        display: block;
+        width: 100px !important;
+        z-index: 999;
+        overflow-y: auto;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     }
     
-    /* 4. SAĞ ANA İÇERİK (DÜZELTİLDİ: SOLA GÖMÜLMESİN) */
+    /* 4. SAĞ İÇERİK (DÜZELTME: width:calc kaldırıldı, margin ile çözüldü) */
     div[data-testid="column"]:nth-of-type(2) {
-        margin-left: 100px !important; /* Sol menü kadar boşluk bırak */
-        width: calc(100% - 110px) !important; /* Ekranın kalanını kapla */
-        padding-top: 10px;
+        margin-left: 110px !important; /* Sol menüden kaç */
+        padding-right: 20px;
     }
 
-    /* 5. NAVİGASYON BUTONLARI */
-    /* Sol menüdeki butonları güzelleştir */
+    /* 5. MENÜ BUTONLARI */
     div[data-testid="column"]:nth-of-type(1) .stButton button {
-        width: 50px !important;
-        height: 50px !important;
-        border-radius: 12px !important;
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 15px !important;
         border: none !important;
-        background-color: rgba(255,255,255,0.1) !important; /* Hafif şeffaf */
+        background-color: rgba(255,255,255,0.05) !important;
         color: white !important;
-        font-size: 22px !important;
-        margin: 0 auto 10px auto !important;
+        font-size: 26px !important;
+        margin: 0 auto 15px auto !important;
         display: block !important;
-        transition: 0.3s;
+        transition: 0.2s;
     }
-    
     div[data-testid="column"]:nth-of-type(1) .stButton button:hover {
-        background-color: #e74c3c !important; /* Üzerine gelince Kırmızı */
+        background-color: #e74c3c !important;
         transform: scale(1.1);
     }
-
-    /* 6. METİN KAYMASINI ENGELLE (ZORLA KAYDET BUTONU İÇİN) */
-    button {
-        white-space: nowrap !important; /* Yazıları alt satıra indirme */
-    }
-
+    
     /* DİĞER STİLLER */
     .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; margin: 80px auto; text-align: center; }
     .galaxy-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; border:1px solid white;}
@@ -101,7 +91,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- VERİTABANI ---
+# --- VERİTABANI BAĞLANTISI ---
 SHEET_DB = "ZorluDB"
 SHEET_USERS = "Kullanicilar" 
 
@@ -156,7 +146,7 @@ def demo_veri():
 if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
 data = st.session_state["data"]
 
-# --- PDF ---
+# --- PDF DÜZELTİCİ ---
 def tr_duzelt(text):
     text = str(text)
     source = "şŞıİğĞüÜöÖçÇ"
@@ -196,7 +186,13 @@ if not st.session_state["giris"]:
     c1, c2, c3 = st.columns([1,1,1])
     with c2:
         aktif_logo = logo_getir()
-        st.markdown(f"<div class='login-box'><img src='{aktif_logo}' width='100'><h2>{data['site_adi']}</h2><p>Giriş v36</p></div>", unsafe_allow_html=True)
+        if aktif_logo.startswith("http"):
+            st.markdown(f"<div class='login-box'><img src='{aktif_logo}' width='120'><h2>{data['site_adi']}</h2><p>Premium Giriş</p></div>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div class='login-box'>", unsafe_allow_html=True)
+            st.image(aktif_logo, width=120)
+            st.markdown(f"<h2>{data['site_adi']}</h2><p>Premium Giriş</p></div>", unsafe_allow_html=True)
+
         u = st.text_input("Kullanıcı Adı"); p = st.text_input("Şifre", type="password")
         if st.button("GİRİŞ", type="primary", use_container_width=True):
             user_data = kullanici_dogrula(u, p)
@@ -211,13 +207,13 @@ if not st.session_state["giris"]:
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# ANA YAPI - HİBRİT TASARIM
+# HİBRİT YAPISI (MENÜ + İÇERİK)
 # ==============================================================================
 
-# Sol menü (nav) ve sağ içerik (main) kolonları
-col_nav, col_main = st.columns([1, 15]) 
+# Sol: 1 birim, Sağ: 20 birim (Sağ taraf geniş olsun)
+col_nav, col_main = st.columns([1, 20]) 
 
-# --- SOL İKON MENÜ ---
+# --- SOL MENÜ ---
 with col_nav:
     if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, use_container_width=True)
     else: st.markdown("🏢")
@@ -233,7 +229,6 @@ with col_nav:
             ("Bulut Arşiv", "☁️"), ("Raporlar", "📄")
         ]
         for label, icon in menu_items:
-            # Butonlara unique key veriyoruz
             if st.button(icon, key=f"nav_{label}", help=label):
                 st.session_state["active_menu"] = label
                 st.rerun()
@@ -250,19 +245,39 @@ with col_nav:
         st.markdown("---")
         if st.button("🚪", key="exit_s", help="Çıkış"): cikis()
 
-# --- SAĞ İÇERİK ALANI ---
+# --- SAĞ İÇERİK ---
 with col_main:
     menu = st.session_state["active_menu"]
     
-    # YÖNETİCİ
     if st.session_state["rol"] == "admin":
         if menu == "Genel Bakış":
             st.title("🚀 Kokpit")
+            # 4 Kart
             c1, c2, c3, c4 = st.columns(4)
-            c1.metric("Kasa", f"{data['kasa_nakit']:,.0f}"); c2.metric("Gider", f"{sum(g['tutar'] for g in data['giderler']):,.0f}")
-            c3.metric("Otopark", f"{len([d for d in data['daireler'].values() if d['plaka']!='-'])}"); c4.metric("Market", len(data['market_siparisleri']))
-            if st.button("💾 VERİLERİ ZORLA KAYDET", type="primary", use_container_width=True): 
-                kaydet(data); st.success("Kaydedildi")
+            c1.metric("Kasa", f"{data['kasa_nakit']:,.0f} ₺")
+            c2.metric("Gider", f"{sum(g['tutar'] for g in data['giderler']):,.0f} ₺")
+            c3.metric("Otopark", f"{len([d for d in data['daireler'].values() if d['plaka']!='-'])}")
+            c4.metric("Market", len(data['market_siparisleri']))
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Grafik ve Tablo
+            cl, cr = st.columns([2, 1])
+            with cl:
+                st.subheader("Finansal Durum")
+                toplam_alacak = sum(d['borc'] for d in data['daireler'].values())
+                df_pie = pd.DataFrame({
+                    "Durum": ["Kasadaki Para", "Alacaklar", "Giderler"],
+                    "Tutar": [data['kasa_nakit'], toplam_alacak, sum(g['tutar'] for g in data['giderler'])]
+                })
+                fig = px.pie(df_pie, values='Tutar', names='Durum', hole=0.4, color_discrete_sequence=["#2ecc71", "#f1c40f", "#e74c3c"])
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with cr:
+                st.subheader("Hızlı İşlemler")
+                if st.button("💾 VERİLERİ KAYDET", type="primary", use_container_width=True): 
+                    kaydet(data); st.success("Yedeklendi")
+                st.info("Sistem otomatik yedekleme yapıyor ancak işlem bitince basmanız önerilir.")
 
         elif menu == "Giderler":
             st.title("💸 Giderler")
