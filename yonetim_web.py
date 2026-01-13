@@ -20,7 +20,7 @@ st.set_page_config(
     page_title="Zorlu Soft | SUITE", 
     layout="wide", 
     page_icon="🏢",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded" # MENÜ AÇIK BAŞLASIN
 )
 
 # --- LOGO AYARLARI ---
@@ -31,77 +31,80 @@ def logo_getir():
     if os.path.exists(LOGO_DOSYA): return LOGO_DOSYA
     return LOGO_URL_YEDEK
 
-# --- CSS: DARK MATTER TASARIMI ---
+# --- CSS: MENÜYÜ GERİ GETİREN VE RENKLENDİREN KOD ---
 st.markdown("""
 <style>
-    /* 1. GEREKSİZLERİ GİZLE */
+    /* 1. MENÜYÜ AÇAN DÜĞMEYİ KURTAR */
+    header {visibility: visible !important;} /* Başlık çubuğu görünsün */
+    [data-testid="stHeader"] {
+        background-color: transparent !important; /* Ama şeffaf olsun */
+        color: black !important;
+    }
+    
+    /* Sağ üstteki gereksizleri (Share, Github) gizle ama Menü düğmesine dokunma */
+    [data-testid="stHeaderActionElements"] {display: none !important;}
+    .stDeployButton {display:none;}
     #MainMenu {visibility: hidden;} 
     footer {visibility: hidden;} 
-    header {visibility: hidden;} 
-    .stDeployButton {display:none;}
-    
-    /* 2. ARKA PLAN */
-    .stApp { background-color: #f8f9fa; }
 
-    /* 3. SOL MENÜ (NATIVE SIDEBAR) */
+    /* 2. SOL MENÜ TASARIMI (DARK SIDEBAR) */
     section[data-testid="stSidebar"] {
-        background-color: #1e293b !important;
-        width: 300px !important;
+        background-color: #1e293b !important; /* KOYU LACİVERT */
         border-right: 1px solid #0f172a;
     }
     
-    section[data-testid="stSidebar"] h1, 
-    section[data-testid="stSidebar"] h2, 
-    section[data-testid="stSidebar"] h3, 
-    section[data-testid="stSidebar"] p, 
-    section[data-testid="stSidebar"] span, 
-    section[data-testid="stSidebar"] div {
-        color: #e2e8f0 !important;
+    /* Menü içindeki tüm yazılar BEYAZ olsun */
+    section[data-testid="stSidebar"] * {
+        color: #f1f5f9 !important;
     }
 
-    [data-testid="stSidebarCollapseButton"] { display: none !important; }
+    /* 3. ANA SAYFA ARKA PLANI (SAĞ TARAF) */
+    .stApp {
+        background-color: #f8f9fa;
+        margin-top: -50px; /* Üst boşluğu al */
+    }
 
-    /* 4. MENÜ BUTONLARI */
+    /* 4. MENÜ BUTONLARI (MODERN) */
     section[data-testid="stSidebar"] .stButton button {
         width: 100% !important;
         background-color: transparent !important;
-        color: #94a3b8 !important;
         border: none !important;
         text-align: left !important;
-        padding-left: 20px !important;
+        padding-left: 15px !important;
         font-size: 16px !important;
         margin-bottom: 5px !important;
         display: flex;
         align-items: center;
         border-radius: 8px !important;
+        transition: 0.3s;
     }
 
+    /* Hover (Üzerine Gelince) */
     section[data-testid="stSidebar"] .stButton button:hover {
         background-color: #334155 !important;
-        color: white !important;
         padding-left: 25px !important;
-        transition: all 0.2s;
     }
 
+    /* Aktif/Focus */
     section[data-testid="stSidebar"] .stButton button:focus {
-        background-color: #ef4444 !important;
+        background-color: #ef4444 !important; /* ZORLU KIRMIZISI */
         color: white !important;
         box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    /* 5. METRIC KARTLARI */
+    /* 5. KART TASARIMLARI */
     .metric-card {
         background-color: white;
         padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         text-align: center;
-        border: 1px solid #eee;
+        border: 1px solid #e2e8f0;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- VERİTABANI BAĞLANTISI ---
+# --- VERİTABANI ---
 SHEET_DB = "ZorluDB"
 SHEET_USERS = "Kullanicilar" 
 
@@ -191,7 +194,7 @@ def pdf_olustur(daire_no, isim, tutar):
 if "giris" not in st.session_state: st.session_state["giris"] = False
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ EKRANI (Split Screen) ---
+# --- GİRİŞ EKRANI ---
 if not st.session_state["giris"]:
     col_l, col_r = st.columns([2, 3])
     with col_l:
@@ -215,15 +218,17 @@ if not st.session_state["giris"]:
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# ANA YAPI
+# ANA YAPI (SOL MENÜ + İÇERİK)
 # ==============================================================================
 
+# SOL MENÜ
 with st.sidebar:
     if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, width=150)
     else: st.markdown("<h1>🏢</h1>", unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
+    # Yönetici
     if st.session_state["rol"] == "admin":
         menu_items = [
             ("Genel Bakış", "🚀"), ("Giderler", "💸"), ("Hesaplar", "👥"), 
@@ -236,9 +241,11 @@ with st.sidebar:
             if st.button(f"{icon}  {label}", key=f"nav_{label}"):
                 st.session_state["active_menu"] = label
                 st.rerun()
+        
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit"): cikis()
 
+    # Sakin
     elif st.session_state["rol"] == "sakin":
         menu_items = [("Durum", "👤"), ("Ödeme", "💳"), ("Talep", "📨")]
         for label, icon in menu_items:
@@ -248,7 +255,7 @@ with st.sidebar:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
 
-# --- SAĞ İÇERİK ---
+# SAĞ İÇERİK
 menu = st.session_state["active_menu"]
 
 if st.session_state["rol"] == "admin":
@@ -277,7 +284,7 @@ if st.session_state["rol"] == "admin":
             st.subheader("Yönetim")
             if st.button("💾 VERİLERİ ZORLA KAYDET", type="primary", use_container_width=True): 
                 kaydet(data); st.success("Yedeklendi")
-            st.info("Her işlemde otomatik yedek alınır.")
+            st.info("Sistem otomatik yedeklenir.")
 
     elif menu == "Giderler":
         st.title("💸 Giderler")
