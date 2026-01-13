@@ -31,7 +31,7 @@ def logo_getir():
     if os.path.exists(LOGO_DOSYA): return LOGO_DOSYA
     return LOGO_URL_YEDEK
 
-# --- CSS: PRESTIGE LOGIN & DARK SIDEBAR ---
+# --- CSS: PRESTIGE GÖRÜNÜM VE DÜZELTMELER ---
 st.markdown("""
 <style>
     /* 1. GEREKSİZLERİ GİZLE */
@@ -40,7 +40,21 @@ st.markdown("""
     footer {visibility: hidden;} 
     #MainMenu {visibility: hidden;} 
 
-    /* 2. SOL MENÜ (KOYU VE SABİT) */
+    /* 2. GİRİŞ EKRANI ARKA PLANI (ŞEHİR MANZARASI) */
+    /* Sadece stApp (tüm uygulama) arka planını değiştiriyoruz */
+    [data-testid="stAppViewContainer"] {
+        background-image: url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    
+    /* İçerik alanının arka planını temizle ki resim görünsün */
+    .block-container {
+        background-color: transparent !important;
+    }
+
+    /* 3. SOL MENÜ (KOYU VE SABİT) */
     section[data-testid="stSidebar"] {
         background-color: #1e293b !important;
         border-right: 1px solid #0f172a;
@@ -64,48 +78,32 @@ st.markdown("""
         padding-left: 20px;
     }
 
-    /* 3. ARKA PLAN RESMİ (Sadece Giriş Ekranı İçin Etkili Olur) */
-    .login-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        z-index: -1;
-    }
-
-    /* 4. CAM EFEKTLİ GİRİŞ KUTUSU (GLASSMORPHISM) */
-    .glass-box {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        padding: 50px;
+    /* 4. GİRİŞ KUTUSU (GLASSMORPHISM - BUZLU CAM) */
+    .login-container {
+        background: rgba(255, 255, 255, 0.85); /* Hafif şeffaf beyaz */
+        padding: 40px;
         border-radius: 20px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         text-align: center;
-        max-width: 450px;
-        margin: 0 auto;
-        border: 1px solid rgba(255,255,255,0.5);
+        margin-top: 50px;
     }
     
-    /* 5. GİRİŞ BAŞLIKLARI */
-    .login-title {
+    .login-header {
         font-size: 32px;
-        font-weight: bold;
+        font-weight: 700;
         color: #1e293b;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
-    .login-subtitle {
-        font-size: 16px;
+    
+    .login-sub {
+        font-size: 14px;
         color: #64748b;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
 
-    /* 6. GİRİŞ BUTONU ÖZELLEŞTİRME */
-    .stButton button {
-        border-radius: 10px;
-        font-weight: bold;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -201,43 +199,32 @@ if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Gen
 
 # --- YENİ PRESTİJLİ GİRİŞ EKRANI ---
 if not st.session_state["giris"]:
-    # Arka planı koyu yapıyoruz (CSS ile)
-    st.markdown('<div class="login-bg"></div>', unsafe_allow_html=True)
+    # Sayfayı ortalamak için kolonlar: Sol boş, Orta Kutu, Sağ Boş
+    c1, c2, c3 = st.columns([1, 2, 1])
     
-    # Ortaya Cam Kutu Koyuyoruz
-    c1, c2, c3 = st.columns([1,1,1])
     with c2:
-        st.markdown('<br><br>', unsafe_allow_html=True) # Üsten boşluk
+        # KUTU BAŞLANGIÇ - HTML İÇİNDE STİL TANIMI
+        st.markdown("""<div class="login-container">""", unsafe_allow_html=True)
         
-        # Logo Kontrolü
-        logo_html = ""
+        # LOGO
         if os.path.exists(LOGO_DOSYA):
-            # Logoyu base64 yapıp html'e gömmek yerine basit img tagı kullanıyoruz
-            # Streamlit'te yerel dosyayı HTML içinde göstermek zordur, st.image kullanacağız
-            pass
+            st.image(LOGO_DOSYA, width=120)
         else:
-            # Logo yoksa Emoji kullan
-            logo_html = "<div style='font-size:50px;'>🏢</div>"
-
-        # HTML KUTU BAŞLANGIÇ
+            st.markdown("<h1>🏢</h1>", unsafe_allow_html=True)
+            
+        # BAŞLIKLAR
         st.markdown(f"""
-        <div class="glass-box">
-            {logo_html}
-            <div class="login-title">{data['site_adi']}</div>
-            <div class="login-subtitle">Yönetim Paneli Giriş</div>
+            <div class="login-header">{data['site_adi']}</div>
+            <div class="login-sub">Güvenli Yönetim Paneli Girişi</div>
         """, unsafe_allow_html=True)
         
-        # Logo varsa buraya ekleyelim (Kutunun içine denk gelmez ama üstüne gelir)
-        if os.path.exists(LOGO_DOSYA):
-            st.image(LOGO_DOSYA, width=100)
-
-        # Giriş Formu
-        u = st.text_input("Kullanıcı Kodu", placeholder="Örn: admin")
-        p = st.text_input("Şifre", type="password", placeholder="••••••")
+        # FORM ALANI
+        u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı adınızı giriniz")
+        p = st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz")
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        if st.button("GÜVENLİ GİRİŞ YAP", type="primary", use_container_width=True):
+        if st.button("SİSTEME GİRİŞ YAP", type="primary", use_container_width=True):
             user_data = kullanici_dogrula(u, p)
             if user_data:
                 st.session_state["giris"] = True
@@ -245,23 +232,32 @@ if not st.session_state["giris"]:
                 st.session_state["user"] = str(user_data["daire_no"])
                 st.rerun()
             else:
-                st.error("Giriş bilgileri hatalı!")
+                st.error("Hatalı Kullanıcı Adı veya Şifre")
         
-        # HTML KUTU BİTİŞ
-        st.markdown("</div>", unsafe_allow_html=True)
+        # KUTU BİTİŞ
+        st.markdown("""</div>""", unsafe_allow_html=True)
         
         # Alt Bilgi
-        st.markdown("<p style='text-align:center; color:rgba(255,255,255,0.5); margin-top:20px;'>© 2026 Zorlu Soft</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:white; margin-top:20px; text-shadow: 1px 1px 2px black;'>© 2026 Zorlu Soft Technology</p>", unsafe_allow_html=True)
 
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# ANA YAPI (SADECE GİRİŞ YAPILINCA GÖRÜNÜR)
+# ANA YAPI (SIDEBAR BUTONLARI)
 # ==============================================================================
 
-# SOL MENÜ
+# GİRİŞ YAPILDIKTAN SONRA ARKA PLANI BEYAZ YAP (Şehiri kaldır)
+st.markdown("""
+<style>
+[data-testid="stAppViewContainer"] {
+    background-image: none !important;
+    background-color: #f8f9fa !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 with st.sidebar:
     if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, width=150)
     else: st.markdown("<h1>🏢</h1>", unsafe_allow_html=True)
@@ -292,7 +288,7 @@ with st.sidebar:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
 
-# SAĞ İÇERİK
+# --- SAĞ İÇERİK ---
 menu = st.session_state["active_menu"]
 
 if st.session_state["rol"] == "admin":
