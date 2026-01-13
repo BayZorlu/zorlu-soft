@@ -1,0 +1,93 @@
+{
+    "site_adi": "Zorlu SECURE Towers",
+    "kasa_nakit": 80000.0,
+    "kasa_banka": 250000.0,
+    "arizalar": [
+        {
+            "id": 1,
+            "konu": "Garaj Kapısı",
+            "durum": "Bekliyor",
+            "tarih": "2026-01-13"
+        }
+    ],
+    "anketler": [
+        {
+            "id": 1,
+            "soru": "Güvenlik artsın mı?",
+            "secenekler": {
+                "Evet": 10,
+                "Hayır": 3
+            },
+            "durum": "Aktif"
+        }
+    ],
+    "rezervasyonlar": [],
+    "market_siparisleri": [
+        {
+            "urun": "Su",
+            "daire": "1"
+        },
+        {
+            "urun": "Ekmek",
+            "daire": "1"
+        }
+    ],
+    "loglar": [],
+    "daireler": {
+        "1": {
+            "sahip": "Ahmet Yılmaz",
+            "blok": "A",
+            "tel": "905551112233",
+            "borc": 130.0,
+            "gecmis": [
+                "2026-01-13 | Market: +100",
+                "2026-01-13 | Market: +30"
+            ],
+            "plaka": "46 KM 123",
+            "icra": false,
+            "notlar": [],
+            "aile": []
+        },
+        "2": {
+            "sahip": "Yeter Zorlu",
+            "blok": "A",
+            "tel": "905337140212",
+            "borc": 5400.0,
+            "gecmis": [
+                "Aidat x3"
+            ],
+            "plaka": "34 ZRL 01",
+            "icra": true,
+            "notlar": [
+                "Avukatta"
+            ],
+            "aile": [
+                "Mehmet"
+            ]
+        },
+        "3": {
+            "sahip": "Mehmet Öz",
+            "blok": "B",
+            "tel": "905557778899",
+            "borc": 0.0,
+            "gecmis": [],
+            "plaka": "-",
+            "icra": false,
+            "notlar": [],
+            "aile": []
+        },
+        "4": {
+            "sahip": "Caner Erkin",
+            "blok": "B",
+            "tel": "905550001122",
+            "borc": 750.0,
+            "gecmis": [
+                "Aidat"
+            ],
+            "plaka": "06 FB 1907",
+            "icra": false,
+            "notlar": [],
+            "aile": []
+        }
+    }
+}
