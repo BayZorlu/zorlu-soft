@@ -20,7 +20,7 @@ st.set_page_config(
     page_title="Zorlu Soft | SUITE", 
     layout="wide", 
     page_icon="🏢",
-    initial_sidebar_state="collapsed" 
+    initial_sidebar_state="expanded" # MENÜYÜ ZORLA AÇIK TUTACAĞIZ
 )
 
 # --- LOGO AYARLARI ---
@@ -31,115 +31,81 @@ def logo_getir():
     if os.path.exists(LOGO_DOSYA): return LOGO_DOSYA
     return LOGO_URL_YEDEK
 
-# --- CSS: DARK SIDE TASARIMI (KESİN ÇÖZÜM) ---
+# --- CSS: DARK MATTER TASARIMI (NATIVE SIDEBAR HACK) ---
 st.markdown("""
 <style>
-    /* 1. STANDARTLARI GİZLE */
-    [data-testid="stSidebar"] {display: none;}
-    [data-testid="collapsedControl"] {display: none;}
+    /* 1. GEREKSİZLERİ GİZLE */
     #MainMenu {visibility: hidden;} 
     footer {visibility: hidden;} 
-    [data-testid="stHeader"] {display: none;}
+    header {visibility: hidden;} 
     .stDeployButton {display:none;}
-    [data-testid="stToolbar"] {visibility: hidden !important;}
     
-    /* 2. ANA DÜZEN (Tam Ekran) */
-    .block-container {
-        padding: 0 !important;
-        max-width: 100%;
+    /* 2. MAIN UYGULAMA ARKA PLANI (SAĞ TARAF) */
+    .stApp {
+        background-color: #f8f9fa; /* Hafif Gri/Beyaz */
     }
-    .stApp { margin-top: -50px; background-color: #f3f4f6; } /* Sağ taraf açık gri */
-    
-    /* 3. SOL MENÜ (KOYU LACİVERT - ZORLA UYGULA) */
-    div[data-testid="column"]:nth-of-type(1) {
-        background-color: #1e293b !important; /* Çok koyu modern lacivert */
-        height: 100vh !important;
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 260px !important; /* Sabit Genişlik */
-        padding: 20px 10px !important;
-        z-index: 9999;
-        display: flex !important;
-        flex-direction: column;
+
+    /* 3. SOL MENÜ (NATIVE SIDEBAR) - İŞTE BURASI */
+    section[data-testid="stSidebar"] {
+        background-color: #1e293b !important; /* KOYU LACİVERT */
+        width: 300px !important; /* Genişlik */
         border-right: 1px solid #0f172a;
-        overflow-y: auto;
     }
     
-    /* Bu çok önemli: Sol kolonun içindeki tüm metinleri beyaz yap */
-    div[data-testid="column"]:nth-of-type(1) p, 
-    div[data-testid="column"]:nth-of-type(1) h1, 
-    div[data-testid="column"]:nth-of-type(1) h2, 
-    div[data-testid="column"]:nth-of-type(1) h3 {
-        color: white !important;
+    /* Menü içindeki tüm yazıları beyaz yap */
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3, 
+    section[data-testid="stSidebar"] p, 
+    section[data-testid="stSidebar"] span, 
+    section[data-testid="stSidebar"] div {
+        color: #e2e8f0 !important;
     }
 
-    /* 4. SAĞ İÇERİK (SOL MENÜ KADAR İTTİR) */
-    div[data-testid="column"]:nth-of-type(2) {
-        margin-left: 260px !important; 
-        width: calc(100% - 260px) !important;
-        padding: 40px !important;
-        background-color: #f3f4f6 !important;
-        min-height: 100vh;
+    /* Menü Kapatma Düğmesini Gizle (Sabit Kalsın) */
+    [data-testid="stSidebarCollapseButton"] {
+        display: none !important;
     }
 
-    /* 5. MENÜ BUTONLARI (SOL TARAFTAKİLER) */
-    div[data-testid="column"]:nth-of-type(1) .stButton button {
+    /* 4. MENÜ BUTONLARI (MODERN VE SOLA YASLI) */
+    section[data-testid="stSidebar"] .stButton button {
         width: 100% !important;
-        border-radius: 8px !important;
+        background-color: transparent !important; /* Şeffaf */
+        color: #94a3b8 !important; /* Soluk Gri */
         border: none !important;
-        background-color: transparent !important; /* Zemin şeffaf */
-        color: #cbd5e1 !important; /* Açık gri yazı */
         text-align: left !important;
-        padding: 12px 20px !important;
+        padding-left: 20px !important;
         font-size: 16px !important;
-        font-weight: 500 !important;
         margin-bottom: 5px !important;
         display: flex;
         align-items: center;
+        border-radius: 8px !important;
     }
-    
+
     /* Hover (Üzerine Gelince) */
-    div[data-testid="column"]:nth-of-type(1) .stButton button:hover {
-        background-color: #334155 !important; /* Daha açık lacivert */
+    section[data-testid="stSidebar"] .stButton button:hover {
+        background-color: #334155 !important; /* Biraz daha açık lacivert */
         color: white !important;
-        padding-left: 25px !important; /* Sağa kayma efekti */
-        transition: all 0.3s ease;
-    }
-    
-    /* Focus (Tıklanınca) */
-    div[data-testid="column"]:nth-of-type(1) .stButton button:focus {
-        background-color: #ef4444 !important; /* Zorlu Kırmızısı */
-        color: white !important;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        padding-left: 25px !important; /* Kayma efekti */
+        transition: all 0.2s;
     }
 
-    /* 6. LOGO ORTALAMA */
-    .sidebar-logo-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #334155;
+    /* Aktif/Focus (Tıklanınca) */
+    section[data-testid="stSidebar"] .stButton button:focus {
+        background-color: #ef4444 !important; /* ZORLU KIRMIZISI */
+        color: white !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    /* 7. KART TASARIMLARI (SAĞ TARAF) */
+    /* 5. METRIC KARTLARI (SAĞ TARAF) */
     .metric-card {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         text-align: center;
-        transition: 0.3s;
+        border: 1px solid #eee;
     }
-    .metric-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-    }
-    
-    /* Başlıklar */
-    h1, h2, h3 { font-family: 'Segoe UI', sans-serif; color: #1e293b; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -233,49 +199,41 @@ def pdf_olustur(daire_no, isim, tutar):
 if "giris" not in st.session_state: st.session_state["giris"] = False
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ EKRANI ---
+# --- GİRİŞ EKRANI (Split Screen) ---
 if not st.session_state["giris"]:
-    col_login_left, col_login_right = st.columns([2, 3])
-    with col_login_left:
-        # Sol taraf koyu panel (Giriş Ekranında)
+    col_l, col_r = st.columns([2, 3])
+    with col_l:
         st.markdown(f"""
-        <div style='background-color:#1e293b; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white; margin-left:-2rem; margin-top:-5rem; padding:50px;'>
+        <div style='background-color:#1e293b; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white; margin-left:-5rem; padding:50px;'>
             <h1 style='font-size:50px; color:white;'>ZORLU</h1>
-            <h3 style='color:#94a3b8;'>ARCHIVE SUITE v43</h3>
+            <h3 style='color:#94a3b8;'>ARCHIVE SUITE</h3>
         </div>
         """, unsafe_allow_html=True)
-        
-    with col_login_right:
+    with col_r:
         st.markdown("<br><br><br>", unsafe_allow_html=True)
         st.title("Güvenli Giriş")
-        u = st.text_input("Kullanıcı Kodu")
-        p = st.text_input("Şifre", type="password")
+        u = st.text_input("Kullanıcı Kodu"); p = st.text_input("Şifre", type="password")
         if st.button("GİRİŞ YAP", type="primary"):
             user_data = kullanici_dogrula(u, p)
             if user_data:
-                st.session_state["giris"] = True
-                st.session_state["rol"] = str(user_data["rol"])
-                st.session_state["user"] = str(user_data["daire_no"])
-                st.rerun()
+                st.session_state["giris"] = True; st.session_state["rol"]=str(user_data["rol"]); st.session_state["user"]=str(user_data["daire_no"]); st.rerun()
             else: st.error("Hatalı!")
-    
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# ANA YAPI (SOL KOYU - SAĞ AÇIK)
+# ANA YAPI (ARTIK SIDEBAR KULLANIYORUZ - AMA ÖZEL TASARIMLI)
 # ==============================================================================
 
-col_nav, col_main = st.columns([1, 5]) 
-
-# --- SOL MENÜ (KOYU LACİVERT) ---
-with col_nav:
-    st.markdown('<div class="sidebar-logo-container">', unsafe_allow_html=True)
-    if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, width=140)
-    else: st.markdown("<h2 style='color:white; text-align:center;'>ZORLU</h2>", unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+# 1. SOL MENÜ (Native Sidebar ama Hacklenmiş)
+with st.sidebar:
+    if os.path.exists(LOGO_DOSYA): st.image(LOGO_DOSYA, width=150)
+    else: st.markdown("<h1>🏢</h1>", unsafe_allow_html=True)
     
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Yönetici Menüsü
     if st.session_state["rol"] == "admin":
         menu_items = [
             ("Genel Bakış", "🚀"), ("Giderler", "💸"), ("Hesaplar", "👥"), 
@@ -285,7 +243,7 @@ with col_nav:
             ("Bulut Arşiv", "☁️"), ("Raporlar", "📄")
         ]
         for label, icon in menu_items:
-            # Artık yazı rengi CSS'den geliyor (Beyaz/Gri)
+            # Butonlar artık sidebar içinde
             if st.button(f"{icon}  {label}", key=f"nav_{label}"):
                 st.session_state["active_menu"] = label
                 st.rerun()
@@ -293,6 +251,7 @@ with col_nav:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit"): cikis()
 
+    # Sakin Menüsü
     elif st.session_state["rol"] == "sakin":
         menu_items = [("Durum", "👤"), ("Ödeme", "💳"), ("Talep", "📨")]
         for label, icon in menu_items:
@@ -302,108 +261,104 @@ with col_nav:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
 
-# --- SAĞ İÇERİK (BEYAZ) ---
-with col_main:
-    menu = st.session_state["active_menu"]
-    
-    if st.session_state["rol"] == "admin":
-        if menu == "Genel Bakış":
-            st.title("🚀 Kokpit")
-            c1, c2, c3, c4 = st.columns(4)
-            # Kartları HTML ile yapalım ki daha şık olsun
-            c1.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Kasa</h3><h1 style='color:#1e293b'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
-            c2.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Gider</h3><h1 style='color:#ef4444'>{sum(g['tutar'] for g in data['giderler']):,.0f} ₺</h1></div>", unsafe_allow_html=True)
-            c3.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Otopark</h3><h1 style='color:#1e293b'>{len([d for d in data['daireler'].values() if d['plaka']!='-'])}</h1></div>", unsafe_allow_html=True)
-            c4.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Sipariş</h3><h1 style='color:#1e293b'>{len(data['market_siparisleri'])}</h1></div>", unsafe_allow_html=True)
-            
-            st.markdown("<br>", unsafe_allow_html=True)
-            
-            cl, cr = st.columns([2, 1])
-            with cl:
-                st.subheader("Mali Durum")
-                toplam_alacak = sum(d['borc'] for d in data['daireler'].values())
-                df_pie = pd.DataFrame({
-                    "Durum": ["Kasa", "Alacaklar", "Giderler"],
-                    "Tutar": [data['kasa_nakit'], toplam_alacak, sum(g['tutar'] for g in data['giderler'])]
-                })
-                fig = px.pie(df_pie, values='Tutar', names='Durum', hole=0.7, color_discrete_sequence=["#10b981", "#f59e0b", "#ef4444"])
-                fig.update_layout(showlegend=True, margin=dict(t=0, b=0, l=0, r=0))
-                st.plotly_chart(fig, use_container_width=True)
-            
-            with cr:
-                st.subheader("Yönetim")
-                if st.button("💾 VERİLERİ ZORLA KAYDET", type="primary", use_container_width=True): 
-                    kaydet(data); st.success("Yedeklendi")
-                st.info("Her işlemde otomatik yedek alınır.")
+# 2. SAĞ İÇERİK (STANDART ALAN)
+menu = st.session_state["active_menu"]
 
-        # DİĞER SAYFALAR (GİDERLER, HESAPLAR VS.)
-        elif menu == "Giderler":
-            st.title("💸 Giderler")
-            c1, c2 = st.columns([1,2])
-            with c1:
-                with st.form("gider"):
-                    gt = st.selectbox("Tür", ["Enerji", "Personel", "Bakım"]); ga = st.text_input("Açıklama"); gm = st.number_input("Tutar")
-                    if st.form_submit_button("Ekle", use_container_width=True):
-                        data["giderler"].append({"tarih":str(datetime.date.today()),"tur":gt,"aciklama":ga,"tutar":gm})
-                        data["kasa_nakit"] -= gm; kaydet(data); st.success("Eklendi"); st.rerun()
-            with c2: st.dataframe(pd.DataFrame(data["giderler"]), use_container_width=True)
-
-        elif menu == "Hesaplar":
-            st.title("👥 Hesaplar")
-            src = st.text_input("🔍 Daire Ara")
-            filtre = None
-            if src:
-                 for k,v in data["daireler"].items():
-                    if src.lower() in v["sahip"].lower() or src == k: filtre = k; break
-            secilen = filtre if filtre else st.selectbox("Daire Seç", list(data["daireler"].keys()))
-            info = data["daireler"][secilen]
-            st.markdown(f"<div style='background:white; padding:20px; border-radius:10px; border:1px solid #ddd'><h2>{info['sahip']}</h2><h1 style='color:#ef4444;'>{info['borc']} ₺</h1></div>", unsafe_allow_html=True)
-            st.markdown("<br>", unsafe_allow_html=True)
-            c1, c2 = st.columns([2,1])
-            with c1:
-                 if info["gecmis"]:
-                    temiz = [x.split("|") if "|" in x else ["-", x] for x in reversed(info["gecmis"])]
-                    st.dataframe(pd.DataFrame(temiz, columns=["Tarih", "İşlem"]), use_container_width=True)
-            with c2:
-                t = st.number_input("Tahsilat"); 
-                if st.button("Ödeme Al", use_container_width=True): 
-                    info["borc"]-=t; data["kasa_nakit"]+=t; info["gecmis"].append(f"{datetime.date.today()} | Ödeme: {t}"); kaydet(data); st.success("Tamam"); st.rerun()
-                pdf_data = pdf_olustur(secilen, info["sahip"], t if t > 0 else info["borc"])
-                if pdf_data: st.download_button("📄 Makbuz", pdf_data, f"makbuz_{secilen}.pdf", "application/pdf", use_container_width=True)
-
-        elif menu == "Harita":
-            st.title("🏘️ Bloklar")
-            cols = st.columns(4)
-            for i, (no, info) in enumerate(sorted(data["daireler"].items())):
-                with cols[i % 4]:
-                    color = "#ef4444" if info["borc"] > 0 else "#10b981" # Kırmızı / Yeşil
-                    st.markdown(f"<div style='background:white; padding:20px; border-radius:10px; border-top:5px solid {color}; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:10px;'><b>Daire {no}</b><br>{info['sahip']}<br><b>{info['borc']} ₺</b></div>", unsafe_allow_html=True)
+if st.session_state["rol"] == "admin":
+    if menu == "Genel Bakış":
+        st.title("🚀 Kokpit")
+        c1, c2, c3, c4 = st.columns(4)
+        c1.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Kasa</h3><h1 style='color:#1e293b'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
+        c2.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Gider</h3><h1 style='color:#ef4444'>{sum(g['tutar'] for g in data['giderler']):,.0f} ₺</h1></div>", unsafe_allow_html=True)
+        c3.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Otopark</h3><h1 style='color:#1e293b'>{len([d for d in data['daireler'].values() if d['plaka']!='-'])}</h1></div>", unsafe_allow_html=True)
+        c4.markdown(f"<div class='metric-card'><h3 style='color:#64748b'>Sipariş</h3><h1 style='color:#1e293b'>{len(data['market_siparisleri'])}</h1></div>", unsafe_allow_html=True)
         
-        elif menu == "Otopark": st.title("🚗 Otopark"); st.dataframe(pd.DataFrame([{"Plaka":v["plaka"], "Sahip":v["sahip"]} for v in data["daireler"].values() if v["plaka"]!="-"]), use_container_width=True)
-        elif menu == "Anketler":
-            st.title("📊 Anketler")
-            for a in data["anketler"]:
-                st.write(a["soru"])
-                st.plotly_chart(px.bar(pd.DataFrame(list(a["secenekler"].items()), columns=["Şık","Oy"]), x="Oy", y="Şık"), use_container_width=True)
-        elif menu == "Market":
-            st.title("🛒 Siparişler"); 
-            if data["market_siparisleri"]:
-                st.dataframe(pd.DataFrame(data["market_siparisleri"]), use_container_width=True)
-                if st.button("Temizle"): data["market_siparisleri"]=[]; kaydet(data); st.rerun()
-            else: st.info("Sipariş yok")
-        elif menu == "Hukuk/İcra": st.title("⚖️ İcra"); st.write([v for v in data["daireler"].values() if v["icra"]])
-        elif menu == "Kanban": st.title("📋 Arızalar"); st.write(data["arizalar"])
-        elif menu == "Rezervasyon": st.title("📅 Rezervasyon"); st.write(data["rezervasyonlar"])
-        elif menu == "WhatsApp": st.title("💬 WhatsApp"); st.info("Mesaj servisi aktif.")
-        elif menu == "Otomasyon": st.title("🤖 Otomasyon"); st.button("Aidat Dağıt")
-        elif menu == "Bulut Arşiv": st.title("☁️ Arşiv"); st.file_uploader("Dosya")
-        elif menu == "Raporlar": st.dataframe(pd.DataFrame.from_dict(data["daireler"], orient='index'))
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        cl, cr = st.columns([2, 1])
+        with cl:
+            st.subheader("Mali Durum")
+            toplam_alacak = sum(d['borc'] for d in data['daireler'].values())
+            df_pie = pd.DataFrame({
+                "Durum": ["Kasa", "Alacaklar", "Giderler"],
+                "Tutar": [data['kasa_nakit'], toplam_alacak, sum(g['tutar'] for g in data['giderler'])]
+            })
+            fig = px.pie(df_pie, values='Tutar', names='Durum', hole=0.7, color_discrete_sequence=["#10b981", "#f59e0b", "#ef4444"])
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with cr:
+            st.subheader("Yönetim")
+            if st.button("💾 VERİLERİ ZORLA KAYDET", type="primary", use_container_width=True): 
+                kaydet(data); st.success("Yedeklendi")
+            st.info("Her işlemde otomatik yedek alınır.")
 
-    # SAKİN
-    elif st.session_state["rol"] == "sakin":
-        no = st.session_state["user"]; info = data["daireler"][no]
-        if menu == "Durum": st.title(f"Merhaba, {info['sahip']}"); st.metric("Borcunuz", info["borc"])
-        elif menu == "Ödeme": st.title("Geçmiş"); temiz = [x.split("|") if "|" in x else ["-", x] for x in reversed(info["gecmis"])]; st.table(pd.DataFrame(temiz, columns=["Tarih","İşlem"]))
-        elif menu == "Talep":
-            st.title("Talep")
-            if st.button("Su İste"): data["market_siparisleri"].append({"urun":"Su","daire":no}); info["borc"]+=100; kaydet(data); st.success("İstendi")
+    elif menu == "Giderler":
+        st.title("💸 Giderler")
+        c1, c2 = st.columns([1,2])
+        with c1:
+            with st.form("gider"):
+                gt = st.selectbox("Tür", ["Enerji", "Personel", "Bakım"]); ga = st.text_input("Açıklama"); gm = st.number_input("Tutar")
+                if st.form_submit_button("Ekle", use_container_width=True):
+                    data["giderler"].append({"tarih":str(datetime.date.today()),"tur":gt,"aciklama":ga,"tutar":gm})
+                    data["kasa_nakit"] -= gm; kaydet(data); st.success("Eklendi"); st.rerun()
+        with c2: st.dataframe(pd.DataFrame(data["giderler"]), use_container_width=True)
+
+    elif menu == "Hesaplar":
+        st.title("👥 Hesaplar")
+        src = st.text_input("🔍 Daire Ara")
+        filtre = None
+        if src:
+                for k,v in data["daireler"].items():
+                if src.lower() in v["sahip"].lower() or src == k: filtre = k; break
+        secilen = filtre if filtre else st.selectbox("Daire Seç", list(data["daireler"].keys()))
+        info = data["daireler"][secilen]
+        st.markdown(f"<div style='background:white; padding:20px; border-radius:10px; border:1px solid #ddd'><h2>{info['sahip']}</h2><h1 style='color:#ef4444;'>{info['borc']} ₺</h1></div>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        c1, c2 = st.columns([2,1])
+        with c1:
+                if info["gecmis"]:
+                temiz = [x.split("|") if "|" in x else ["-", x] for x in reversed(info["gecmis"])]
+                st.dataframe(pd.DataFrame(temiz, columns=["Tarih", "İşlem"]), use_container_width=True)
+        with c2:
+            t = st.number_input("Tahsilat"); 
+            if st.button("Ödeme Al", use_container_width=True): 
+                info["borc"]-=t; data["kasa_nakit"]+=t; info["gecmis"].append(f"{datetime.date.today()} | Ödeme: {t}"); kaydet(data); st.success("Tamam"); st.rerun()
+            pdf_data = pdf_olustur(secilen, info["sahip"], t if t > 0 else info["borc"])
+            if pdf_data: st.download_button("📄 Makbuz", pdf_data, f"makbuz_{secilen}.pdf", "application/pdf", use_container_width=True)
+
+    elif menu == "Harita":
+        st.title("🏘️ Bloklar")
+        cols = st.columns(4)
+        for i, (no, info) in enumerate(sorted(data["daireler"].items())):
+            with cols[i % 4]:
+                color = "#ef4444" if info["borc"] > 0 else "#10b981" # Kırmızı / Yeşil
+                st.markdown(f"<div style='background:white; padding:20px; border-radius:10px; border-top:5px solid {color}; box-shadow:0 2px 5px rgba(0,0,0,0.05); margin-bottom:10px;'><b>Daire {no}</b><br>{info['sahip']}<br><b>{info['borc']} ₺</b></div>", unsafe_allow_html=True)
+    
+    elif menu == "Otopark": st.title("🚗 Otopark"); st.dataframe(pd.DataFrame([{"Plaka":v["plaka"], "Sahip":v["sahip"]} for v in data["daireler"].values() if v["plaka"]!="-"]), use_container_width=True)
+    elif menu == "Anketler":
+        st.title("📊 Anketler")
+        for a in data["anketler"]:
+            st.write(a["soru"])
+            st.plotly_chart(px.bar(pd.DataFrame(list(a["secenekler"].items()), columns=["Şık","Oy"]), x="Oy", y="Şık"), use_container_width=True)
+    elif menu == "Market":
+        st.title("🛒 Siparişler"); 
+        if data["market_siparisleri"]:
+            st.dataframe(pd.DataFrame(data["market_siparisleri"]), use_container_width=True)
+            if st.button("Temizle"): data["market_siparisleri"]=[]; kaydet(data); st.rerun()
+        else: st.info("Sipariş yok")
+    elif menu == "Hukuk/İcra": st.title("⚖️ İcra"); st.write([v for v in data["daireler"].values() if v["icra"]])
+    elif menu == "Kanban": st.title("📋 Arızalar"); st.write(data["arizalar"])
+    elif menu == "Rezervasyon": st.title("📅 Rezervasyon"); st.write(data["rezervasyonlar"])
+    elif menu == "WhatsApp": st.title("💬 WhatsApp"); st.info("Mesaj servisi aktif.")
+    elif menu == "Otomasyon": st.title("🤖 Otomasyon"); st.button("Aidat Dağıt")
+    elif menu == "Bulut Arşiv": st.title("☁️ Arşiv"); st.file_uploader("Dosya")
+    elif menu == "Raporlar": st.dataframe(pd.DataFrame.from_dict(data["daireler"], orient='index'))
+
+# SAKİN
+elif st.session_state["rol"] == "sakin":
+    no = st.session_state["user"]; info = data["daireler"][no]
+    if menu == "Durum": st.title(f"Merhaba, {info['sahip']}"); st.metric("Borcunuz", info["borc"])
+    elif menu == "Ödeme": st.title("Geçmiş"); temiz = [x.split("|") if "|" in x else ["-", x] for x in reversed(info["gecmis"])]; st.table(pd.DataFrame(temiz, columns=["Tarih","İşlem"]))
+    elif menu == "Talep":
+        st.title("Talep")
+        if st.button("Su İste"): data["market_siparisleri"].append({"urun":"Su","daire":no}); info["borc"]+=100; kaydet(data); st.success("İstendi")
