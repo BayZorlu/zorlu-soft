@@ -26,7 +26,7 @@ st.set_page_config(
 # --- LOGO AYARLARI (Sadece PDF için) ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: TASARIM ---
+# --- CSS: BÜTÜNLEŞİK KUTU TASARIMI ---
 st.markdown("""
 <style>
     /* 1. GEREKSİZLERİ GİZLE */
@@ -35,7 +35,7 @@ st.markdown("""
     footer {visibility: hidden;} 
     #MainMenu {visibility: hidden;} 
 
-    /* 2. GİRİŞ EKRANI ARKA PLANI */
+    /* 2. ARKA PLAN (ŞEHİR MANZARASI) */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop");
         background-size: cover;
@@ -43,11 +43,65 @@ st.markdown("""
         background-repeat: no-repeat;
     }
     
+    /* İçerik alanını şeffaf yap */
     .block-container {
         background-color: transparent !important;
+        padding-top: 50px !important; /* Üstten biraz boşluk */
     }
 
-    /* 3. SOL MENÜ (KOYU VE SABİT) */
+    /* 3. ORTA SÜTUNU BEYAZ KUTUYA ÇEVİR (SIHİR BURADA) */
+    /* Giriş ekranındaki orta sütunu (2. sütun) hedefliyoruz */
+    div[data-testid="column"]:nth-of-type(2) > div > div {
+        background: rgba(255, 255, 255, 0.95); /* %95 Opak Beyaz */
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    /* 4. GİRİŞ BAŞLIĞI STİLİ */
+    .login-header {
+        font-family: 'Helvetica', sans-serif;
+        color: #1e293b; /* Koyu Lacivert */
+        font-weight: 900;
+        font-size: 32px;
+        text-align: center;
+        margin-bottom: 30px;
+        letter-spacing: -0.5px;
+        text-transform: uppercase;
+    }
+
+    /* 5. GİRİŞ KUTULARI (INPUT) */
+    .stTextInput input {
+        border-radius: 10px !important;
+        padding: 12px 15px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #f8fafc !important;
+        color: #334155 !important;
+    }
+    
+    /* Focus olunca */
+    .stTextInput input:focus {
+        border-color: #ef4444 !important; /* Zorlu Kırmızı */
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+    }
+
+    /* 6. GİRİŞ BUTONU */
+    .stButton button {
+        width: 100%;
+        border-radius: 10px !important;
+        font-weight: bold !important;
+        background-color: #ef4444 !important; /* Kırmızı */
+        border: none !important;
+        color: white !important;
+        padding: 12px !important;
+        margin-top: 10px;
+    }
+    .stButton button:hover {
+        background-color: #dc2626 !important; /* Koyu Kırmızı */
+    }
+
+    /* 7. SOL MENÜ (KOYU VE SABİT) */
     section[data-testid="stSidebar"] {
         background-color: #1e293b !important;
         border-right: 1px solid #0f172a;
@@ -57,34 +111,14 @@ st.markdown("""
 
     /* Menü Butonları */
     [data-testid="stSidebar"] .stButton button {
-        width: 100%;
         background-color: transparent !important;
         border: 1px solid rgba(255,255,255,0.05) !important;
         color: #cbd5e1 !important;
         text-align: left;
-        padding-left: 15px;
-        transition: 0.3s;
     }
     [data-testid="stSidebar"] .stButton button:hover {
         background-color: #ef4444 !important;
         color: white !important;
-        padding-left: 20px;
-    }
-
-    /* 4. GİRİŞ KUTUSU */
-    .login-container {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 50px;
-        border-radius: 15px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        text-align: center;
-        margin-top: 80px;
-    }
-    
-    .stTextInput input {
-        border-radius: 8px !important;
-        padding: 15px !important;
-        border: 1px solid #e2e8f0 !important;
     }
 
 </style>
@@ -180,15 +214,24 @@ def pdf_olustur(daire_no, isim, tutar):
 if "giris" not in st.session_state: st.session_state["giris"] = False
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ EKRANI ---
+# --- GİRİŞ EKRANI (BÜTÜNLEŞİK KUTU) ---
 if not st.session_state["giris"]:
-    c1, c2, c3 = st.columns([1, 2, 1])
+    # Sayfayı 3'e böl: Sol Boş, Orta Kutu, Sağ Boş
+    c1, c2, c3 = st.columns([1, 1.5, 1]) # Ortayı biraz genişlettim
+    
     with c2:
-        st.markdown("""<div class="login-container">""", unsafe_allow_html=True)
-        st.markdown("<h1 style='color:#1e293b; font-weight:900; font-size:36px; margin-bottom:40px; letter-spacing:-1px;'>KORUPARK SİTE YÖNETİMİ</h1>", unsafe_allow_html=True)
+        # Üsten biraz boşluk bırak
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        
+        # BAŞLIK (Artık kutunun içinde olacak çünkü kutu SÜTUNU kapsıyor)
+        st.markdown('<div class="login-header">KORUPARK SİTE YÖNETİMİ</div>', unsafe_allow_html=True)
+        
+        # GİRİŞ FORMU
         u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı adınızı giriniz")
         p = st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz")
+        
         st.markdown("<br>", unsafe_allow_html=True)
+        
         if st.button("GİRİŞ YAP", type="primary", use_container_width=True):
             user_data = kullanici_dogrula(u, p)
             if user_data:
@@ -198,21 +241,36 @@ if not st.session_state["giris"]:
                 st.rerun()
             else:
                 st.error("Hatalı Giriş Bilgileri")
-        st.markdown("""</div>""", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:white; margin-top:20px; text-shadow: 1px 1px 4px black; font-weight:bold;'>© 2026 KoruPark Yönetim Sistemleri</p>", unsafe_allow_html=True)
+        
+        st.markdown("<p style='text-align:center; color:#64748b; margin-top:20px; font-size:12px;'>© 2026 Zorlu Soft</p>", unsafe_allow_html=True)
+
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# ANA YAPI
+# ANA YAPI (GİRİŞ SONRASI)
 # ==============================================================================
 
-st.markdown("""<style>[data-testid="stAppViewContainer"] {background-image: none !important; background-color: #f8f9fa !important;}</style>""", unsafe_allow_html=True)
+# Giriş yapıldıktan sonra arka planı normale (beyaz/gri) döndür
+st.markdown("""
+<style>
+[data-testid="stAppViewContainer"] {
+    background-image: none !important;
+    background-color: #f8f9fa !important;
+}
+/* Giriş ekranındaki özel kutu stilini kaldır ki içerik bozulmasın */
+div[data-testid="column"]:nth-of-type(2) > div > div {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# SOL MENÜ (ÜSTÜ BOŞ, ALTTA VERSİYON)
+# SOL MENÜ
 with st.sidebar:
-    # Üstte boşluk bırakalım ki butonlar tavana yapışmasın
     st.markdown("<br>", unsafe_allow_html=True)
     
     if st.session_state["rol"] == "admin":
@@ -239,9 +297,8 @@ with st.sidebar:
         st.markdown("<br>", unsafe_allow_html=True)
         if st.button("🚪 Çıkış", key="exit_s"): cikis()
     
-    # EN ALTA VERSİYON BİLGİSİ
     st.markdown("---")
-    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.3); font-size:11px;'>Zorlu Soft v51.0</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:rgba(255,255,255,0.3); font-size:11px;'>Zorlu Soft v52.0</div>", unsafe_allow_html=True)
 
 # SAĞ İÇERİK
 menu = st.session_state["active_menu"]
