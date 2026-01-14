@@ -23,22 +23,23 @@ st.set_page_config(
     initial_sidebar_state="expanded" 
 )
 
-# --- CSS: v77.0 ULTIMATE ARCHITECTURE (AGRESSIVE GLASSMOPHISM) ---
+# --- CSS: v78.0 ULTIMATE GLASSMOPHISM ARCHITECTURE ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* 1. TÜM ANA KATMANLARI ZORLA ŞEFFAFLAŞTIR (RESİMDEKİ GRİ KATMANI SİLER) */
-    .stApp, [data-testid="stAppViewMain"], .main, [data-testid="stHeader"], 
+    /* 1. TÜM KONTEYNERLARI ZORLA ŞEFFAFLAŞTIR (BEYAZ KARELERİ SİLER) */
+    [data-testid="stAppViewContainer"], [data-testid="stHeader"], .main, 
     [data-testid="stVerticalBlock"], [data-testid="stHorizontalBlock"], 
-    .element-container, .stMarkdown, [data-testid="stExpander"], .stBlock {
+    .stColumn, .stContainer, [data-testid="stExpander"] {
         background-color: transparent !important;
         background: transparent !important;
         border: none !important;
+        box-shadow: none !important;
     }
 
     /* 2. ANA ARKA PLAN: DERİN RADIAL GRADIENT */
-    [data-testid="stAppViewContainer"] {
+    .stApp {
         background: radial-gradient(circle at top right, #F8F9FC 0%, #DDE4EE 100%) !important;
         background-attachment: fixed !important;
     }
@@ -51,9 +52,10 @@ st.markdown("""
         border: 1px solid rgba(255, 255, 255, 0.5) !important; /* Kristal kenarlık */
         border-radius: 32px !important;
         padding: 35px !important;
-        box-shadow: 0 12px 35px rgba(31, 38, 135, 0.05) !important;
+        box-shadow: 0 12px 35px rgba(31, 38, 135, 0.04) !important;
         transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
         height: 100% !important;
+        margin-bottom: 20px;
     }
     
     .metric-card:hover {
@@ -66,7 +68,7 @@ st.markdown("""
     .metric-card h3 { color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 12px; }
     .metric-card h1 { color: #1e293b; font-size: 44px; font-weight: 800; margin: 0; letter-spacing: -2px; }
 
-    /* 4. GRAFİK KONTEYNERINI ZORLA ŞEFFAF YAP (RESİMDEKİ GRİ KUTUYU SİLER) */
+    /* 4. GRAFİK KONTEYNERINI ZORLA ŞEFFAF YAP */
     [data-testid="stPlotlyChart"], .plotly, .user-select-none {
         background-color: transparent !important;
         background: transparent !important;
@@ -179,6 +181,9 @@ with st.sidebar:
     if st.button("👥 Hesaplar & Aidat"): st.session_state["active_menu"] = "Hesaplar"; st.rerun()
     if st.button("🏘️ Blok Haritası"): st.session_state["active_menu"] = "Harita"; st.rerun()
     if st.button("⚖️ Hukuk & İcra"): st.session_state["active_menu"] = "Hukuk"; st.rerun()
+    if st.button("💬 WhatsApp"): st.session_state["active_menu"] = "WhatsApp"; st.rerun()
+    if st.button("☁️ Bulut Arşiv"): st.session_state["active_menu"] = "Arşiv"; st.rerun()
+    if st.button("📄 Raporlar"): st.session_state["active_menu"] = "Raporlar"; st.rerun()
     if st.button("🚪 Güvenli Çıkış"): st.session_state["giris"] = False; st.rerun()
 
 menu = st.session_state["active_menu"]
@@ -187,10 +192,10 @@ st.markdown(f"<h1 style='font-weight: 800; color: #1E293B; margin-bottom: 25px;'
 if menu == "Genel Bakış":
     toplam_alacak = sum(d['borc'] for d in data['daireler'].values())
     c1, c2, c3, c4 = st.columns(4)
-    with c1: st.markdown(f"<div class='metric-card'><h3>GÜNCEL KASA</h3><h1 style='color:#0066FF'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
-    with c2: st.markdown(f"<div class='metric-card'><h3>TOPLAM ALACAK</h3><h1 style='color:#FF3B30'>{toplam_alacak:,.0f} ₺</h1></div>", unsafe_allow_html=True)
-    with c3: st.markdown(f"<div class='metric-card'><h3>TOPLAM GİDER</h3><h1>0 ₺</h1></div>", unsafe_allow_html=True)
-    with c4: st.markdown(f"<div class='metric-card'><h3>DAİRE SAYISI</h3><h1>{len(data['daireler'])}</h1></div>", unsafe_allow_html=True)
+    with c1: st.markdown(f"<div class='metric-card'><h3>KASA</h3><h1 style='color:#0066FF'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
+    with c2: st.markdown(f"<div class='metric-card'><h3>ALACAK</h3><h1 style='color:#FF3B30'>{toplam_alacak:,.0f} ₺</h1></div>", unsafe_allow_html=True)
+    with c3: st.markdown(f"<div class='metric-card'><h3>GİDER</h3><h1>0 ₺</h1></div>", unsafe_allow_html=True)
+    with c4: st.markdown(f"<div class='metric-card'><h3>DAİRE</h3><h1>{len(data['daireler'])}</h1></div>", unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     cl, cr = st.columns([2, 1])
