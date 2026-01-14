@@ -26,7 +26,7 @@ st.set_page_config(
 # --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: TAM TÜRKÇE VE PREMIUM TASARIM ---
+# --- CSS: GÖRSEL DÜZELTMELER VE TÜRKÇELEŞTİRME ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -36,7 +36,7 @@ st.markdown("""
         font-family: 'Poppins', sans-serif;
     }
 
-    /* 1. TÜM İNGİLİZCE MENÜLERİ VE BUTONLARI GİZLE */
+    /* 1. GEREKSİZLERİ GİZLE */
     .stDeployButton, 
     [data-testid="stHeaderActionElements"], 
     [data-testid="stToolbar"],
@@ -44,37 +44,53 @@ st.markdown("""
     #MainMenu {
         display: none !important;
     }
-    
-    /* Header'ı tamamen yok et */
     header[data-testid="stHeader"] {
         background: transparent !important;
         height: 0px !important;
         visibility: hidden !important;
     }
 
-    /* 2. ŞİFRE KUTUSUNDAKİ İNGİLİZCE 'GÖZ' İKONUNU GİZLE */
-    /* Bu kod, o İngilizce tooltip çıkan butonu tamamen kaldırır */
-    button[aria-label="Show password text"], 
-    button[aria-label="Hide password text"] {
-        display: none !important;
-    }
-
-    /* 3. DOSYA YÜKLEME ALANI TÜRKÇELEŞTİRME HİLESİ */
+    /* 2. DOSYA YÜKLEME ALANI TÜRKÇELEŞTİRME */
     [data-testid="stFileUploaderDropzone"] div div::before {
         content: "Dosyaları buraya sürükleyin veya seçin";
         visibility: visible;
         font-weight: 600;
         color: #1E293B;
     }
-    /* Orijinal İngilizce metni gizle */
     [data-testid="stFileUploaderDropzone"] div div {
         visibility: hidden; 
     }
     [data-testid="stFileUploaderDropzone"] div div svg {
-        visibility: visible !important; /* İkonu geri getir */
+        visibility: visible !important;
     }
 
-    /* 4. ARKA PLAN VE ANA YAPI */
+    /* 3. INPUT KUTULARINDAKİ RENK ÇAKIŞMASINI DÜZELTME (FIX) */
+    /* Streamlit'in kendi border'ını ve shadow'unu sıfırla */
+    .stTextInput > div > div {
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+    }
+    
+    /* Bizim özel stilimiz (Tek Renk, Temiz) */
+    .stTextInput input {
+        border: 1px solid #cbd5e1 !important; /* Tek ince gri çizgi */
+        border-radius: 12px !important;
+        padding: 12px 15px !important;
+        background-color: #FFFFFF !important;
+        color: #1E293B !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important;
+        transition: all 0.3s;
+    }
+    
+    /* Tıklayınca (Focus) sadece Mavi olsun */
+    .stTextInput input:focus {
+        border-color: #0066FF !important;
+        box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15) !important;
+        outline: none !important;
+    }
+
+    /* 4. ARKA PLAN */
     [data-testid="stAppViewContainer"] {
         background: linear-gradient(to bottom, #F8F9FC 0%, #F1F5F9 100%) !important;
         background-image: none !important;
@@ -84,7 +100,7 @@ st.markdown("""
         padding-bottom: 35px !important;
     }
 
-    /* 5. SOL MENÜ (BEYAZ & PREMIUM) */
+    /* 5. SOL MENÜ */
     section[data-testid="stSidebar"] {
         background-color: #FFFFFF !important;
         box-shadow: 4px 0 15px -5px rgba(0,0,0,0.05);
@@ -106,22 +122,18 @@ st.markdown("""
         border-radius: 14px !important;
         display: flex;
         align-items: center;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.3s;
     }
-    
     [data-testid="stSidebar"] .stButton button span {
         filter: grayscale(100%) opacity(0.6); 
         margin-right: 14px;
         font-size: 19px;
     }
-
     [data-testid="stSidebar"] .stButton button:hover {
         background-color: #F8FAFC !important;
         color: #0F172A !important;
         transform: translateX(6px);
     }
-
-    /* AKTİF BUTON */
     [data-testid="stSidebar"] .stButton button:focus {
         background-color: #EBF5FF !important;
         color: #0066FF !important;
@@ -143,21 +155,7 @@ st.markdown("""
         border: 1px solid rgba(255,255,255,0.5);
     }
 
-    /* 7. GİRDİLER VE BUTONLAR */
-    .stTextInput input, .stNumberInput input, .stSelectbox select {
-        border-radius: 14px !important;
-        padding: 14px 16px !important;
-        border: 1px solid #E2E8F0 !important;
-        background-color: #FFFFFF !important;
-        color: #1E293B !important;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important;
-        transition: all 0.3s;
-    }
-    .stTextInput input:focus, .stNumberInput input:focus, .stSelectbox select:focus {
-        border-color: #0066FF !important;
-        box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1) !important;
-    }
-    
+    /* 7. BUTON STİLİ */
     div.stButton > button[type="primary"] {
         background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%) !important;
         border-radius: 14px !important;
@@ -182,7 +180,7 @@ st.markdown("""
         box-shadow: 0 10px 20px -10px rgba(0,0,0,0.05);
         border: 1px solid #F1F5F9;
         text-align: left;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.3s;
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -306,7 +304,7 @@ def pdf_olustur(daire_no, isim, tutar):
 if "giris" not in st.session_state: st.session_state["giris"] = False
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ EKRANI (FULL TÜRKÇE) ---
+# --- GİRİŞ EKRANI (FULL TÜRKÇE & GÖZ İKONLU) ---
 if not st.session_state["giris"]:
     st.markdown("""<style>[data-testid="stAppViewContainer"] {
         background-image: linear-gradient(135deg, #f0f2f5 0%, #d9e2ec 100%) !important;
@@ -327,20 +325,9 @@ if not st.session_state["giris"]:
 
         u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı kodunuzu giriniz")
         
-        # --- ÖZEL ŞİFRE ALANI ---
-        # Session state ile şifre görünürlüğünü kontrol ediyoruz
-        if "sifre_goster" not in st.session_state:
-            st.session_state["sifre_goster"] = False
-            
-        # Checkbox ile görünürlük kontrolü
-        # İngilizce ikon CSS ile gizlendi, yerine bu Türkçe checkbox geldi
-        p = st.text_input("Şifre", type="text" if st.session_state["sifre_goster"] else "password", placeholder="Şifrenizi giriniz")
+        # Standart şifre kutusu (Göz ikonu kendiliğinden gelir, Checkbox yok)
+        p = st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz")
         
-        if st.checkbox("👁️ Şifreyi Göster"):
-            st.session_state["sifre_goster"] = True
-        else:
-            st.session_state["sifre_goster"] = False
-            
         st.markdown("<br>", unsafe_allow_html=True)
         
         if st.button("SİSTEME GİRİŞ YAP", type="primary", use_container_width=True):
@@ -353,7 +340,7 @@ if not st.session_state["giris"]:
             else: st.error("Giriş bilgileri doğrulanamadı.")
             
         st.markdown("""</div>""", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight: 600; opacity: 0.7;'>Zorlu Soft | © 2026 | Sürüm 63.0</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight: 600; opacity: 0.7;'>Zorlu Soft | © 2026 | Sürüm 64.0</p>", unsafe_allow_html=True)
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
@@ -397,12 +384,11 @@ with st.sidebar:
         st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
         if st.button("🚪 Güvenli Çıkış", key="exit_s"): cikis()
     
-    st.markdown("<div style='text-align:center; color:#cbd5e1; font-size:11px; margin-top:40px; font-weight: 500;'>Zorlu Soft | Sürüm 63.0</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:#cbd5e1; font-size:11px; margin-top:40px; font-weight: 500;'>Zorlu Soft | Sürüm 64.0</div>", unsafe_allow_html=True)
 
 # --- SAĞ İÇERİK ---
 menu = st.session_state["active_menu"]
 
-# Sayfa başlıkları
 st.markdown(f"""<h1 style='font-weight: 800; color: #1E293B; margin-bottom: 25px;'>{menu}</h1>""", unsafe_allow_html=True)
 
 if st.session_state["rol"] == "admin":
@@ -412,7 +398,6 @@ if st.session_state["rol"] == "admin":
         toplam_alacak = sum(d['borc'] for d in data['daireler'].values())
         daire_sayisi = len(data["daireler"])
         
-        # KARTLAR
         c1, c2, c3, c4 = st.columns(4)
         c1.markdown(f"<div class='metric-card'><h3>GÜNCEL KASA</h3><h1 style='color:#0066FF'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
         c2.markdown(f"<div class='metric-card'><h3>TOPLAM ALACAK</h3><h1 style='color:#FF3B30'>{toplam_alacak:,.0f} ₺</h1></div>", unsafe_allow_html=True)
