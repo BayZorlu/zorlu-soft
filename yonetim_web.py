@@ -23,15 +23,16 @@ st.set_page_config(
     initial_sidebar_state="expanded" 
 )
 
-# --- CSS: v81.0 DEEP ARCHITECTURE (ZORUNLU GÖRSEL FIX) ---
+# --- CSS: v82.0 ULTIMATE ARCHITECTURE (AGRESSIVE GLASS & FULL DATA RESTORE) ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* 1. TÜM KONTEYNERLARI KÖKTEN ŞEFFAFLAŞTIR (BEYAZ KARELERİ YOK EDER) */
+    /* 1. TÜM KONTEYNERLARI KÖKTEN ŞEFFAFLAŞTIR (RESİMDEKİ BEYAZLIKLARI SİLER) */
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .main, 
     [data-testid="stVerticalBlock"], [data-testid="stHorizontalBlock"], 
-    .stColumn, .stContainer, [data-testid="stExpander"], .element-container, .stMarkdown {
+    .stColumn, [data-testid="column"], .stContainer, [data-testid="stExpander"], 
+    .element-container, .stMarkdown {
         background-color: transparent !important;
         background: transparent !important;
         border: none !important;
@@ -46,9 +47,9 @@ st.markdown("""
 
     /* 3. GERÇEK CAM EFEKTİ (GLASSMORPHISM) KARTLAR */
     .metric-card {
-        background: rgba(255, 255, 255, 0.45) !important; /* Yarı şeffaf kristal beyaz */
-        backdrop-filter: blur(30px) saturate(200%) !important; /* Ekstrem buzlu cam */
-        -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
+        background: rgba(255, 255, 255, 0.42) !important; /* Yarı şeffaf kristal beyaz */
+        backdrop-filter: blur(25px) saturate(200%) !important; /* Derin buzlu cam */
+        -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
         border: 1px solid rgba(255, 255, 255, 0.6) !important; /* Kristal parıltılı kenarlık */
         border-radius: 35px !important;
         padding: 40px !important;
@@ -59,14 +60,14 @@ st.markdown("""
     }
     
     .metric-card:hover {
-        transform: translateY(-15px) scale(1.02) !important;
-        background: rgba(255, 255, 255, 0.8) !important;
+        transform: translateY(-12px) scale(1.02) !important;
+        background: rgba(255, 255, 255, 0.75) !important;
         box-shadow: 0 40px 80px rgba(0, 102, 255, 0.15) !important;
         border-color: #0066FF !important;
     }
 
-    .metric-card h3 { color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 700; letter-spacing: 2.5px; margin-bottom: 15px; }
-    .metric-card h1 { color: #1e293b; font-size: 44px; font-weight: 800; margin: 0; letter-spacing: -2px; }
+    .metric-card h3 { color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 700; letter-spacing: 2px; margin-bottom: 15px; }
+    .metric-card h1 { color: #1e293b; font-size: 42px; font-weight: 800; margin: 0; letter-spacing: -2px; }
 
     /* 4. GRAFİK ÖZGÜRLÜĞÜ: BEYAZ KUTUYU ZORLA KALDIR */
     [data-testid="stPlotlyChart"], .plotly, .user-select-none {
@@ -83,31 +84,7 @@ st.markdown("""
     }
     [data-testid="stSidebarCollapseButton"] { display: none !important; }
 
-    /* 6. BUTONLAR VE MODERN INPUTLAR */
-    button[kind="primary"], [data-testid="baseButton-primary"] {
-        background: linear-gradient(135deg, #0066FF 0%, #0047AB 100%) !important;
-        border-radius: 20px !important;
-        padding: 16px 32px !important;
-        font-weight: 700 !important;
-        box-shadow: 0 15px 30px -10px rgba(0, 102, 255, 0.4) !important;
-        transition: 0.4s !important;
-        color: white !important;
-        border: none !important;
-    }
-    
-    .stTextInput input {
-        border: 2px solid #F1F5F9 !important;
-        border-radius: 18px !important;
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        padding: 14px 22px !important;
-    }
-
-    /* 7. ÖZEL MODERN SCROLLBAR */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #0066FF; }
-
-    /* 8. GİZLENECEKLER */
+    /* 6. GİZLENECEKLER */
     .stDeployButton, [data-testid="stHeaderActionElements"], [data-testid="stToolbar"],
     [data-testid="stManageAppButton"], footer, #MainMenu { display: none !important; }
 </style>
@@ -121,8 +98,7 @@ def baglanti_kur():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds_dict = dict(st.secrets["gcp_service_account"])
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-    client = gspread.authorize(creds)
-    return client
+    return gspread.authorize(creds)
 
 def verileri_yukle():
     try:
@@ -153,13 +129,28 @@ def demo_veri():
     return {
         "site_adi": "KoruPark", "kasa_nakit": 85100.0, "kasa_banka": 250000.0,
         "giderler": [], "daireler": {
-            "1": {"sahip": "Ahmet Yılmaz", "blok": "A", "tel": "905551112233", "borc": 0.0, "gecmis": [], "plaka": "-", "icra": False},
-            "2": {"sahip": "Yeter Zorlu", "blok": "A", "tel": "905337140212", "borc": 5400.0, "gecmis": ["Aidat x3"], "plaka": "-", "icra": True}
+            "1": {"sahip": "Ahmet Yılmaz", "blok": "A", "tel": "905551112233", "borc": 0.0, "gecmis": [], "plaka": "46 KM 123", "icra": False},
+            "2": {"sahip": "Yeter Zorlu", "blok": "A", "tel": "905337140212", "borc": 5300.0, "gecmis": ["Aidat x3"], "plaka": "34 ZRL 01", "icra": True}
         }
     }
 
 if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
 data = st.session_state["data"]
+
+# --- PDF MODÜLÜ ---
+def tr_duzelt(text):
+    source = "şŞıİğĞüÜöÖçÇ"; target = "sSiIgGuUoOcC"
+    return str(text).translate(str.maketrans(source, target))
+
+def pdf_olustur(daire_no, isim, tutar):
+    if not LIB_OK: return None
+    pdf = FPDF(); pdf.add_page(); pdf.set_line_width(1); pdf.rect(5, 5, 200, 287)
+    pdf.set_font("Arial", 'B', 24); pdf.cell(0, 10, txt=tr_duzelt(data['site_adi'].upper()), ln=True, align='C')
+    pdf.set_y(40); pdf.set_font("Arial", size=10); pdf.cell(0, 5, txt="TAHSILAT MAKBUZU", ln=True, align='C'); pdf.ln(10)
+    pdf.cell(50, 12, txt="Tarih", border=1); pdf.cell(140, 12, txt=f"{str(datetime.date.today())}", border=1, ln=True)
+    pdf.cell(50, 12, txt="Isim", border=1); pdf.cell(140, 12, txt=tr_duzelt(isim), border=1, ln=True)
+    pdf.cell(50, 12, txt="Tutar", border=1); pdf.cell(140, 12, txt=f"{tutar} TL", border=1, ln=True)
+    return pdf.output(dest='S').encode('latin-1')
 
 # --- OTURUM AYARLARI ---
 if "giris" not in st.session_state: st.session_state["giris"] = False
@@ -178,17 +169,21 @@ if not st.session_state["giris"]:
             else: st.error("Hatalı giriş!")
     st.stop()
 
-# --- ANA UYGULAMA ---
+# --- ANA UYGULAMA (TÜM VERİLER GERİ GELDİ) ---
 with st.sidebar:
     st.markdown("<div style='text-align: center; padding: 20px;'><h2 style='color:#1E293B; font-weight:900;'>KORUPARK</h2></div>", unsafe_allow_html=True)
-    if st.button("🏠 Genel Bakış"): st.session_state["active_menu"] = "Genel Bakış"; st.rerun()
-    if st.button("💸 Gider Yönetimi"): st.session_state["active_menu"] = "Giderler"; st.rerun()
-    if st.button("👥 Hesaplar & Aidat"): st.session_state["active_menu"] = "Hesaplar"; st.rerun()
-    if st.button("🏘️ Blok Haritası"): st.session_state["active_menu"] = "Harita"; st.rerun()
-    if st.button("⚖️ Hukuk & İcra"): st.session_state["active_menu"] = "Hukuk"; st.rerun()
-    if st.button("💬 WhatsApp"): st.session_state["active_menu"] = "WhatsApp"; st.rerun()
-    if st.button("☁️ Bulut Arşiv"): st.session_state["active_menu"] = "Arşiv"; st.rerun()
-    if st.button("🚪 Güvenli Çıkış"): st.session_state["giris"] = False; st.rerun()
+    if st.session_state["rol"] == "admin":
+        if st.button("🏠 Genel Bakış"): st.session_state["active_menu"] = "Genel Bakış"; st.rerun()
+        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
+        if st.button("💸 Gider Yönetimi"): st.session_state["active_menu"] = "Giderler"; st.rerun()
+        if st.button("👥 Hesaplar & Aidat"): st.session_state["active_menu"] = "Hesaplar"; st.rerun()
+        if st.button("🏘️ Blok Haritası"): st.session_state["active_menu"] = "Harita"; st.rerun()
+        if st.button("⚖️ Hukuk & İcra"): st.session_state["active_menu"] = "Hukuk"; st.rerun()
+        if st.button("💬 WhatsApp"): st.session_state["active_menu"] = "WhatsApp"; st.rerun()
+        if st.button("☁️ Bulut Arşiv"): st.session_state["active_menu"] = "Arşiv"; st.rerun()
+        if st.button("📄 Raporlar"): st.session_state["active_menu"] = "Raporlar"; st.rerun()
+        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
+        if st.button("🚪 Güvenli Çıkış"): st.session_state["giris"] = False; st.rerun()
 
 menu = st.session_state["active_menu"]
 st.markdown(f"<h1 style='font-weight: 800; color: #1E293B; margin-bottom: 30px;'>{menu}</h1>", unsafe_allow_html=True)
@@ -205,7 +200,6 @@ if menu == "Genel Bakış":
     cl, cr = st.columns([2, 1])
     with cl:
         fig = px.pie(values=[data['kasa_nakit'], toplam_alacak], names=['Kasa', 'Alacak'], hole=0.75, color_discrete_sequence=["#0066FF", "#FF3B30"])
-        # --- GRAFİK ŞEFFAFLIK AYARI ---
         fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(family="Poppins", size=14, color="#1e293b"), margin=dict(t=0,b=0,l=0,r=0))
         st.plotly_chart(fig, use_container_width=True)
     with cr:
