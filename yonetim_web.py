@@ -26,7 +26,7 @@ st.set_page_config(
 # --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: TASARIM VE GİZLEMELER ---
+# --- CSS: TASARIM VE DÜZELTMELER ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -36,7 +36,7 @@ st.markdown("""
         font-family: 'Poppins', sans-serif;
     }
 
-    /* 1. GEREKSİZLERİ GİZLE */
+    /* 1. GİZLENECEKLER LİSTESİ */
     .stDeployButton, 
     [data-testid="stHeaderActionElements"], 
     [data-testid="stToolbar"],
@@ -44,27 +44,26 @@ st.markdown("""
     #MainMenu {
         display: none !important;
     }
+    
+    /* Header Gizle */
     header[data-testid="stHeader"] {
         background: transparent !important;
         height: 0px !important;
         visibility: hidden !important;
     }
 
-    /* 2. DOSYA YÜKLEME ALANI TÜRKÇELEŞTİRME */
-    [data-testid="stFileUploaderDropzone"] div div::before {
-        content: "Dosyaları buraya sürükleyin veya seçin";
-        visibility: visible;
-        font-weight: 600;
-        color: #1E293B;
-    }
-    [data-testid="stFileUploaderDropzone"] div div {
-        visibility: hidden; 
-    }
-    [data-testid="stFileUploaderDropzone"] div div svg {
-        visibility: visible !important;
+    /* 2. ORTA SÜTUNU TEK PARÇA BEYAZ KART YAP (KESİN ÇÖZÜM) */
+    /* Giriş ekranındaki orta sütunu (2. sütun) hedefliyoruz */
+    /* Bu sayede 'hayalet kutu' oluşmaz, tüm içerik bu kartın içinde olur */
+    div[data-testid="column"]:nth-of-type(2) > div > div {
+        background: #FFFFFF;
+        padding: 50px;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255,255,255,0.5);
     }
 
-    /* 3. INPUT KUTULARI DÜZELTME */
+    /* 3. INPUT KUTULARI (TEMİZ VE TEK RENK) */
     .stTextInput > div > div {
         border: none !important;
         box-shadow: none !important;
@@ -75,29 +74,38 @@ st.markdown("""
         border: 1px solid #cbd5e1 !important;
         border-radius: 12px !important;
         padding: 12px 15px !important;
-        background-color: #FFFFFF !important;
+        background-color: #F8FAFC !important; /* Hafif gri iç zemin */
         color: #1E293B !important;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important;
+        box-shadow: none !important;
         transition: all 0.3s;
     }
     
     .stTextInput input:focus {
         border-color: #0066FF !important;
-        box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15) !important;
-        outline: none !important;
+        background-color: #FFFFFF !important;
+        box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1) !important;
     }
 
-    /* 4. ARKA PLAN */
+    /* 4. DOSYA YÜKLEME TÜRKÇELEŞTİRME */
+    [data-testid="stFileUploaderDropzone"] div div::before {
+        content: "Dosyaları buraya sürükleyin veya seçin";
+        visibility: visible;
+        font-weight: 600;
+        color: #1E293B;
+    }
+    [data-testid="stFileUploaderDropzone"] div div { visibility: hidden; }
+    [data-testid="stFileUploaderDropzone"] div div svg { visibility: visible !important; }
+
+    /* 5. ARKA PLAN */
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(to bottom, #F8F9FC 0%, #F1F5F9 100%) !important;
+        background: linear-gradient(to bottom, #F8F9FC 0%, #E2E8F0 100%) !important;
         background-image: none !important;
     }
     .block-container {
-        padding-top: 35px !important;
-        padding-bottom: 35px !important;
+        padding-top: 50px !important;
     }
 
-    /* 5. SOL MENÜ */
+    /* 6. SOL MENÜ TASARIMI */
     section[data-testid="stSidebar"] {
         background-color: #FFFFFF !important;
         box-shadow: 4px 0 15px -5px rgba(0,0,0,0.05);
@@ -105,7 +113,6 @@ st.markdown("""
     }
     [data-testid="stSidebarCollapseButton"] { display: none !important; }
 
-    /* MENÜ BUTONLARI */
     [data-testid="stSidebar"] .stButton button {
         width: 100%;
         background-color: transparent !important;
@@ -121,16 +128,19 @@ st.markdown("""
         align-items: center;
         transition: all 0.3s;
     }
+    
     [data-testid="stSidebar"] .stButton button span {
         filter: grayscale(100%) opacity(0.6); 
         margin-right: 14px;
         font-size: 19px;
     }
+
     [data-testid="stSidebar"] .stButton button:hover {
         background-color: #F8FAFC !important;
         color: #0F172A !important;
-        transform: translateX(6px);
+        transform: translateX(5px);
     }
+
     [data-testid="stSidebar"] .stButton button:focus {
         background-color: #EBF5FF !important;
         color: #0066FF !important;
@@ -141,17 +151,6 @@ st.markdown("""
         filter: none !important;
     }
 
-    /* 6. GİRİŞ KUTUSU */
-    .login-container {
-        background: #FFFFFF;
-        padding: 50px;
-        border-radius: 28px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        margin-top: 100px; /* Biraz daha aşağı aldım, başlık gidince boşluk kalmasın */
-        border: 1px solid rgba(255,255,255,0.5);
-    }
-
     /* 7. BUTON */
     div.stButton > button[type="primary"] {
         background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%) !important;
@@ -159,14 +158,13 @@ st.markdown("""
         padding: 16px 24px !important;
         font-weight: 700 !important;
         font-size: 16px !important;
-        letter-spacing: 0.5px;
         border: none;
-        box-shadow: 0 10px 20px -10px rgba(0, 102, 255, 0.5);
+        box-shadow: 0 10px 20px -10px rgba(0, 102, 255, 0.4);
         transition: all 0.3s;
     }
     div.stButton > button[type="primary"]:hover {
-         box-shadow: 0 15px 30px -12px rgba(0, 102, 255, 0.6);
-         transform: translateY(-3px);
+         box-shadow: 0 15px 30px -12px rgba(0, 102, 255, 0.5);
+         transform: translateY(-2px);
     }
 
     /* 8. KARTLAR */
@@ -184,7 +182,7 @@ st.markdown("""
         justify-content: center;
     }
     .metric-card:hover {
-        transform: translateY(-7px);
+        transform: translateY(-5px);
         box-shadow: 0 20px 30px -15px rgba(0,0,0,0.1);
         border-color: #E2E8F0;
     }
@@ -301,7 +299,7 @@ def pdf_olustur(daire_no, isim, tutar):
 if "giris" not in st.session_state: st.session_state["giris"] = False
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ EKRANI (BAŞLIKSIZ - SADE) ---
+# --- GİRİŞ EKRANI (TEK PARÇA BEYAZ KUTU) ---
 if not st.session_state["giris"]:
     st.markdown("""<style>[data-testid="stAppViewContainer"] {
         background-image: linear-gradient(135deg, #f0f2f5 0%, #d9e2ec 100%) !important;
@@ -309,18 +307,24 @@ if not st.session_state["giris"]:
 
     c1, c2, c3 = st.columns([1, 1.4, 1])
     with c2:
-        st.markdown("<br><br>", unsafe_allow_html=True)
-        st.markdown("""<div class="login-container">""", unsafe_allow_html=True)
+        # BURADA ARTIK HTML KUTU YOK. CSS (Madde 2) BU ALANI OTOMATİK BEYAZ KART YAPIYOR.
+        # Böylece içerik (inputlar) kutunun içinde kalıyor.
         
-        # --- BURADAKİ BAŞLIK VE EMOJİ SİLİNDİ ---
+        st.markdown("<br><br><br>", unsafe_allow_html=True)
         
-        # Sadece Inputlar
-        u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı kodunuzu giriniz")
-        p = st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz")
+        # Sadece Inputlar ve Buton
+        st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı kodunuzu giriniz", key="u_giris")
+        
+        # Standart şifre kutusu (Göz ikonu kendiliğinden gelir)
+        st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz", key="p_giris")
         
         st.markdown("<br>", unsafe_allow_html=True)
         
         if st.button("SİSTEME GİRİŞ YAP", type="primary", use_container_width=True):
+            # Session State'ten değerleri alıyoruz
+            u = st.session_state.u_giris
+            p = st.session_state.p_giris
+            
             user_data = kullanici_dogrula(u, p)
             if user_data:
                 st.session_state["giris"] = True
@@ -329,15 +333,27 @@ if not st.session_state["giris"]:
                 st.rerun()
             else: st.error("Giriş bilgileri doğrulanamadı.")
             
-        st.markdown("""</div>""", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight: 600; opacity: 0.7;'>Zorlu Soft | © 2026 | Sürüm 65.0</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#94a3b8; margin-top:30px; font-size:12px; font-weight: 500;'>Zorlu Soft | © 2026 | v66.0</p>", unsafe_allow_html=True)
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
-# ANA YAPI (MENÜ & İÇERİK)
+# ANA YAPI (MENÜ & İÇERİK - GİRİŞ SONRASI)
 # ==============================================================================
+
+# Giriş yapıldıktan sonra giriş ekranının özel CSS'ini kaldır (Orta sütun kartı iptal)
+st.markdown("""
+<style>
+/* Giriş ekranındaki orta sütun kart özelliğini sıfırla */
+div[data-testid="column"]:nth-of-type(2) > div > div {
+    background: transparent;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+}
+</style>
+""", unsafe_allow_html=True)
 
 with st.sidebar:
     st.markdown("""
@@ -374,7 +390,7 @@ with st.sidebar:
         st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
         if st.button("🚪 Güvenli Çıkış", key="exit_s"): cikis()
     
-    st.markdown("<div style='text-align:center; color:#cbd5e1; font-size:11px; margin-top:40px; font-weight: 500;'>Zorlu Soft | Sürüm 65.0</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:#cbd5e1; font-size:11px; margin-top:40px; font-weight: 500;'>Zorlu Soft | Sürüm 66.0</div>", unsafe_allow_html=True)
 
 # --- SAĞ İÇERİK ---
 menu = st.session_state["active_menu"]
