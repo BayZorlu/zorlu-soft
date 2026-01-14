@@ -23,53 +23,50 @@ st.set_page_config(
     initial_sidebar_state="expanded" 
 )
 
-# --- LOGO ---
-LOGO_DOSYA = "logo.png" 
-
-# --- CSS: v79.0 ULTIMATE ARCHITECTURE (AGRESSIVE GLASSMOPHISM & DEEP TRANSPARENCY) ---
+# --- CSS: v80.0 ULTIMATE GLASSMOPHISM & DEEP LAYER INJECTION ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* 1. TÜM KONTEYNERLARI KÖKTEN ŞEFFAFLAŞTIR (BEYAZ KUTULARI SİLER) */
+    /* 1. TÜM KONTEYNERLARI KÖKTEN ŞEFFAFLAŞTIR (KATMANLARI DELİP GEÇER) */
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .main, 
     [data-testid="stVerticalBlock"], [data-testid="stHorizontalBlock"], 
-    .stColumn, .stContainer, [data-testid="stExpander"], .element-container, .stMarkdown {
+    .stColumn, .stContainer, [data-testid="stExpander"], .element-container, .stMarkdown,
+    [data-testid="stAppViewMain"] {
         background-color: transparent !important;
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
 
-    /* 2. ANA ARKA PLAN: DERİN RADIAL GRADIENT (APPLE STYLE) */
+    /* 2. ANA ARKA PLAN: EN ÜST KATMANA SABİTLENMİŞ RADIAL GRADIENT */
     [data-testid="stAppViewMain"] {
         background: radial-gradient(circle at top right, #F8F9FC 0%, #DDE4EE 100%) !important;
         background-attachment: fixed !important;
     }
 
     /* 3. GERÇEK CAM EFEKTİ (GLASSMORPHISM) KARTLAR */
-    /* Backdrop filter artık katmanlar şeffaf olduğu için çalışacak */
     .metric-card {
-        background: rgba(255, 255, 255, 0.45) !important; /* Yarı şeffaf kristal beyaz */
-        backdrop-filter: blur(25px) saturate(200%) !important; /* Derin buzlu cam */
-        -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
+        background: rgba(255, 255, 255, 0.4) !important; /* Yarı şeffaf kristal beyaz */
+        backdrop-filter: blur(30px) saturate(200%) !important; /* Ekstrem buzlu cam */
+        -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
         border: 1px solid rgba(255, 255, 255, 0.6) !important; /* Kristal parıltılı kenarlık */
         border-radius: 35px !important;
         padding: 40px !important;
-        box-shadow: 0 15px 35px rgba(31, 38, 135, 0.05) !important;
-        transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+        box-shadow: 0 20px 40px rgba(31, 38, 135, 0.05) !important;
+        transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
         height: 100% !important;
         margin-bottom: 25px;
     }
     
     .metric-card:hover {
         transform: translateY(-15px) scale(1.02) !important;
-        background: rgba(255, 255, 255, 0.8) !important;
-        box-shadow: 0 30px 60px rgba(0, 102, 255, 0.15) !important;
+        background: rgba(255, 255, 255, 0.75) !important;
+        box-shadow: 0 40px 80px rgba(0, 102, 255, 0.15) !important;
         border-color: #0066FF !important;
     }
 
-    .metric-card h3 { color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 700; letter-spacing: 2px; margin-bottom: 15px; }
+    .metric-card h3 { color: #64748b; font-size: 14px; text-transform: uppercase; font-weight: 700; letter-spacing: 2.5px; margin-bottom: 15px; }
     .metric-card h1 { color: #1e293b; font-size: 44px; font-weight: 800; margin: 0; letter-spacing: -2px; }
 
     /* 4. GRAFİK ÖZGÜRLÜĞÜ: BEYAZ KUTUYU ZORLA KALDIR */
@@ -83,7 +80,7 @@ st.markdown("""
     section[data-testid="stSidebar"] {
         background-color: rgba(255, 255, 255, 0.95) !important;
         border-right: none !important;
-        box-shadow: 20px 0 60px rgba(0,0,0,0.03) !important;
+        box-shadow: 25px 0 60px rgba(0,0,0,0.03) !important;
     }
     [data-testid="stSidebarCollapseButton"] { display: none !important; }
 
@@ -95,20 +92,23 @@ st.markdown("""
     /* 7. BUTONLAR VE MODERN INPUTLAR */
     button[kind="primary"], [data-testid="baseButton-primary"] {
         background: linear-gradient(135deg, #0066FF 0%, #0047AB 100%) !important;
-        border-radius: 18px !important;
-        padding: 15px 30px !important;
+        border-radius: 20px !important;
+        padding: 16px 32px !important;
         font-weight: 700 !important;
-        box-shadow: 0 12px 25px -5px rgba(0, 102, 255, 0.4) !important;
-        transition: 0.3s !important;
+        box-shadow: 0 15px 30px -10px rgba(0, 102, 255, 0.4) !important;
+        transition: 0.4s !important;
         color: white !important;
+        border: none !important;
     }
     
     .stTextInput input {
-        border: 1.5px solid #E2E8F0 !important;
+        border: 2px solid #F1F5F9 !important;
         border-radius: 18px !important;
         background-color: rgba(255, 255, 255, 0.9) !important;
-        padding: 14px 20px !important;
+        padding: 14px 22px !important;
+        transition: 0.3s;
     }
+    .stTextInput input:focus { border-color: #0066FF !important; }
 
     /* 8. ÖZEL MODERN SCROLLBAR */
     ::-webkit-scrollbar { width: 6px; }
@@ -293,7 +293,7 @@ elif menu == "Hukuk":
     else: st.success("Hukuki süreçte daire bulunmuyor.")
 
 elif menu == "WhatsApp":
-    st.info("Toplu WhatsApp mesaj modülü.")
+    st.info("WhatsApp mesaj gönderimi yakında.")
     st.button("MESAJLARI GÖNDER")
 
 elif menu == "Arşiv":
