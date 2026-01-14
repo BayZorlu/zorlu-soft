@@ -26,7 +26,7 @@ st.set_page_config(
 # --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: v75.0 ULTRA-MASTER (HIÇBIR ÖZELLIK SILINMEDEN GÖRSEL FIX) ---
+# --- CSS: v75.1 ULTRA-AGRESSIVE VISUAL FIX ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -36,60 +36,77 @@ st.markdown("""
     [data-testid="stManageAppButton"], footer, #MainMenu { display: none !important; }
     header[data-testid="stHeader"] { background: transparent !important; height: 0px !important; }
 
-    /* 2. ARKA PLAN GRADIENT */
+    /* 2. ARKA PLAN: DERİN RADIAL GRADIENT */
     [data-testid="stAppViewContainer"] {
-        background: radial-gradient(circle at top left, #F8F9FC 0%, #E2E8F0 100%) !important;
+        background: radial-gradient(circle at top right, #F8F9FC 0%, #DDE4EE 100%) !important;
         background-attachment: fixed !important;
     }
     
-    /* 3. CAM EFEKTI IÇIN STREAMLIT KONTEYNERLARINI SEFFAF YAP */
-    [data-testid="stVerticalBlock"] > div { background: transparent !important; }
-    [data-testid="stHorizontalBlock"] { background: transparent !important; }
+    /* 3. TÜM İÇ KONTEYNERLARI ŞEFFAF YAP (Cam Efekti için Şart) */
+    .stApp, [data-testid="stVerticalBlock"], [data-testid="stHorizontalBlock"], 
+    .element-container, .stMarkdown, [data-testid="stExpander"] {
+        background-color: transparent !important;
+    }
+    .block-container { padding-top: 40px !important; }
 
-    /* 4. GERÇEK CAM EFEKTI (GLASSMORPHISM) KARTLAR */
+    /* 4. GERÇEK BUZLU CAM KARTLAR (GLASSMORPHISM) */
     .metric-card {
-        background: rgba(255, 255, 255, 0.45) !important; /* Yarı şeffaf beyaz */
-        backdrop-filter: blur(12px) saturate(180%) !important; /* Buzlu cam etkisi */
-        -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        border-radius: 24px !important;
+        background: rgba(255, 255, 255, 0.4) !important; /* Yarı şeffaf */
+        backdrop-filter: blur(15px) saturate(180%) !important; /* Buzlu cam dokusu */
+        -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        border-radius: 28px !important;
         padding: 30px !important;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         height: 100% !important;
     }
+    
+    /* Kart Hover Etkisi */
     .metric-card:hover {
-        transform: translateY(-8px) !important;
-        background: rgba(255, 255, 255, 0.7) !important;
-        box-shadow: 0 15px 45px rgba(0, 102, 255, 0.1) !important;
+        transform: translateY(-12px) !important;
+        background: rgba(255, 255, 255, 0.7) !important; /* Üstüne gelince beyazlaşır */
+        box-shadow: 0 20px 50px rgba(0, 102, 255, 0.12) !important;
         border-color: #0066FF !important;
     }
-    .metric-card h3 { color: #64748b; font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.2px; margin-bottom: 12px; }
-    .metric-card h1 { color: #1e293b; font-size: 34px; font-weight: 800; margin: 0; letter-spacing: -1px; }
+    
+    .metric-card h3 { color: #64748b; font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 12px; }
+    .metric-card h1 { color: #1e293b; font-size: 36px; font-weight: 800; margin: 0; letter-spacing: -1.5px; }
 
-    /* 5. YÜZEN SOL MENÜ */
+    /* 5. YÜZEN SOL MENÜ & SERT ÇİZGİYİ KALDIRMA */
     section[data-testid="stSidebar"] {
         background-color: #FFFFFF !important;
         border-right: none !important;
-        box-shadow: 10px 0 40px rgba(0,0,0,0.03) !important;
+        box-shadow: 15px 0 45px rgba(0,0,0,0.04) !important;
     }
     [data-testid="stSidebarCollapseButton"] { display: none !important; }
 
-    /* 6. INPUT VE BUTONLAR (v70 STANDARDI) */
-    .stTextInput input {
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 12px !important;
-        background-color: rgba(255,255,255,0.8) !important;
-    }
-    button[kind="primary"] {
-        background: linear-gradient(135deg, #0066FF 0%, #0047AB 100%) !important;
-        border-radius: 14px !important;
-        box-shadow: 0 10px 20px -10px rgba(0, 102, 255, 0.5) !important;
+    /* 6. GRAFİK KONTEYNERINI ZORLA ŞEFFAF YAP */
+    [data-testid="stPlotlyChart"] {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
     }
 
-    /* 7. ÖZEL SCROLLBAR */
-    ::-webkit-scrollbar { width: 6px; }
+    /* 7. BUTONLAR VE INPUTLAR */
+    button[kind="primary"] {
+        background: linear-gradient(135deg, #0066FF 0%, #0047AB 100%) !important;
+        border-radius: 16px !important;
+        border: none !important;
+        box-shadow: 0 10px 20px -5px rgba(0, 102, 255, 0.4) !important;
+        transition: 0.3s !important;
+    }
+    button[kind="primary"]:hover {
+        transform: scale(1.02) !important;
+        box-shadow: 0 15px 30px -5px rgba(0, 102, 255, 0.5) !important;
+    }
+
+    /* 8. ÖZEL SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #0066FF; }
+
+    .sidebar-divider { margin: 20px 0; border-bottom: 1px solid #F1F5F9; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -154,7 +171,7 @@ def demo_veri():
 if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
 data = st.session_state["data"]
 
-# --- PDF MODÜLÜ (EKSİKSİZ) ---
+# --- PDF MODÜLÜ ---
 def tr_duzelt(text):
     source = "şŞıİğĞüÜöÖçÇ"; target = "sSiIgGuUoOcC"
     return str(text).translate(str.maketrans(source, target))
@@ -177,7 +194,7 @@ if "giris" not in st.session_state: st.session_state["giris"] = False
 if "ui_mode" not in st.session_state: st.session_state["ui_mode"] = "login"
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ / SIFIRLAMA MODÜLÜ ---
+# --- GİRİŞ / SIFIRLAMA ---
 if not st.session_state["giris"]:
     c1, c2, c3 = st.columns([1, 1.4, 1])
     with c2:
@@ -204,7 +221,7 @@ if not st.session_state["giris"]:
                 st.session_state["ui_mode"] = "login"; st.rerun()
     st.stop()
 
-# --- ANA UYGULAMA (GİRİŞ SONRASI - EKSİKSİZ ÖZELLİKLER) ---
+# --- ANA UYGULAMA (GİRİŞ SONRASI) ---
 st.markdown("<style>div[data-testid='column']:nth-of-type(2) > div > div { background: transparent !important; box-shadow: none !important; border: none !important; }</style>", unsafe_allow_html=True)
 
 with st.sidebar:
@@ -237,7 +254,13 @@ if menu == "Genel Bakış":
     cl, cr = st.columns([2, 1])
     with cl:
         fig = px.pie(values=[data['kasa_nakit'], toplam_alacak], names=['Kasa', 'Alacak'], hole=0.75, color_discrete_sequence=["#0066FF", "#FF3B30"])
-        fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(family="Poppins"), margin=dict(t=0,b=0,l=0,r=0))
+        # --- ŞEFFAF GRAFİK (KESİN ÇÖZÜM) ---
+        fig.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)', 
+            plot_bgcolor='rgba(0,0,0,0)', 
+            font=dict(family="Poppins", color="#1e293b"),
+            margin=dict(t=0, b=0, l=0, r=0)
+        )
         st.plotly_chart(fig, use_container_width=True)
     with cr:
         st.subheader("Veri Güvenliği")
@@ -259,7 +282,7 @@ elif menu == "Hesaplar":
     info = data["daireler"][filtre]
     st.markdown(f"<div class='metric-card'><h3>{filtre} - {info['sahip']}</h3><h1>{info['borc']:,.2f} ₺</h1></div>", unsafe_allow_html=True)
     t = st.number_input("Tahsilat Tutarı", min_value=0.0)
-    if st.button("Ödemeyi Onayla", type="primary"):
+    if st.button("Ödeme Onayla", type="primary"):
         info["borc"] -= t; data["kasa_nakit"] += t; info["gecmis"].append(f"{datetime.date.today()} | Tahsilat: {t}"); kaydet(data); st.rerun()
     pdf = pdf_olustur(filtre, info["sahip"], t if t > 0 else info["borc"])
     if pdf: st.download_button("📄 PDF Makbuz İndir", pdf, f"makbuz_{filtre}.pdf", "application/pdf")
@@ -277,7 +300,7 @@ elif menu == "Hukuk":
     else: st.success("İcralık daire bulunmuyor.")
 
 elif menu == "WhatsApp":
-    st.info("Borçlu sakinlere WhatsApp üzerinden otomatik hatırlatma mesajı gönderebilirsiniz.")
+    st.info("Borçlu sakinlere WhatsApp üzerinden mesaj gönderimi yakında.")
     st.button("MESAJLARI GÖNDER")
 
 elif menu == "Arşiv":
