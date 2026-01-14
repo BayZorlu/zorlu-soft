@@ -26,7 +26,7 @@ st.set_page_config(
 # --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: GÖRSEL DÜZELTMELER VE TÜRKÇELEŞTİRME ---
+# --- CSS: TASARIM VE GİZLEMELER ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -64,17 +64,15 @@ st.markdown("""
         visibility: visible !important;
     }
 
-    /* 3. INPUT KUTULARINDAKİ RENK ÇAKIŞMASINI DÜZELTME (FIX) */
-    /* Streamlit'in kendi border'ını ve shadow'unu sıfırla */
+    /* 3. INPUT KUTULARI DÜZELTME */
     .stTextInput > div > div {
         border: none !important;
         box-shadow: none !important;
         background-color: transparent !important;
     }
     
-    /* Bizim özel stilimiz (Tek Renk, Temiz) */
     .stTextInput input {
-        border: 1px solid #cbd5e1 !important; /* Tek ince gri çizgi */
+        border: 1px solid #cbd5e1 !important;
         border-radius: 12px !important;
         padding: 12px 15px !important;
         background-color: #FFFFFF !important;
@@ -83,7 +81,6 @@ st.markdown("""
         transition: all 0.3s;
     }
     
-    /* Tıklayınca (Focus) sadece Mavi olsun */
     .stTextInput input:focus {
         border-color: #0066FF !important;
         box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15) !important;
@@ -151,11 +148,11 @@ st.markdown("""
         border-radius: 28px;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
         text-align: center;
-        margin-top: 70px;
+        margin-top: 100px; /* Biraz daha aşağı aldım, başlık gidince boşluk kalmasın */
         border: 1px solid rgba(255,255,255,0.5);
     }
 
-    /* 7. BUTON STİLİ */
+    /* 7. BUTON */
     div.stButton > button[type="primary"] {
         background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%) !important;
         border-radius: 14px !important;
@@ -215,7 +212,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- VERİTABANI BAĞLANTISI ---
+# --- VERİTABANI ---
 SHEET_DB = "ZorluDB"
 SHEET_USERS = "Kullanicilar" 
 
@@ -304,7 +301,7 @@ def pdf_olustur(daire_no, isim, tutar):
 if "giris" not in st.session_state: st.session_state["giris"] = False
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ EKRANI (FULL TÜRKÇE & GÖZ İKONLU) ---
+# --- GİRİŞ EKRANI (BAŞLIKSIZ - SADE) ---
 if not st.session_state["giris"]:
     st.markdown("""<style>[data-testid="stAppViewContainer"] {
         background-image: linear-gradient(135deg, #f0f2f5 0%, #d9e2ec 100%) !important;
@@ -315,17 +312,10 @@ if not st.session_state["giris"]:
         st.markdown("<br><br>", unsafe_allow_html=True)
         st.markdown("""<div class="login-container">""", unsafe_allow_html=True)
         
-        st.markdown("""
-            <div style="margin-bottom: 30px;">
-                <span style='font-size: 60px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));'>🏢</span>
-                <h2 style='color:#1e293b; font-weight:900; margin-top:15px; font-size: 32px; letter-spacing:-1px;'>KORUPARK</h2>
-                <p style='color:#64748b; font-weight:500; font-size:16px;'>Site Yönetim Paneli</p>
-            </div>
-        """, unsafe_allow_html=True)
-
-        u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı kodunuzu giriniz")
+        # --- BURADAKİ BAŞLIK VE EMOJİ SİLİNDİ ---
         
-        # Standart şifre kutusu (Göz ikonu kendiliğinden gelir, Checkbox yok)
+        # Sadece Inputlar
+        u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı kodunuzu giriniz")
         p = st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz")
         
         st.markdown("<br>", unsafe_allow_html=True)
@@ -340,7 +330,7 @@ if not st.session_state["giris"]:
             else: st.error("Giriş bilgileri doğrulanamadı.")
             
         st.markdown("""</div>""", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight: 600; opacity: 0.7;'>Zorlu Soft | © 2026 | Sürüm 64.0</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#64748b; margin-top:30px; font-size:13px; font-weight: 600; opacity: 0.7;'>Zorlu Soft | © 2026 | Sürüm 65.0</p>", unsafe_allow_html=True)
     st.stop()
 
 def cikis(): st.session_state["giris"] = False; st.rerun()
@@ -384,7 +374,7 @@ with st.sidebar:
         st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
         if st.button("🚪 Güvenli Çıkış", key="exit_s"): cikis()
     
-    st.markdown("<div style='text-align:center; color:#cbd5e1; font-size:11px; margin-top:40px; font-weight: 500;'>Zorlu Soft | Sürüm 64.0</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:#cbd5e1; font-size:11px; margin-top:40px; font-weight: 500;'>Zorlu Soft | Sürüm 65.0</div>", unsafe_allow_html=True)
 
 # --- SAĞ İÇERİK ---
 menu = st.session_state["active_menu"]
