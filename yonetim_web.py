@@ -121,6 +121,20 @@ st.markdown("""
         box-shadow: 0 15px 30px -12px rgba(0, 102, 255, 0.5) !important;
     }
 
+    button[kind="secondary"], [data-testid="baseButton-secondary"] {
+        background-color: transparent !important;
+        border: none !important;
+        color: #64748b !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        margin-top: -10px !important;
+    }
+    button[kind="secondary"]:hover {
+        color: #0066FF !important;
+        text-decoration: underline;
+    }
+
     /* 7. CANLI KARTLAR (Micro-Interactions) */
     .metric-card {
         background: #FFFFFF;
@@ -132,8 +146,8 @@ st.markdown("""
         height: 100%;
     }
     .metric-card:hover {
-        transform: translateY(-8px); /* Daha belirgin yukarı kalkma */
-        box-shadow: 0 20px 40px rgba(0,0,0,0.08); /* Daha yayılan gölge */
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         border-color: #E2E8F0;
     }
     .metric-card h3 { color: #94a3b8; font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
@@ -202,8 +216,8 @@ def sifre_sifirla_excel(kadi, guvenlik_kodu, yeni_sifre):
             if str(user['kullanici_adi']) == str(kadi):
                 if str(user.get('guvenlik_kodu', '')) == str(guvenlik_kodu):
                     sheet.update_cell(i + 2, 2, yeni_sifre)
-                    return True, "Şifreniz güncellendi."
-        return False, "Güvenlik kodu hatalı!"
+                    return True, "Şifreniz başarıyla güncellendi."
+        return False, "Güvenlik kodu veya Kullanıcı adı hatalı!"
     except Exception as e: return False, f"Hata: {e}"
 
 def demo_veri():
@@ -211,8 +225,8 @@ def demo_veri():
         "site_adi": "KoruPark",
         "kasa_nakit": 85100.0, "kasa_banka": 250000.0,
         "giderler": [], "daireler": {
-            "1": {"sahip": "Ahmet Yılmaz", "blok": "A", "tel": "905551112233", "borc": 0.0, "gecmis": [], "plaka": "-", "icra": False},
-            "2": {"sahip": "Yeter Zorlu", "blok": "A", "tel": "905337140212", "borc": 5400.0, "gecmis": ["Aidat x3"], "plaka": "-", "icra": True}
+            "1": {"sahip": "Ahmet Yılmaz", "blok": "A", "tel": "905551112233", "borc": 0.0, "gecmis": [], "plaka": "-", "icra": False, "notlar": [], "aile": []},
+            "2": {"sahip": "Yeter Zorlu", "blok": "A", "tel": "905337140212", "borc": 5400.0, "gecmis": ["Aidat x3"], "plaka": "-", "icra": True, "notlar": ["Avukatta"], "aile": ["Mehmet"]}
         }
     }
 
@@ -246,7 +260,7 @@ if "giris" not in st.session_state: st.session_state["giris"] = False
 if "ui_mode" not in st.session_state: st.session_state["ui_mode"] = "login"
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
 
-# --- GİRİŞ EKRANI MODÜLÜ ---
+# --- GİRİŞ / SIFIRLAMA MODÜLÜ ---
 if not st.session_state["giris"]:
     c1, c2, c3 = st.columns([1, 1.4, 1])
     with c2:
@@ -266,7 +280,7 @@ if not st.session_state["giris"]:
         elif st.session_state["ui_mode"] == "forgot":
             st.markdown("<h4 style='text-align:center;'>Şifre Sıfırlama</h4>", unsafe_allow_html=True)
             f_u = st.text_input("Kullanıcı Kodu", key="f_u")
-            f_k = st.text_input("Güvenlik Kodu", type="password", key="f_k")
+            f_k = st.text_input("Güvenlik Kodu", type="password", placeholder="Excel'deki kodunuz", key="f_k")
             f_p = st.text_input("Yeni Şifre", type="password", key="f_p")
             st.markdown("<br>", unsafe_allow_html=True)
             if st.button("ŞİFREYİ GÜNCELLE", type="primary", use_container_width=True):
@@ -279,7 +293,7 @@ if not st.session_state["giris"]:
         st.markdown("<p style='text-align:center; color:#94a3b8; margin-top:30px; font-size:12px;'>Zorlu Soft | © 2026 | v70.2</p>", unsafe_allow_html=True)
     st.stop()
 
-# --- ANA UYGULAMA ---
+# --- ANA UYGULAMA (GİRİŞ SONRASI) ---
 st.markdown("<style>div[data-testid='column']:nth-of-type(2) > div > div { background: transparent !important; padding: 0 !important; border: none !important; box-shadow: none !important; }</style>", unsafe_allow_html=True)
 
 with st.sidebar:
@@ -303,15 +317,14 @@ if st.session_state["rol"] == "admin":
     if menu == "Genel Bakış":
         toplam_alacak = sum(d['borc'] for d in data['daireler'].values())
         c1, c2, c3, c4 = st.columns(4)
-        c1.markdown(f"<div class='metric-card'><h3>KASA</h3><h1 style='color:#0066FF'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
+        c1.markdown(f"<div class='metric-card'><h3>GÜNCEL KASA</h3><h1 style='color:#0066FF'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
         c2.markdown(f"<div class='metric-card'><h3>TOPLAM ALACAK</h3><h1 style='color:#FF3B30'>{toplam_alacak:,.0f} ₺</h1></div>", unsafe_allow_html=True)
-        c3.markdown(f"<div class='metric-card'><h3>GİDERLER</h3><h1 style='color:#FF9500'>{sum(g['tutar'] for g in data['giderler']):,.0f} ₺</h1></div>", unsafe_allow_html=True)
+        c3.markdown(f"<div class='metric-card'><h3>TOPLAM GİDER</h3><h1 style='color:#FF9500'>{sum(g['tutar'] for g in data['giderler']):,.0f} ₺</h1></div>", unsafe_allow_html=True)
         c4.markdown(f"<div class='metric-card'><h3>DAİRE SAYISI</h3><h1>{len(data['daireler'])}</h1></div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
         cl, cr = st.columns([2, 1])
         with cl:
             fig = px.pie(values=[data['kasa_nakit'], toplam_alacak], names=['Kasa', 'Alacak'], hole=0.75, color_discrete_sequence=["#0066FF", "#FF3B30"])
-            # Grafiği Şeffaf Yapıyoruz
             fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(family="Poppins")); st.plotly_chart(fig, use_container_width=True)
         with cr:
             if st.button("💾 VERİLERİ YEDEKLE", type="primary", use_container_width=True): kaydet(data); st.success("Tamamlandı")
