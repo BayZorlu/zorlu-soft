@@ -26,18 +26,12 @@ st.set_page_config(
 # --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: v70.3 ULTRA-PREMIUM VISUALS ---
+# --- CSS: v70.4 KESİN GÖRSEL İYİLEŞTİRME ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* 0. ROOT DEĞİŞKENLERİ */
-    :root {
-        --primary-color: #0066FF;
-        --accent-color: #00D2FF;
-        --card-bg: rgba(255, 255, 255, 0.95);
-    }
-
+    /* 0. GENEL TİPOGRAFİ */
     html, body, [class*="css"] {
         font-family: 'Poppins', sans-serif;
     }
@@ -53,48 +47,45 @@ st.markdown("""
         visibility: hidden !important;
     }
 
-    /* 2. ARKA PLAN: DERİN GRADIENT */
+    /* 2. ARKA PLAN: SUBTLE GRADIENT (KESİN ÇÖZÜM) */
     [data-testid="stAppViewContainer"] {
-        background: radial-gradient(circle at top left, #F8F9FC 0%, #E2E8F0 100%) !important;
+        background: linear-gradient(180deg, #F8F9FC 0%, #E2E8F0 100%) !important;
+        background-attachment: fixed;
     }
     .block-container {
         padding-top: 50px !important;
     }
 
-    /* 3. YÜZEN SOL MENÜ & ÖZEL SCROLLBAR */
+    /* 3. YÜZEN SOL MENÜ (Sert Çizgiyi Kaldırır) */
     section[data-testid="stSidebar"] {
         background-color: #FFFFFF !important;
         border-right: none !important;
-        box-shadow: 15px 0 40px rgba(0,0,0,0.04);
-        z-index: 100;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.04) !important;
     }
-    
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    [data-testid="stSidebarCollapseButton"] { display: none !important; }
+
+    /* 4. ÖZEL KAYDIRMA ÇUBUKLARI */
+    ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
     ::-webkit-scrollbar-thumb:hover { background: #0066FF; }
 
-    /* 4. INPUT KUTULARI: MODERN SAAS STYLE */
-    .stTextInput > div > div {
-        border: none !important;
-        box-shadow: none !important;
-        background-color: transparent !important;
-    }
+    /* 5. INPUT KUTULARI (v70 TASARIMI) */
+    .stTextInput > div > div { border: none !important; box-shadow: none !important; background-color: transparent !important; }
     .stTextInput input {
-        border: 1.5px solid #E2E8F0 !important;
+        border: 1px solid #cbd5e1 !important;
         border-radius: 14px !important;
         padding: 12px 16px !important;
         background-color: #FFFFFF !important;
         color: #1E293B !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.3s;
     }
     .stTextInput input:focus {
         border-color: #0066FF !important;
         box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1) !important;
-        transform: translateY(-1px);
     }
 
-    /* 5. BUTONLAR: MİKRO ETKİLEŞİM */
+    /* 6. BUTONLAR: MİKRO ETKİLEŞİM */
     button[kind="primary"], [data-testid="baseButton-primary"] {
         background: linear-gradient(135deg, #0066FF 0%, #0047AB 100%) !important;
         border: none !important;
@@ -102,16 +93,13 @@ st.markdown("""
         border-radius: 14px !important;
         padding: 14px 28px !important;
         font-weight: 700 !important;
-        box-shadow: 0 12px 24px -10px rgba(0, 102, 255, 0.5) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 10px 20px -10px rgba(0, 102, 255, 0.5) !important;
+        transition: all 0.3s ease !important;
         width: 100%;
     }
     button[kind="primary"]:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 15px 35px -12px rgba(0, 102, 255, 0.6) !important;
-    }
-    button[kind="primary"]:active {
-        transform: translateY(0px) scale(0.98);
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 15px 30px -10px rgba(0, 102, 255, 0.6) !important;
     }
 
     button[kind="secondary"], [data-testid="baseButton-secondary"] {
@@ -120,49 +108,38 @@ st.markdown("""
         color: #64748b !important;
         font-size: 13px !important;
         font-weight: 600 !important;
-        transition: all 0.2s;
-        margin-top: -5px !important;
+        margin-top: -10px !important;
     }
-    button[kind="secondary"]:hover {
-        color: #0066FF !important;
-        background-color: rgba(0, 102, 255, 0.05) !important;
-    }
+    button[kind="secondary"]:hover { color: #0066FF !important; text-decoration: underline; }
 
-    /* 6. CANLI KARTLAR: GLASSMORPHISM */
+    /* 7. CANLI KARTLAR (MIKRO-ETKİLEŞİM) */
     .metric-card {
-        background: var(--card-bg);
-        backdrop-filter: blur(10px);
+        background: #FFFFFF;
         padding: 30px;
         border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #F1F5F9;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         height: 100%;
     }
     .metric-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 25px 50px rgba(0,0,0,0.07);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.06);
         border-color: #0066FF;
     }
-    .metric-card h3 { color: #94a3b8; font-size: 12px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 10px; }
-    .metric-card h1 { color: #1e293b; font-size: 36px; font-weight: 800; margin: 0; letter-spacing: -1px; }
+    .metric-card h3 { color: #94a3b8; font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.2px; margin-bottom: 12px; }
+    .metric-card h1 { color: #1e293b; font-size: 34px; font-weight: 800; margin: 0; letter-spacing: -1px; }
 
-    /* GİRİŞ KARTI ANIMASYONU */
+    /* GİRİŞ KARTI (Bütünleşik) */
     div[data-testid="column"]:nth-of-type(2) > div > div {
         background: #FFFFFF;
         padding: 55px;
         border-radius: 32px;
         box-shadow: 0 40px 100px rgba(0,0,0,0.08);
         border: 1px solid #f1f5f9;
-        animation: fadeInDown 0.8s ease-out;
     }
 
-    @keyframes fadeInDown {
-        0% { opacity: 0; transform: translateY(-20px); }
-        100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .sidebar-divider { margin: 25px 0; border-bottom: 1.5px solid #F1F5F9; }
+    .sidebar-divider { margin: 25px 0; border-bottom: 1px solid #EFF2F7; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -214,7 +191,7 @@ def sifre_sifirla_excel(kadi, guvenlik_kodu, yeni_sifre):
                 if str(user.get('guvenlik_kodu', '')) == str(guvenlik_kodu):
                     sheet.update_cell(i + 2, 2, yeni_sifre)
                     return True, "Şifreniz başarıyla güncellendi."
-        return False, "Güvenlik kodu veya Kullanıcı adı hatalı!"
+        return False, "Bilgiler hatalı!"
     except Exception as e: return False, f"Hata: {e}"
 
 def demo_veri():
@@ -259,12 +236,11 @@ if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Gen
 
 # --- GİRİŞ / SIFIRLAMA MODÜLÜ ---
 if not st.session_state["giris"]:
-    st.markdown("""<style>[data-testid="stAppViewContainer"] { background-image: radial-gradient(circle at top left, #F8F9FC 0%, #E2E8F0 100%) !important; }</style>""", unsafe_allow_html=True)
     c1, c2, c3 = st.columns([1, 1.4, 1])
     with c2:
         st.markdown("<br><br><br>", unsafe_allow_html=True)
         if st.session_state["ui_mode"] == "login":
-            st.markdown("<h2 style='text-align:center; color:#1E293B; font-weight:800; margin-bottom:40px; letter-spacing:-1px;'>GİRİŞ YAP</h2>", unsafe_allow_html=True)
+            st.markdown("<h2 style='text-align:center; color:#1E293B; font-weight:800; margin-bottom:40px;'>GİRİŞ YAP</h2>", unsafe_allow_html=True)
             u = st.text_input("Kullanıcı Kodu", key="l_u"); p = st.text_input("Şifre", type="password", key="l_p")
             st.markdown("<br>", unsafe_allow_html=True)
             if st.button("GİRİŞ YAP", type="primary", use_container_width=True):
@@ -277,19 +253,19 @@ if not st.session_state["giris"]:
                 st.session_state["ui_mode"] = "forgot"; st.rerun()
 
         elif st.session_state["ui_mode"] == "forgot":
-            st.markdown("<h4 style='text-align:center; color:#1E293B; font-weight:700;'>Şifre Sıfırlama</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='text-align:center; color:#1E293B;'>Şifre Sıfırlama</h4>", unsafe_allow_html=True)
             f_u = st.text_input("Kullanıcı Kodu", key="f_u")
             f_k = st.text_input("Güvenlik Kodu", type="password", key="f_k")
             f_p = st.text_input("Yeni Şifre", type="password", key="f_p")
             st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("EXCEL'DE GÜNCELLE", type="primary", use_container_width=True):
+            if st.button("ŞİFREYİ GÜNCELLE", type="primary", use_container_width=True):
                 basari, mesaj = sifre_sifirla_excel(f_u, f_k, f_p)
                 if basari: st.success(mesaj); st.session_state["ui_mode"] = "login"; st.rerun()
                 else: st.error(mesaj)
             if st.button("⬅️ Geri Dön", type="secondary", use_container_width=True):
                 st.session_state["ui_mode"] = "login"; st.rerun()
 
-        st.markdown("<p style='text-align:center; color:#94a3b8; margin-top:30px; font-size:12px;'>Zorlu Soft | © 2026 | v70.3</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#94a3b8; margin-top:30px; font-size:12px;'>Zorlu Soft | © 2026 | v70.4</p>", unsafe_allow_html=True)
     st.stop()
 
 # --- ANA UYGULAMA (GİRİŞ SONRASI) ---
