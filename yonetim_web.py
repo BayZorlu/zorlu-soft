@@ -26,14 +26,16 @@ st.set_page_config(
 # --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: v70.1 + PREMIUM GÖRSEL DOKUNUŞLAR ---
+# --- CSS: v70.3 ULTRA-PREMIUM VISUALS ---
 st.markdown("""
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* 0. ANA RENK VE DEĞİŞKENLER */
+    /* 0. ROOT DEĞİŞKENLERİ */
     :root {
         --primary-color: #0066FF;
+        --accent-color: #00D2FF;
+        --card-bg: rgba(255, 255, 255, 0.95);
     }
 
     html, body, [class*="css"] {
@@ -51,74 +53,65 @@ st.markdown("""
         visibility: hidden !important;
     }
 
-    /* 2. ARKA PLAN DERİNLİĞİ (Gradient) */
+    /* 2. ARKA PLAN: DERİN GRADIENT */
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(to bottom, #F8F9FC 0%, #E2E8F0 100%) !important;
+        background: radial-gradient(circle at top left, #F8F9FC 0%, #E2E8F0 100%) !important;
     }
     .block-container {
         padding-top: 50px !important;
     }
 
-    /* 3. YÜZEN SOL MENÜ (Floating Menu Effect) */
+    /* 3. YÜZEN SOL MENÜ & ÖZEL SCROLLBAR */
     section[data-testid="stSidebar"] {
         background-color: #FFFFFF !important;
         border-right: none !important;
-        box-shadow: 10px 0 30px rgba(0,0,0,0.05); /* Yumuşak gölge */
+        box-shadow: 15px 0 40px rgba(0,0,0,0.04);
         z-index: 100;
     }
-    [data-testid="stSidebarCollapseButton"] { display: none !important; }
+    
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #0066FF; }
 
-    /* 4. ÖZEL KAYDIRMA ÇUBUKLARI (Custom Scrollbars) */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-        background: rgba(0,0,0,0.02);
-    }
-    ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 10px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #0066FF;
-    }
-
-    /* 5. v70 INPUT KUTULARI (Tek Renk Gri - Focus Mavi) */
+    /* 4. INPUT KUTULARI: MODERN SAAS STYLE */
     .stTextInput > div > div {
         border: none !important;
         box-shadow: none !important;
         background-color: transparent !important;
     }
     .stTextInput input {
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 12px !important;
-        padding: 12px 15px !important;
+        border: 1.5px solid #E2E8F0 !important;
+        border-radius: 14px !important;
+        padding: 12px 16px !important;
         background-color: #FFFFFF !important;
         color: #1E293B !important;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .stTextInput input:focus {
         border-color: #0066FF !important;
-        box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.2) !important;
+        box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1) !important;
+        transform: translateY(-1px);
     }
 
-    /* 6. v70 BUTONLAR */
+    /* 5. BUTONLAR: MİKRO ETKİLEŞİM */
     button[kind="primary"], [data-testid="baseButton-primary"] {
-        background-color: #0066FF !important;
-        border-color: #0066FF !important;
+        background: linear-gradient(135deg, #0066FF 0%, #0047AB 100%) !important;
+        border: none !important;
         color: white !important;
-        border-radius: 12px !important;
-        padding: 12px 24px !important;
+        border-radius: 14px !important;
+        padding: 14px 28px !important;
         font-weight: 700 !important;
-        box-shadow: 0 10px 20px -10px rgba(0, 102, 255, 0.4) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 12px 24px -10px rgba(0, 102, 255, 0.5) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         width: 100%;
     }
     button[kind="primary"]:hover {
-        background-color: #0052CC !important;
-        transform: translateY(-2px);
-        box-shadow: 0 15px 30px -12px rgba(0, 102, 255, 0.5) !important;
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 15px 35px -12px rgba(0, 102, 255, 0.6) !important;
+    }
+    button[kind="primary"]:active {
+        transform: translateY(0px) scale(0.98);
     }
 
     button[kind="secondary"], [data-testid="baseButton-secondary"] {
@@ -127,45 +120,49 @@ st.markdown("""
         color: #64748b !important;
         font-size: 13px !important;
         font-weight: 600 !important;
-        box-shadow: none !important;
-        margin-top: -10px !important;
+        transition: all 0.2s;
+        margin-top: -5px !important;
     }
     button[kind="secondary"]:hover {
         color: #0066FF !important;
-        text-decoration: underline;
+        background-color: rgba(0, 102, 255, 0.05) !important;
     }
 
-    /* 7. CANLI KARTLAR (Micro-Interactions) */
+    /* 6. CANLI KARTLAR: GLASSMORPHISM */
     .metric-card {
-        background: #FFFFFF;
-        padding: 28px;
-        border-radius: 20px;
-        border: 1px solid #F1F5F9;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        padding: 30px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         height: 100%;
     }
     .metric-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-        border-color: #E2E8F0;
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.07);
+        border-color: #0066FF;
     }
-    .metric-card h3 { color: #94a3b8; font-size: 13px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
-    .metric-card h1 { color: #1e293b; font-size: 34px; font-weight: 800; margin: 0; }
+    .metric-card h3 { color: #94a3b8; font-size: 12px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 10px; }
+    .metric-card h1 { color: #1e293b; font-size: 36px; font-weight: 800; margin: 0; letter-spacing: -1px; }
 
-    /* GİRİŞ KARTI (v70) */
+    /* GİRİŞ KARTI ANIMASYONU */
     div[data-testid="column"]:nth-of-type(2) > div > div {
         background: #FFFFFF;
-        padding: 50px;
-        border-radius: 28px;
-        box-shadow: 0 25px 60px rgba(0,0,0,0.1);
+        padding: 55px;
+        border-radius: 32px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.08);
         border: 1px solid #f1f5f9;
+        animation: fadeInDown 0.8s ease-out;
     }
 
-    .sidebar-divider {
-        margin: 20px 0;
-        border-bottom: 1px solid #EFF2F7;
+    @keyframes fadeInDown {
+        0% { opacity: 0; transform: translateY(-20px); }
+        100% { opacity: 1; transform: translateY(0); }
     }
+
+    .sidebar-divider { margin: 25px 0; border-bottom: 1.5px solid #F1F5F9; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -262,10 +259,12 @@ if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Gen
 
 # --- GİRİŞ / SIFIRLAMA MODÜLÜ ---
 if not st.session_state["giris"]:
+    st.markdown("""<style>[data-testid="stAppViewContainer"] { background-image: radial-gradient(circle at top left, #F8F9FC 0%, #E2E8F0 100%) !important; }</style>""", unsafe_allow_html=True)
     c1, c2, c3 = st.columns([1, 1.4, 1])
     with c2:
         st.markdown("<br><br><br>", unsafe_allow_html=True)
         if st.session_state["ui_mode"] == "login":
+            st.markdown("<h2 style='text-align:center; color:#1E293B; font-weight:800; margin-bottom:40px; letter-spacing:-1px;'>GİRİŞ YAP</h2>", unsafe_allow_html=True)
             u = st.text_input("Kullanıcı Kodu", key="l_u"); p = st.text_input("Şifre", type="password", key="l_p")
             st.markdown("<br>", unsafe_allow_html=True)
             if st.button("GİRİŞ YAP", type="primary", use_container_width=True):
@@ -278,19 +277,19 @@ if not st.session_state["giris"]:
                 st.session_state["ui_mode"] = "forgot"; st.rerun()
 
         elif st.session_state["ui_mode"] == "forgot":
-            st.markdown("<h4 style='text-align:center;'>Şifre Sıfırlama</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='text-align:center; color:#1E293B; font-weight:700;'>Şifre Sıfırlama</h4>", unsafe_allow_html=True)
             f_u = st.text_input("Kullanıcı Kodu", key="f_u")
-            f_k = st.text_input("Güvenlik Kodu", type="password", placeholder="Excel'deki kodunuz", key="f_k")
+            f_k = st.text_input("Güvenlik Kodu", type="password", key="f_k")
             f_p = st.text_input("Yeni Şifre", type="password", key="f_p")
             st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("ŞİFREYİ GÜNCELLE", type="primary", use_container_width=True):
+            if st.button("EXCEL'DE GÜNCELLE", type="primary", use_container_width=True):
                 basari, mesaj = sifre_sifirla_excel(f_u, f_k, f_p)
                 if basari: st.success(mesaj); st.session_state["ui_mode"] = "login"; st.rerun()
                 else: st.error(mesaj)
             if st.button("⬅️ Geri Dön", type="secondary", use_container_width=True):
                 st.session_state["ui_mode"] = "login"; st.rerun()
 
-        st.markdown("<p style='text-align:center; color:#94a3b8; margin-top:30px; font-size:12px;'>Zorlu Soft | © 2026 | v70.2</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#94a3b8; margin-top:30px; font-size:12px;'>Zorlu Soft | © 2026 | v70.3</p>", unsafe_allow_html=True)
     st.stop()
 
 # --- ANA UYGULAMA (GİRİŞ SONRASI) ---
@@ -320,14 +319,19 @@ if st.session_state["rol"] == "admin":
         c1.markdown(f"<div class='metric-card'><h3>GÜNCEL KASA</h3><h1 style='color:#0066FF'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
         c2.markdown(f"<div class='metric-card'><h3>TOPLAM ALACAK</h3><h1 style='color:#FF3B30'>{toplam_alacak:,.0f} ₺</h1></div>", unsafe_allow_html=True)
         c3.markdown(f"<div class='metric-card'><h3>TOPLAM GİDER</h3><h1 style='color:#FF9500'>{sum(g['tutar'] for g in data['giderler']):,.0f} ₺</h1></div>", unsafe_allow_html=True)
-        c4.markdown(f"<div class='metric-card'><h3>DAİRE SAYISI</h3><h1>{len(data['daireler'])}</h1></div>", unsafe_allow_html=True)
+        c4.markdown(f"<div class='metric-card'><h3>DAİRE SAYISI</h3><h1 style='color:#1E293B'>{len(data['daireler'])}</h1></div>", unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
         cl, cr = st.columns([2, 1])
         with cl:
-            fig = px.pie(values=[data['kasa_nakit'], toplam_alacak], names=['Kasa', 'Alacak'], hole=0.75, color_discrete_sequence=["#0066FF", "#FF3B30"])
-            fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(family="Poppins")); st.plotly_chart(fig, use_container_width=True)
+            df_pie = pd.DataFrame({"Durum": ["Kasa", "Alacak"], "Tutar": [data['kasa_nakit'], toplam_alacak]})
+            fig = px.pie(df_pie, values='Tutar', names='Durum', hole=0.75, color_discrete_sequence=["#0066FF", "#FF3B30"])
+            # Şeffaf Grafik Entegrasyonu
+            fig.update_layout(margin=dict(t=20, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(family="Poppins"))
+            st.plotly_chart(fig, use_container_width=True)
         with cr:
-            if st.button("💾 VERİLERİ YEDEKLE", type="primary", use_container_width=True): kaydet(data); st.success("Tamamlandı")
+            st.subheader("Veri Güvenliği")
+            if st.button("💾 VERİLERİ ŞİMDİ YEDEKLE", type="primary", use_container_width=True): 
+                kaydet(data); st.success("Tamamlandı")
 
     elif menu == "Giderler":
         c1, c2 = st.columns([1,2])
@@ -342,7 +346,7 @@ if st.session_state["rol"] == "admin":
     elif menu == "Hesaplar":
         secilen = st.selectbox("Daire Seç", list(data["daireler"].keys()))
         info = data["daireler"][secilen]
-        st.markdown(f"<div class='metric-card'><h3>{secilen} - {info['sahip']}</h3><h1>{info['borc']:,.2f} ₺</h1></div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='metric-card' style='border-left: 8px solid {'#FF3B30' if info['borc'] > 0 else '#0066FF'};'><h3>{secilen} - {info['sahip']}</h3><h1>{info['borc']:,.2f} ₺</h1></div>", unsafe_allow_html=True)
         t = st.number_input("Tahsilat", min_value=0.0)
         if st.button("Ödeme Onayla", type="primary"):
             info["borc"] -= t; data["kasa_nakit"] += t; info["gecmis"].append(f"{datetime.date.today()}|Ödeme: {t}"); kaydet(data); st.rerun()
