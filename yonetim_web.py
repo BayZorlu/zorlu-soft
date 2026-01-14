@@ -24,20 +24,22 @@ st.set_page_config(
 # --- LOGO AYARLARI ---
 LOGO_DOSYA = "logo.png" 
 
-# --- CSS: TRUE BLUE TASARIM ---
+# --- CSS: v70'İN KUSURSUZ TASARIMI + v71'İN KURTARMA MODÜLÜ ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+    /* 0. ANA RENK AYARI (KESİN MAVİ) */
     :root {
         --primary-color: #0066FF;
     }
+    
     html, body, [class*="css"] {
         font-family: 'Poppins', sans-serif;
     }
 
     /* 1. GİZLENECEKLER */
-    .stDeployButton, [data-testid="stHeaderActionElements"], [data-testid="stToolbar"], footer, #MainMenu {
+    .stDeployButton, [data-testid="stHeaderActionElements"], [data-testid="stToolbar"], [data-testid="stManageAppButton"], footer, #MainMenu {
         display: none !important;
     }
     header[data-testid="stHeader"] {
@@ -46,471 +48,201 @@ st.markdown("""
         visibility: hidden !important;
     }
 
-    /* 2. ARKA PLAN */
-    [data-testid="stAppViewContainer"] {
-        background: linear-gradient(to bottom, #F8F9FC 0%, #E2E8F0 100%) !important;
-        background-image: none !important;
-    }
-    .block-container { padding-top: 35px !important; }
-
-    /* 3. INPUT KUTULARI */
+    /* 2. v70'İN ÖZEL INPUT KUTULARI (ÇİFT RENK ÇAKIŞMASINI ÖNLER) */
     .stTextInput > div > div {
         border: none !important;
         box-shadow: none !important;
         background-color: transparent !important;
     }
+    
     .stTextInput input {
-        border: 1px solid #cbd5e1 !important;
+        border: 1px solid #cbd5e1 !important; /* Tek ince gri çizgi */
         border-radius: 12px !important;
         padding: 12px 15px !important;
         background-color: #FFFFFF !important;
         color: #1E293B !important;
-        transition: all 0.3s;
+        transition: all 0.2s;
     }
+    
     .stTextInput input:focus {
-        border-color: #0066FF !important;
-        box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15) !important;
+        border-color: #0066FF !important; /* Odaklanınca Mavi */
+        box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.2) !important;
+        outline: none !important;
     }
 
-    /* 4. GİRİŞ KUTUSU */
-    .login-container {
+    /* 3. v70'İN GİRİŞ KARTI TASARIMI */
+    div[data-testid="column"]:nth-of-type(2) > div > div {
         background: #FFFFFF;
         padding: 50px;
         border-radius: 28px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        margin-top: 60px;
-        border: 1px solid rgba(255,255,255,0.5);
-        transition: height 0.3s;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+        border: 1px solid #f1f5f9;
     }
 
-    /* 5. BUTONLAR */
-    div.stButton > button[type="primary"] {
-        background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%) !important;
-        border-radius: 14px !important;
-        padding: 16px 24px !important;
+    /* 4. BUTONLAR (v70 STİLİ) */
+    button[kind="primary"], [data-testid="baseButton-primary"] {
+        background-color: #0066FF !important;
+        border-color: #0066FF !important;
+        color: white !important;
+        border-radius: 12px !important;
+        padding: 12px 24px !important;
         font-weight: 700 !important;
-        font-size: 16px !important;
-        border: none;
+        box-shadow: 0 10px 20px -10px rgba(0, 102, 255, 0.4) !important;
+        transition: 0.3s;
         width: 100%;
-        box-shadow: 0 10px 20px -10px rgba(0, 102, 255, 0.4);
-        transition: all 0.3s;
-    }
-    div.stButton > button[type="primary"]:hover {
-         box-shadow: 0 15px 30px -12px rgba(0, 102, 255, 0.5);
-         transform: translateY(-2px);
     }
     
-    /* Secondary (Şifremi Unuttum / Geri Dön) */
-    div.stButton > button[type="secondary"] {
+    button[kind="primary"]:hover {
+        background-color: #0052CC !important;
+        transform: translateY(-2px);
+    }
+
+    button[kind="secondary"], [data-testid="baseButton-secondary"] {
         background-color: transparent !important;
         border: none !important;
         color: #64748b !important;
         font-size: 13px !important;
         font-weight: 600 !important;
-        margin-top: -5px !important;
+        box-shadow: none !important;
+        margin-top: -10px !important;
     }
-    div.stButton > button[type="secondary"]:hover {
+    
+    button[kind="secondary"]:hover {
         color: #0066FF !important;
         text-decoration: underline;
     }
 
-    /* 6. SOL MENÜ */
+    /* 5. ARKA PLAN VE SOL MENÜ */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(to bottom, #F0F4F8 0%, #D9E2EC 100%) !important;
+    }
+    
     section[data-testid="stSidebar"] {
         background-color: #FFFFFF !important;
         box-shadow: 4px 0 15px -5px rgba(0,0,0,0.05);
         border-right: none !important;
     }
     [data-testid="stSidebarCollapseButton"] { display: none !important; }
-    
-    [data-testid="stSidebar"] .stButton button {
-        width: 100%;
-        background-color: transparent !important;
-        border: none !important;
-        color: #64748b !important;
-        text-align: left;
-        padding: 14px 20px;
-        border-radius: 14px !important;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-    }
-    [data-testid="stSidebar"] .stButton button span { filter: grayscale(100%) opacity(0.6); margin-right: 14px; }
-    [data-testid="stSidebar"] .stButton button:hover { background-color: #F8FAFC !important; color: #0F172A !important; transform: translateX(5px); }
-    [data-testid="stSidebar"] .stButton button:focus { background-color: #EBF5FF !important; color: #0066FF !important; font-weight: 600; }
-    [data-testid="stSidebar"] .stButton button:focus span { filter: none !important; }
 
-    /* 7. KARTLAR */
+    /* 6. KARTLAR (İÇERİK) */
     .metric-card {
         background: #FFFFFF;
-        padding: 28px;
+        padding: 24px;
         border-radius: 20px;
-        box-shadow: 0 10px 20px -10px rgba(0,0,0,0.05);
         border: 1px solid #F1F5F9;
-        text-align: left;
-        transition: all 0.3s;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        box-shadow: 0 10px 20px -10px rgba(0,0,0,0.05);
     }
-    .metric-card:hover { transform: translateY(-5px); border-color: #E2E8F0; }
-    .metric-card h3 { color: #94A3B8; font-size: 13px; font-weight: 700; margin-bottom: 12px; }
-    .metric-card h1 { color: #1E293B; font-size: 34px; font-weight: 800; margin: 0; }
-    
-    .sidebar-divider { margin: 20px 0; border-bottom: 1px solid #EFF2F7; }
-    
-    /* Dosya Yükleme */
-    [data-testid="stFileUploaderDropzone"] div div::before { content: "Dosyaları buraya sürükleyin"; visibility: visible; font-weight: 600; color: #1E293B; }
-    [data-testid="stFileUploaderDropzone"] div div { visibility: hidden; }
-    [data-testid="stFileUploaderDropzone"] div div svg { visibility: visible !important; }
+    .metric-card h3 { color: #94a3b8; font-size: 13px; text-transform: uppercase; font-weight: 700; }
+    .metric-card h1 { color: #1e293b; font-size: 34px; font-weight: 800; margin: 0; }
 
 </style>
 """, unsafe_allow_html=True)
 
-# --- KULLANICI YÖNETİMİ (SİMÜLASYON) ---
-# Gerçek veritabanı olmadığı için Session State içinde bir "DB" simüle ediyoruz.
+# --- KULLANICI DB SİMÜLASYONU ---
 if "db_users" not in st.session_state:
     st.session_state["db_users"] = {
         "admin": {"sifre": "1234", "rol": "admin", "daire_no": "Yönetim", "guvenlik_kodu": "1923"},
         "user": {"sifre": "1234", "rol": "sakin", "daire_no": "1", "guvenlik_kodu": "1453"}
     }
 
-def kullanici_dogrula(kadi, sifre):
-    users = st.session_state["db_users"]
-    if kadi in users and users[kadi]["sifre"] == sifre:
-        return users[kadi]
-    return None
-
 def sifre_sifirla(kadi, guvenlik_kodu, yeni_sifre):
     users = st.session_state["db_users"]
     if kadi in users:
         if users[kadi]["guvenlik_kodu"] == guvenlik_kodu:
             users[kadi]["sifre"] = yeni_sifre
-            st.session_state["db_users"] = users # Güncelle
-            return True, "Şifreniz başarıyla değiştirildi. Şimdi giriş yapabilirsiniz."
-        else:
-            return False, "Güvenlik kodu hatalı!"
-    return False, "Kullanıcı bulunamadı."
+            st.session_state["db_users"] = users
+            return True, "Şifreniz başarıyla değiştirildi."
+    return False, "Bilgiler hatalı!"
 
-# --- VERİ YÖNETİMİ ---
-def verileri_yukle():
-    # Burada demo veriler
-    return {
-        "site_adi": "KoruPark",
-        "kasa_nakit": 85000.0, "kasa_banka": 250000.0,
-        "giderler": [], "market_siparisleri": [],
-        "daireler": {
-            "1": {"sahip": "Ahmet Yılmaz", "blok": "A", "tel": "5551112233", "borc": 0.0, "gecmis": [], "plaka": "46 KM 123", "icra": False, "notlar": [], "aile": []},
-            "2": {"sahip": "Yeter Zorlu", "blok": "A", "tel": "5337140212", "borc": 5400.0, "gecmis": ["Aidat x3"], "plaka": "34 ZRL 01", "icra": True, "notlar": ["Avukatta"], "aile": ["Mehmet"]}
-        }
-    }
-
-def kaydet(veri):
-    st.session_state["data"] = veri # Localde kaydet
-
-if "data" not in st.session_state: st.session_state["data"] = verileri_yukle()
-data = st.session_state["data"]
-
-# --- PDF ---
-def tr_duzelt(text):
-    source = "şŞıİğĞüÜöÖçÇ"; target = "sSiIgGuUoOcC"
-    translation = str.maketrans(source, target)
-    return str(text).translate(translation)
-
-def pdf_olustur(daire_no, isim, tutar):
-    if not LIB_OK: return None
-    pdf = FPDF(); pdf.add_page(); pdf.set_line_width(1); pdf.rect(5, 5, 200, 287)
-    if os.path.exists(LOGO_DOSYA): pdf.image(LOGO_DOSYA, 10, 8, 30); pdf.set_xy(40, 20)
-    else: pdf.set_xy(10, 20)
-    pdf.set_font("Arial", 'B', 24); pdf.cell(0, 10, txt=tr_duzelt(data['site_adi'].upper()), ln=True, align='C')
-    pdf.set_y(40); pdf.set_font("Arial", size=10); pdf.cell(0, 5, txt="Yonetim Ofisi", ln=True, align='C'); pdf.ln(10)
-    pdf.set_fill_color(200, 220, 255); pdf.set_font("Arial", 'B', 16); pdf.cell(190, 15, txt="TAHSILAT MAKBUZU", ln=True, align='C', fill=True); pdf.ln(10)
-    pdf.set_font("Arial", size=14)
-    pdf.cell(50, 12, txt="Tarih", border=1); pdf.cell(140, 12, txt=f"{str(datetime.date.today())}", border=1, ln=True)
-    pdf.cell(50, 12, txt="Daire", border=1); pdf.cell(140, 12, txt=f"{daire_no}", border=1, ln=True)
-    pdf.cell(50, 12, txt="Isim", border=1); pdf.cell(140, 12, txt=tr_duzelt(isim), border=1, ln=True)
-    pdf.cell(50, 12, txt="Tutar", border=1); pdf.cell(140, 12, txt=f"{tutar} TL", border=1, ln=True)
-    return pdf.output(dest='S').encode('latin-1')
-
-# --- OTURUM YÖNETİMİ ---
+# --- OTURUM AYARLARI ---
 if "giris" not in st.session_state: st.session_state["giris"] = False
+if "ui_mode" not in st.session_state: st.session_state["ui_mode"] = "login"
 if "active_menu" not in st.session_state: st.session_state["active_menu"] = "Genel Bakış"
-if "ui_mode" not in st.session_state: st.session_state["ui_mode"] = "login" # login veya forgot
 
-# --- GİRİŞ EKRANI MANTIĞI ---
+# --- GİRİŞ VE SIFIRLAMA EKRANI ---
 if not st.session_state["giris"]:
-    st.markdown("""<style>[data-testid="stAppViewContainer"] { background-image: linear-gradient(135deg, #f0f2f5 0%, #d9e2ec 100%) !important; }</style>""", unsafe_allow_html=True)
-
     c1, c2, c3 = st.columns([1, 1.4, 1])
     with c2:
         st.markdown("<br><br><br>", unsafe_allow_html=True)
-        st.markdown("""<div class="login-container">""", unsafe_allow_html=True)
+        # BEYAZ KARTI CSS OTOMATİK OLUŞTURUR (SÜTUN 2 İÇİ)
         
-        # --- LOGO VE BAŞLIK ---
-        st.markdown("""
-            <div style="margin-bottom: 30px;">
-                <span style='font-size: 60px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));'>🏢</span>
-                <h2 style='color:#1e293b; font-weight:900; margin-top:15px; font-size: 32px; letter-spacing:-1px;'>KORUPARK</h2>
-                <p style='color:#64748b; font-weight:500; font-size:16px;'>Site Yönetim Paneli</p>
-            </div>
-        """, unsafe_allow_html=True)
-
-        # --- MOD 1: GİRİŞ YAPMA EKRANI ---
+        # MOD 1: GİRİŞ YAP
         if st.session_state["ui_mode"] == "login":
-            u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı kodunuzu giriniz", key="u_giris")
-            p = st.text_input("Şifre", type="password", placeholder="Şifrenizi giriniz", key="p_giris")
-            
+            u = st.text_input("Kullanıcı Kodu", placeholder="Kullanıcı kodunuz", key="u_field")
+            p = st.text_input("Şifre", type="password", placeholder="Şifreniz", key="p_field")
             st.markdown("<br>", unsafe_allow_html=True)
             
             if st.button("GİRİŞ YAP", type="primary", use_container_width=True):
-                user_data = kullanici_dogrula(u, p)
-                if user_data:
+                users = st.session_state["db_users"]
+                if u in users and users[u]["sifre"] == p:
                     st.session_state["giris"] = True
-                    st.session_state["rol"] = str(user_data["rol"])
-                    st.session_state["user"] = str(user_data["daire_no"])
+                    st.session_state["rol"] = users[u]["rol"]
+                    st.session_state["user"] = users[u]["daire_no"]
                     st.rerun()
-                else: st.error("Hatalı Kullanıcı Adı veya Şifre")
-            
-            # ŞİFREMİ UNUTTUM BUTONU
+                else: st.error("Bilgiler hatalı!")
+                
             if st.button("🔒 Şifremi Unuttum", type="secondary", use_container_width=True):
                 st.session_state["ui_mode"] = "forgot"
                 st.rerun()
 
-        # --- MOD 2: ŞİFRE SIFIRLAMA EKRANI ---
+        # MOD 2: ŞİFRE SIFIRLA
         elif st.session_state["ui_mode"] == "forgot":
-            st.markdown("<h4 style='color:#1E293B; margin-bottom:20px;'>Şifre Sıfırlama</h4>", unsafe_allow_html=True)
-            
-            f_u = st.text_input("Kullanıcı Adı", placeholder="Kullanıcı adınız", key="f_user")
-            f_k = st.text_input("Güvenlik Kodu", type="password", placeholder="Yönetimden aldığınız kod (Örn: 1923)", key="f_code")
-            f_p = st.text_input("Yeni Şifre", type="password", placeholder="Yeni şifrenizi belirleyin", key="f_new_pass")
-            
+            st.markdown("<h4 style='text-align:center; color:#1E293B;'>Şifre Sıfırlama</h4>", unsafe_allow_html=True)
+            f_u = st.text_input("Kullanıcı Adı", key="f_u")
+            f_k = st.text_input("Güvenlik Kodu", type="password", key="f_k")
+            f_p = st.text_input("Yeni Şifre", type="password", key="f_p")
             st.markdown("<br>", unsafe_allow_html=True)
             
-            if st.button("ŞİFREYİ SIFIRLA", type="primary", use_container_width=True):
+            if st.button("ŞİFREYİ GÜNCELLE", type="primary", use_container_width=True):
                 basari, mesaj = sifre_sifirla(f_u, f_k, f_p)
                 if basari:
                     st.success(mesaj)
-                    st.session_state["ui_mode"] = "login" # Başarılıysa girişe dön
-                    st.rerun() # Hemen yansıtmak için rerun (ama mesajın görünmesi için bekletilebilir, basitlik için rerun yapmıyorum burada kullanıcı butona basınca görecek)
-                else:
-                    st.error(mesaj)
-            
-            # GERİ DÖN BUTONU
-            if st.button("⬅️ Giriş Ekranına Dön", type="secondary", use_container_width=True):
+                    st.session_state["ui_mode"] = "login"
+                    st.rerun()
+                else: st.error(mesaj)
+                
+            if st.button("⬅️ Geri Dön", type="secondary", use_container_width=True):
                 st.session_state["ui_mode"] = "login"
                 st.rerun()
 
-        st.markdown("""</div>""", unsafe_allow_html=True)
-        st.markdown("<p style='text-align:center; color:#94a3b8; margin-top:30px; font-size:12px; font-weight: 500;'>Zorlu Soft | © 2026 | v71.0</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; color:#94a3b8; margin-top:30px; font-size:12px;'>Zorlu Soft | © 2026 | v72.0</p>", unsafe_allow_html=True)
     st.stop()
-
-def cikis(): st.session_state["giris"] = False; st.rerun()
 
 # ==============================================================================
 # ANA YAPI (GİRİŞ SONRASI)
 # ==============================================================================
 
 # Giriş sonrası orta sütun sıfırlama
-st.markdown("""
-<style>
-div[data-testid="column"]:nth-of-type(2) > div > div {
-    background: transparent !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-</style>
-""", unsafe_allow_html=True)
+st.markdown("<style>div[data-testid='column']:nth-of-type(2) > div > div { background: transparent !important; padding: 0 !important; border: none !important; box-shadow: none !important; }</style>", unsafe_allow_html=True)
+
+def cikis(): st.session_state["giris"] = False; st.rerun()
 
 with st.sidebar:
-    st.markdown("""
-    <div style="padding: 25px 10px 30px 10px; margin-bottom: 15px; text-align: center;">
-        <h3 style="color:#1E293B; margin:0; font-size:26px; font-weight:900; letter-spacing:-1px;">KORUPARK</h3>
-        <p style="color:#64748b; margin:8px 0 0 0; font-size:13px; font-weight: 600; background: #EBF5FF; color: #0066FF; display: inline-block; padding: 6px 14px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,102,255,0.1);">Sistem Yöneticisi</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("<div style='padding: 25px 10px; text-align: center;'><h3 style='color:#1E293B; margin:0; font-weight:900;'>KORUPARK</h3><p style='color:#0066FF; font-size:13px; font-weight:600;'>Sistem Yöneticisi</p></div>", unsafe_allow_html=True)
     
     if st.session_state["rol"] == "admin":
-        if st.button("🏠 Genel Bakış", key="nav_genel"): st.session_state["active_menu"] = "Genel Bakış"; st.rerun()
-        
+        if st.button("🏠 Genel Bakış"): st.session_state["active_menu"] = "Genel Bakış"; st.rerun()
         st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
-        
-        st.markdown("<p style='color:#94A3B8; font-size:12px; font-weight:700; margin-left:15px; margin-bottom:8px; letter-spacing:0.5px;'>FİNANSAL İŞLEMLER</p>", unsafe_allow_html=True)
-        if st.button("💸 Gider Yönetimi", key="nav_gider"): st.session_state["active_menu"] = "Giderler"; st.rerun()
-        if st.button("👥 Hesaplar & Aidat", key="nav_hesap"): st.session_state["active_menu"] = "Hesaplar"; st.rerun()
-        
+        if st.button("💸 Gider Yönetimi"): st.session_state["active_menu"] = "Giderler"; st.rerun()
+        if st.button("👥 Hesaplar"): st.session_state["active_menu"] = "Hesaplar"; st.rerun()
+        if st.button("🏘️ Harita"): st.session_state["active_menu"] = "Harita"; st.rerun()
         st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
-        
-        st.markdown("<p style='color:#94A3B8; font-size:12px; font-weight:700; margin-left:15px; margin-bottom:8px; letter-spacing:0.5px;'>YÖNETİM ARAÇLARI</p>", unsafe_allow_html=True)
-        if st.button("🏘️ Blok Haritası", key="nav_harita"): st.session_state["active_menu"] = "Harita"; st.rerun()
-        if st.button("⚖️ Hukuk & İcra", key="nav_hukuk"): st.session_state["active_menu"] = "Hukuk/İcra"; st.rerun()
-        if st.button("☁️ Dijital Arşiv", key="nav_bulut"): st.session_state["active_menu"] = "Bulut Arşiv"; st.rerun()
-        if st.button("📄 Raporlar", key="nav_rapor"): st.session_state["active_menu"] = "Raporlar"; st.rerun()
-        
-        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
-        if st.button("🚪 Güvenli Çıkış", key="exit"): cikis()
+        if st.button("🚪 Çıkış"): cikis()
 
-    elif st.session_state["rol"] == "sakin":
-        st.markdown("<p style='color:#94A3B8; font-size:12px; font-weight:700; margin-left:15px; margin-bottom:8px;'>DAİRE SAKİNİ MENÜSÜ</p>", unsafe_allow_html=True)
-        if st.button("👤 Durum Özeti", key="nav_durum"): st.session_state["active_menu"] = "Durum"; st.rerun()
-        if st.button("💳 Ödeme Geçmişi", key="nav_odeme"): st.session_state["active_menu"] = "Ödeme"; st.rerun()
-        st.markdown('<div class="sidebar-divider"></div>', unsafe_allow_html=True)
-        if st.button("🚪 Güvenli Çıkış", key="exit_s"): cikis()
-    
-    st.markdown("<div style='text-align:center; color:#cbd5e1; font-size:11px; margin-top:40px; font-weight: 500;'>Zorlu Soft | Sürüm 71.0</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:#cbd5e1; font-size:11px; margin-top:40px;'>Zorlu Soft Premium v72.0</div>", unsafe_allow_html=True)
 
-# --- SAĞ İÇERİK ---
+# İÇERİK ALANI
 menu = st.session_state["active_menu"]
+st.title(menu)
 
-st.markdown(f"""<h1 style='font-weight: 800; color: #1E293B; margin-bottom: 25px;'>{menu}</h1>""", unsafe_allow_html=True)
-
-if st.session_state["rol"] == "admin":
-    if menu == "Genel Bakış":
-        st.markdown("<p class='page-subtitle'>Sitenin finansal ve operasyonel durumunun anlık özeti.</p>", unsafe_allow_html=True)
-        
-        toplam_alacak = sum(d['borc'] for d in data['daireler'].values())
-        daire_sayisi = len(data["daireler"])
-        
-        c1, c2, c3, c4 = st.columns(4)
-        c1.markdown(f"<div class='metric-card'><h3>GÜNCEL KASA</h3><h1 style='color:#0066FF'>{data['kasa_nakit']:,.0f} ₺</h1></div>", unsafe_allow_html=True)
-        c2.markdown(f"<div class='metric-card'><h3>TOPLAM ALACAK</h3><h1 style='color:#FF3B30'>{toplam_alacak:,.0f} ₺</h1></div>", unsafe_allow_html=True)
-        c3.markdown(f"<div class='metric-card'><h3>TOPLAM GİDER</h3><h1 style='color:#FF9500'>{sum(g['tutar'] for g in data['giderler']):,.0f} ₺</h1></div>", unsafe_allow_html=True)
-        c4.markdown(f"<div class='metric-card'><h3>DAİRE SAYISI</h3><h1 style='color:#1E293B'>{daire_sayisi}</h1></div>", unsafe_allow_html=True)
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        cl, cr = st.columns([2, 1])
-        with cl:
-            st.subheader("Finansal Dağılım")
-            df_pie = pd.DataFrame({
-                "Durum": ["Kasa Mevudu", "Alacaklar (Borçlu)", "Toplam Giderler"],
-                "Tutar": [data['kasa_nakit'], toplam_alacak, sum(g['tutar'] for g in data['giderler'])]
-            })
-            fig = px.pie(df_pie, values='Tutar', names='Durum', hole=0.75, color_discrete_sequence=["#0066FF", "#FF3B30", "#FF9500"])
-            fig.update_layout(margin=dict(t=20, b=20, l=20, r=20), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(family="Poppins"))
-            st.plotly_chart(fig, use_container_width=True)
-        with cr:
-            st.subheader("Veri Güvenliği")
-            st.markdown("<div style='background: white; padding: 25px; border-radius: 20px; border: 1px solid #EFF2F7; box-shadow: 0 10px 20px -10px rgba(0,0,0,0.05);'>", unsafe_allow_html=True)
-            st.write("Sistem verileri düzenli olarak otomatik yedeklenmektedir. Manuel yedek almak için aşağıdaki butonu kullanabilirsiniz.")
-            st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("💾 VERİLERİ GÜVENLE KAYDET", type="primary", use_container_width=True): 
-                kaydet(data); st.success("Tüm veriler başarıyla yedeklendi.")
-            st.markdown("</div>", unsafe_allow_html=True)
-
-    elif menu == "Giderler":
-        st.markdown("<p class='page-subtitle'>Site giderlerinin girişi ve takibi.</p>", unsafe_allow_html=True)
-        c1, c2 = st.columns([1,2])
-        with c1:
-            st.markdown("<div style='background: white; padding: 30px; border-radius: 20px; border: 1px solid #EFF2F7; box-shadow: 0 10px 20px -10px rgba(0,0,0,0.05);'>", unsafe_allow_html=True)
-            st.subheader("Yeni Gider Ekle")
-            with st.form("gider"):
-                gt = st.selectbox("Gider Türü", ["Enerji (Elk/Su/Gaz)", "Personel Maaş/SGK", "Bakım & Onarım", "Demirbaş Alımı", "Diğer"]); 
-                ga = st.text_input("Açıklama (Örn: Ocak Ayı Faturası)"); 
-                gm = st.number_input("Tutar (TL)", min_value=0.0, format="%.2f")
-                st.markdown("<br>", unsafe_allow_html=True)
-                if st.form_submit_button("Gideri Kaydet", use_container_width=True, type="primary"):
-                    data["giderler"].append({"tarih":str(datetime.date.today()),"tur":gt,"aciklama":ga,"tutar":gm})
-                    data["kasa_nakit"] -= gm; kaydet(data); st.success("Gider başarıyla işlendi."); st.rerun()
-            st.markdown("</div>", unsafe_allow_html=True)
-        with c2: 
-            st.subheader("Gider Geçmişi")
-            st.dataframe(pd.DataFrame(data["giderler"]), use_container_width=True, hide_index=True)
-
-    elif menu == "Hesaplar":
-        st.markdown("<p class='page-subtitle'>Daire bazlı borç, alacak ve aidat takibi.</p>", unsafe_allow_html=True)
-        src = st.text_input("🔍 Daire Ara (İsim veya Numara)", placeholder="Örn: Ahmet veya 1")
-        filtre = None
-        if src:
-            for k,v in data["daireler"].items():
-                if src.lower() in v["sahip"].lower() or src == k: 
-                    filtre = k
-                    break
-        secilen = filtre if filtre else st.selectbox("Daire Seçiniz", list(data["daireler"].keys()))
-        info = data["daireler"][secilen]
-        
-        st.markdown(f"""
-        <div class='metric-card' style='border-left: 8px solid {"#FF3B30" if info["borc"] > 0 else "#0066FF"}; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 15px 30px -10px rgba(0,0,0,0.1);'>
-            <div>
-                <h3 style='letter-spacing: 2px;'>DAİRE NO: {secilen}</h3>
-                <h1 style='font-size: 40px; margin-top: 10px;'>{info['sahip']}</h1>
-            </div>
-            <div style='text-align: right;'>
-                 <h3 style='letter-spacing: 2px;'>GÜNCEL BORÇ</h3>
-                 <h1 style='color: {"#FF3B30" if info["borc"] > 0 else "#0066FF"}; font-size: 48px; margin-top: 10px;'>{info['borc']:,.2f} ₺</h1>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("<br>", unsafe_allow_html=True)
-        c1, c2 = st.columns([2,1])
-        with c1:
-            st.subheader("Hesap Hareketleri")
-            if info["gecmis"]:
-                temiz = [x.split("|") if "|" in x else ["-", x] for x in reversed(info["gecmis"])]
-                df_gecmis = pd.DataFrame(temiz, columns=["Tarih", "İşlem Açıklaması"])
-                st.dataframe(df_gecmis, use_container_width=True, hide_index=True)
-            else:
-                 st.info("Henüz bir hesap hareketi bulunmuyor.")
-        with c2:
-            st.markdown("<div style='background: white; padding: 30px; border-radius: 20px; border: 1px solid #EFF2F7; box-shadow: 0 10px 20px -10px rgba(0,0,0,0.05);'>", unsafe_allow_html=True)
-            st.subheader("Tahsilat İşlemi")
-            t = st.number_input("Tahsil Edilen Tutar (TL)", min_value=0.0, format="%.2f"); 
-            st.markdown("<br>", unsafe_allow_html=True)
-            if st.button("Ödemeyi Onayla", use_container_width=True, type="primary"): 
-                info["borc"]-=t; data["kasa_nakit"]+=t; info["gecmis"].append(f"{datetime.date.today()} | Ödeme: {t:,.2f} TL"); kaydet(data); st.success("Ödeme alındı."); st.rerun()
-            
-            st.markdown("---")
-            st.subheader("Makbuz")
-            pdf_data = pdf_olustur(secilen, info["sahip"], t if t > 0 else info["borc"])
-            if pdf_data: st.download_button("📄 PDF Makbuz İndir", pdf_data, f"makbuz_{secilen}.pdf", "application/pdf", use_container_width=True)
-            st.markdown("</div>", unsafe_allow_html=True)
-
-    elif menu == "Harita":
-        st.markdown("<p class='page-subtitle'>Tüm dairelerin borç durumunun görsel özeti.</p>", unsafe_allow_html=True)
-        cols = st.columns(4)
-        for i, (no, info) in enumerate(sorted(data["daireler"].items())):
-            with cols[i % 4]:
-                color = "#FF3B30" if info["borc"] > 0 else "#0066FF" 
-                st.markdown(f"""
-                <div class='metric-card' style='border-top: 8px solid {color}; padding: 25px; min-height: 160px;'>
-                    <h3 style='margin-bottom: 5px; letter-spacing: 1px;'>DAİRE {no} - BLOK {info['blok']}</h3>
-                    <h2 style='font-size: 22px; margin: 0 0 15px 0; font-weight: 700;'>{info['sahip']}</h2>
-                    <h3 style='margin-bottom: 0;'>BORÇ DURUMU</h3>
-                    <h1 style='color: {color}; font-size: 30px; margin-top: 5px;'>{info['borc']:,.0f} ₺</h1>
-                </div>
-                <br>
-                """, unsafe_allow_html=True)
+if menu == "Genel Bakış":
+    c1, c2, c3 = st.columns(3)
+    c1.markdown("<div class='metric-card'><h3>KASA</h3><h1>85,100 ₺</h1></div>", unsafe_allow_html=True)
+    c2.markdown("<div class='metric-card'><h3>BORÇLU</h3><h1>12,400 ₺</h1></div>", unsafe_allow_html=True)
+    c3.markdown("<div class='metric-card'><h3>DAİRE</h3><h1>48</h1></div>", unsafe_allow_html=True)
     
-    elif menu == "Hukuk/İcra":
-        st.markdown("<p class='page-subtitle'>Yasal süreçteki dairelerin listesi.</p>", unsafe_allow_html=True)
-        st.warning("⚠️ Aşağıdaki daireler icra takibindedir veya hukuki süreç başlatılmıştır.")
-        icraliklar = [v for v in data["daireler"].values() if v["icra"]]
-        if icraliklar:
-             st.dataframe(pd.DataFrame(icraliklar), use_container_width=True)
-        else:
-             st.success("İcralık daire bulunmamaktadır.")
-
-    elif menu == "Bulut Arşiv":
-        st.markdown("<p class='page-subtitle'>Site evraklarının bulut depolama alanı.</p>", unsafe_allow_html=True)
-        st.info("☁️ Siteye ait önemli evrakları (Proje, Karar Defteri vb.) buradan yükleyip saklayabilirsiniz. (Demo Modu)")
-        st.file_uploader("Dosyaları Buraya Sürükleyin", accept_multiple_files=True)
-
-    elif menu == "Raporlar": 
-        st.markdown("<p class='page-subtitle'>Tüm sistem verilerinin ham listesi.</p>", unsafe_allow_html=True)
-        st.dataframe(pd.DataFrame.from_dict(data["daireler"], orient='index'), use_container_width=True)
-
-# SAKİN
-elif st.session_state["rol"] == "sakin":
-    no = st.session_state["user"]; info = data["daireler"][no]
-    if menu == "Durum": 
-        st.title(f"Hoş Geldiniz, {info['sahip']}")
-        st.markdown("<p class='page-subtitle'>Dairenizin güncel durum özeti.</p>", unsafe_allow_html=True)
-        c1, c2 = st.columns(2)
-        c1.markdown(f"<div class='metric-card'><h3>GÜNCEL BORCUNUZ</h3><h1 style='color: {'#FF3B30' if info['borc']>0 else '#0066FF'}'>{info['borc']:,.2f} ₺</h1></div>", unsafe_allow_html=True)
-        
-    elif menu == "Ödeme": 
-        st.title("Ödeme ve Hesap Geçmişi")
-        st.markdown("<p class='page-subtitle'>Yaptığınız tüm ödemeler ve aidat tahakkukları.</p>", unsafe_allow_html=True)
-        temiz = [x.split("|") if "|" in x else ["-", x] for x in reversed(info["gecmis"])]; 
-        st.dataframe(pd.DataFrame(temiz, columns=["Tarih","İşlem"]), use_container_width=True, hide_index=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.subheader("Finansal Durum")
+    fig = px.pie(values=[85100, 12400], names=['Kasa', 'Alacak'], hole=0.7, color_discrete_sequence=["#0066FF", "#FF3B30"])
+    fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(family="Poppins"))
+    st.plotly_chart(fig, use_container_width=True)
